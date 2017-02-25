@@ -14,7 +14,6 @@ public class FintResource extends ResourceSupport {
     @Setter
     private Object content;
 
-
     public <T> T getContent(Class<T> type) {
         return type.cast(content);
     }
