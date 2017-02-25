@@ -1,29 +1,28 @@
 package no.fint.relations;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fint.relations.annotations.FintSelfId;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
-
+@Slf4j
 @Aspect
 @Component
 public class FintSelfIdAspect {
 
-    @Around("@annotation(no.fint.relations.annotations.FintSelfId)")
-    public Object executeEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-        Method requestMethod = signature.getMethod();
 
-        FintSelfId fintSelfId = requestMethod.getAnnotation(FintSelfId.class);
+    @Around("execution(* (@no.fint.relations.annotations.FintSelfId *).*(..))")
+    public Object executeEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        Object target = proceedingJoinPoint.getTarget();
+        FintSelfId fintSelfId = target.getClass().getAnnotation(FintSelfId.class);
         String selfId = fintSelfId.value();
-        if(StringUtils.isEmpty(selfId)) {
-            throw new IllegalArgumentException("@FintSelfId is missing value for the self id");
+        if (StringUtils.isEmpty(selfId)) {
+            throw new IllegalArgumentException("Missing value for the self id");
         }
+        log.info("Self id: {}", selfId);
 
         return proceedingJoinPoint.proceed();
     }

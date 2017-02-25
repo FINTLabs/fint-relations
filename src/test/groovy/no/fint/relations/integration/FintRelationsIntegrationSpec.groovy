@@ -1,25 +1,27 @@
 package no.fint.relations.integration
 
-import no.fint.relations.FintSelfIdAspect
 import no.fint.relations.integration.testutils.TestApplication
+import no.fint.relations.integration.testutils.TestDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
 @ContextConfiguration
-@SpringBootTest(classes = TestApplication.class)
+@SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FintRelationsIntegrationSpec extends Specification {
 
     @Autowired
-    private FintSelfIdAspect fintSelfIdAspect
+    private TestRestTemplate restTemplate
 
     def "Enable fint-relations"() {
         when:
-        def aspectIsCreated = (fintSelfIdAspect != null)
+        def response = restTemplate.getForEntity('/test', TestDto)
 
         then:
-        aspectIsCreated
+        response.statusCode == HttpStatus.OK
     }
 
 }
