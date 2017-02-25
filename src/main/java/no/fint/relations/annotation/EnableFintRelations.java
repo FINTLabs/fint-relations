@@ -1,6 +1,6 @@
 package no.fint.relations.annotation;
 
-import no.fint.relations.config.FintLinksConfig;
+import no.fint.relations.config.FintRelationsConfig;
 import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.config.HalHateoasConfig;
 import org.springframework.hateoas.config.HypermediaSupportBeanDefinitionRegistrarExt;
@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({HypermediaSupportBeanDefinitionRegistrarExt.class, HalHateoasConfig.class, FintLinksConfig.class})
-public @interface EnableFintLinks {
+@Import({HypermediaSupportBeanDefinitionRegistrarExt.class, HalHateoasConfig.class, FintRelationsConfig.class})
+public @interface EnableFintRelations {
 }

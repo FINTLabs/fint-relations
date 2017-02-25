@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class FintLinksConfig {
+public class FintRelationsConfig {
     @Bean
     public FintSelfIdAspect getFintRoleAspect() {
         return new FintSelfIdAspect();
