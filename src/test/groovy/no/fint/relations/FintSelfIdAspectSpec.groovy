@@ -19,7 +19,7 @@ class FintSelfIdAspectSpec extends Specification {
 
     def "Throw exception if no selfId is provided"() {
         when:
-        aspect.executeEndpoint(joinPoint)
+        aspect.selfIdEndpoint(joinPoint)
 
         then:
         thrown(IllegalArgumentException)
