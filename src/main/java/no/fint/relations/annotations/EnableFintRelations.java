@@ -1,4 +1,4 @@
-package no.fint.relations.annotation;
+package no.fint.relations.annotations;
 
 import no.fint.relations.config.FintRelationsConfig;
 import org.springframework.context.annotation.Import;

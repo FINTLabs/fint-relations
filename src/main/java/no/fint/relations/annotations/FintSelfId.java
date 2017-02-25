@@ -1,4 +1,4 @@
-package no.fint.relations.annotation;
+package no.fint.relations.annotations;
 
 public @interface FintSelfId {
     String value() default "";

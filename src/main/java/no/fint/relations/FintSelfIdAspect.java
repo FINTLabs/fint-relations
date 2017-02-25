@@ -1,6 +1,6 @@
 package no.fint.relations;
 
-import no.fint.relations.annotation.FintSelfId;
+import no.fint.relations.annotations.FintSelfId;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 @Component
 public class FintSelfIdAspect {
 
-    @Around("@annotation(no.fint.role.annotations.FintSelfId)")
+    @Around("@annotation(no.fint.relations.annotations.FintSelfId)")
     public Object executeEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
         Method requestMethod = signature.getMethod();
