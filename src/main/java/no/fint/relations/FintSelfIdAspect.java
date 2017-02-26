@@ -6,8 +6,6 @@ import no.fint.relations.aspect.AspectMetadata;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +16,6 @@ import org.springframework.util.StringUtils;
 @Aspect
 @Component
 public class FintSelfIdAspect {
-
-    @Autowired
-    private EntityLinks entityLinks;
 
     @Around("execution(* (@no.fint.relations.annotations.FintSelfId *).*(..))")
     public Object selfIdEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
