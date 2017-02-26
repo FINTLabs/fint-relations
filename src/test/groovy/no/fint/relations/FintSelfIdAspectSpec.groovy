@@ -1,29 +1,35 @@
 package no.fint.relations
 
-import no.fint.relations.integration.testutils.selfid.EmptySelfId
+import no.fint.relations.integration.testutils.TestController
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
+import org.spockframework.util.ReflectionUtil
 import spock.lang.Specification
 
 class FintSelfIdAspectSpec extends Specification {
     private FintSelfIdAspect aspect
-    private EmptySelfId emptySelfId
+    private TestController testController
+    private MethodSignature methodSignature
     private ProceedingJoinPoint joinPoint
 
     void setup() {
-        emptySelfId = new EmptySelfId()
+        testController = new TestController()
+        methodSignature = Mock(MethodSignature)
         joinPoint = Mock(ProceedingJoinPoint) {
-            getSignature() >> Mock(MethodSignature)
-            getTarget() >> emptySelfId
+            getSignature() >> methodSignature
+            getTarget() >> testController
+            getArgs() >> new Object[0]
         }
         aspect = new FintSelfIdAspect()
     }
 
-    def "Throw exception if no selfId is provided"() {
+    def "Return response directly if type is not ResponseEntity"() {
         when:
-        aspect.selfIdEndpoint(joinPoint)
+        def response = aspect.selfIdEndpoint(joinPoint)
 
         then:
-        thrown(IllegalArgumentException)
+        1 * methodSignature.getMethod() >> ReflectionUtil.getMethodByName(TestController, 'getTestDto')
+        1 * joinPoint.proceed() >> 'test-response'
+        response == 'test-response'
     }
 }

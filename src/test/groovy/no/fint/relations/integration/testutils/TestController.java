@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@FintSelfId("id")
+@FintSelfId
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TestController {
 
     @RequestMapping("/responseEntity")
-    public ResponseEntity getResponseEntity() {
+    public ResponseEntity getResponseEntityNoInput() {
         return ResponseEntity.ok(new TestDto("test1"));
     }
 
