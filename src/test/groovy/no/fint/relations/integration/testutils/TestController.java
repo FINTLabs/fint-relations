@@ -3,10 +3,9 @@ package no.fint.relations.integration.testutils;
 import no.fint.relations.annotations.FintSelfId;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @FintSelfId("id")
 @RestController
@@ -27,7 +26,12 @@ public class TestController {
     public ResponseEntity getResponseEntity(@PathVariable String name1, @PathVariable String name2) {
         return ResponseEntity.ok(new TestDto(name1 + name2));
     }
-    
+
+    @RequestMapping(value = "/responseEntity", method = RequestMethod.POST)
+    public ResponseEntity createResource(@RequestBody TestDto testDto) {
+        return ResponseEntity.created(URI.create("/responseEntity/" + testDto.getName())).body("Created resource");
+    }
+
     @RequestMapping("/customObject")
     public TestDto getTestDto() {
         return new TestDto("test123");

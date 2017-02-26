@@ -40,7 +40,7 @@ public class FintSelfIdAspect {
     private Object addSelfLink(AspectMetadata metadata, ResponseEntity responseEntity) {
         ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(metadata.getCallingClass(), metadata.getMethod(), metadata.getArguments());
         Resource<?> resource = new Resource<>(responseEntity.getBody(), linkBuilder.withSelfRel());
-        return ResponseEntity.status(responseEntity.getStatusCode()).body(resource);
+        return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
     private String getSelfId(AspectMetadata metadata) {

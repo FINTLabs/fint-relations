@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.LinkDiscoverer
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
@@ -89,6 +89,15 @@ class FintRelationsIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
+    }
+
+    def "Keep response headers from original responseEntity"() {
+        when:
+        def response = restTemplate.postForEntity('/responseEntity', new TestDto(name: 'test123'), String)
+
+        then:
+        response.statusCode == HttpStatus.CREATED
+        response.headers.get(HttpHeaders.LOCATION)[0] == '/responseEntity/test123'
     }
 
     def "Do not add links when @FintSelfId is not present"() {
