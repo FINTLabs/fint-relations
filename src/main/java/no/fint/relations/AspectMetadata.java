@@ -1,4 +1,4 @@
-package no.fint.relations.aspect;
+package no.fint.relations;
 
 import lombok.Data;
 import org.aspectj.lang.ProceedingJoinPoint;

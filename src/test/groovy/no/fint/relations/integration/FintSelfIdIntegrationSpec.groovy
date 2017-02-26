@@ -1,8 +1,8 @@
 package no.fint.relations.integration
 
 import no.fint.relations.integration.testutils.TestApplication
-import no.fint.relations.integration.testutils.TestDto
-import no.fint.relations.integration.testutils.TestResourceDto
+import no.fint.relations.integration.testutils.dto.Person
+import no.fint.relations.integration.testutils.dto.PersonResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -29,7 +29,7 @@ class FintSelfIdIntegrationSpec extends Specification {
 
     def "Return custom DTO content"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity/test123', TestDto)
+        def response = restTemplate.getForEntity('/responseEntity/test123', Person)
 
         then:
         response.statusCode == HttpStatus.OK
@@ -38,7 +38,7 @@ class FintSelfIdIntegrationSpec extends Specification {
 
     def "Add selfId when response type is ResponseEntity, no PathVariables"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity', TestResourceDto)
+        def response = restTemplate.getForEntity('/responseEntity', PersonResource)
         def resourceDto = response.getBody()
 
         then:
@@ -50,26 +50,24 @@ class FintSelfIdIntegrationSpec extends Specification {
 
     def "Add selfId when response type is ResponseEntity, one PathVariable"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity/test123', TestResourceDto)
+        def response = restTemplate.getForEntity('/responseEntity/test123', PersonResource)
         def resourceDto = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
         resourceDto.name == 'test123'
-        resourceDto.links.size() == 1
-        resourceDto.getLinks()[0].href == "http://localhost:${port}/responseEntity/test123" as String
+        resourceDto.getLink(Link.REL_SELF).href == "http://localhost:${port}/responseEntity/test123" as String
     }
 
     def "Add selfId when response type is ResponseEntity, two PathVariables"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity/test123/twoPathVariables/test234', TestResourceDto)
+        def response = restTemplate.getForEntity('/responseEntity/test123/twoPathVariables/test234', PersonResource)
         def resourceDto = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
         resourceDto.name == 'test123test234'
-        resourceDto.links.size() == 1
-        resourceDto.getLinks()[0].href == "http://localhost:${port}/responseEntity/test123/twoPathVariables/test234" as String
+        resourceDto.getLink(Link.REL_SELF).href == "http://localhost:${port}/responseEntity/test123/twoPathVariables/test234" as String
     }
 
     def "Add selfId with string response"() {
@@ -85,7 +83,7 @@ class FintSelfIdIntegrationSpec extends Specification {
 
     def "Do not add selfId when response type is a custom object"() {
         when:
-        def response = restTemplate.getForEntity('/customObject', TestDto)
+        def response = restTemplate.getForEntity('/customObject', Person)
 
         then:
         response.statusCode == HttpStatus.OK
@@ -93,7 +91,7 @@ class FintSelfIdIntegrationSpec extends Specification {
 
     def "Keep response headers from original responseEntity"() {
         when:
-        def response = restTemplate.postForEntity('/responseHeaders', new TestDto(name: 'test123'), String)
+        def response = restTemplate.postForEntity('/responseHeaders', new Person(name: 'test123'), String)
 
         then:
         response.statusCode == HttpStatus.CREATED
@@ -102,7 +100,7 @@ class FintSelfIdIntegrationSpec extends Specification {
 
     def "Do not add links when @FintSelfId is not present"() {
         when:
-        def response = restTemplate.getForEntity('/noLinks/responseEntity', TestResourceDto)
+        def response = restTemplate.getForEntity('/noLinks/responseEntity', PersonResource)
         def resourceDto = response.getBody()
 
         then:

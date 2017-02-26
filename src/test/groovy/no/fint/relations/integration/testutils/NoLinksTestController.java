@@ -1,5 +1,6 @@
 package no.fint.relations.integration.testutils;
 
+import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,6 @@ public class NoLinksTestController {
 
     @RequestMapping("/responseEntity")
     public ResponseEntity getResponseEntity() {
-        return ResponseEntity.ok(new TestDto("test123"));
+        return ResponseEntity.ok(new Person("test123"));
     }
 }
