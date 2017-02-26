@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.LinkDiscoverer
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
@@ -90,4 +91,14 @@ class FintRelationsIntegrationSpec extends Specification {
         response.statusCode == HttpStatus.OK
     }
 
+    def "Do not add links when @FintSelfId is not present"() {
+        when:
+        def response = restTemplate.getForEntity('/noLinks/responseEntity', TestResourceDto)
+        def resourceDto = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        resourceDto.name == 'test123'
+        resourceDto.links.size() == 0
+    }
 }
