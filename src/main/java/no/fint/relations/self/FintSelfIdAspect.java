@@ -1,4 +1,4 @@
-package no.fint.relations;
+package no.fint.relations.self;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relations.aspect.AspectMetadata;

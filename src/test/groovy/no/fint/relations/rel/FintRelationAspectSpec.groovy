@@ -1,13 +1,12 @@
-package no.fint.relations
+package no.fint.relations.rel
 
 import no.fint.relations.integration.testutils.TestController
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
-import org.spockframework.util.ReflectionUtil
 import spock.lang.Specification
 
-class FintSelfIdAspectSpec extends Specification {
-    private FintSelfIdAspect aspect
+class FintRelationAspectSpec extends Specification {
+    private FintRelationAspect aspect
     private TestController testController
     private MethodSignature methodSignature
     private ProceedingJoinPoint joinPoint
@@ -20,16 +19,16 @@ class FintSelfIdAspectSpec extends Specification {
             getTarget() >> testController
             getArgs() >> new Object[0]
         }
-        aspect = new FintSelfIdAspect()
+        aspect = new FintRelationAspect()
     }
 
-    def "Return response directly if type is not ResponseEntity"() {
+    def "Call aspect method"() {
         when:
-        def response = aspect.selfIdEndpoint(joinPoint)
+        def response = aspect.fintRelationEndpoint(joinPoint)
 
         then:
-        1 * methodSignature.getMethod() >> ReflectionUtil.getMethodByName(TestController, 'getTestDto')
-        1 * joinPoint.proceed() >> 'test-response'
-        response == 'test-response'
+        1 * joinPoint.proceed() >> 'test'
+        response == 'test'
     }
+
 }

@@ -16,7 +16,7 @@ import spock.lang.Specification
 
 @ContextConfiguration
 @SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FintRelationsIntegrationSpec extends Specification {
+class FintSelfIdIntegrationSpec extends Specification {
 
     @Value('${local.server.port}')
     private int port

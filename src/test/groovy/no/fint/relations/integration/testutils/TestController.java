@@ -1,5 +1,6 @@
 package no.fint.relations.integration.testutils;
 
+import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintSelfId;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @FintSelfId
+@FintRelation
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TestController {
