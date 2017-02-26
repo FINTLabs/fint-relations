@@ -27,7 +27,7 @@ public class TestController {
         return ResponseEntity.ok(new TestDto(name1 + name2));
     }
 
-    @RequestMapping(value = "/responseEntity", method = RequestMethod.POST)
+    @RequestMapping(value = "/responseHeaders", method = RequestMethod.POST)
     public ResponseEntity createResource(@RequestBody TestDto testDto) {
         return ResponseEntity.created(URI.create("/responseEntity/" + testDto.getName())).body("Created resource");
     }

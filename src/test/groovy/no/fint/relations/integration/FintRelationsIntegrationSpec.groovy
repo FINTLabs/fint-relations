@@ -93,7 +93,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Keep response headers from original responseEntity"() {
         when:
-        def response = restTemplate.postForEntity('/responseEntity', new TestDto(name: 'test123'), String)
+        def response = restTemplate.postForEntity('/responseHeaders', new TestDto(name: 'test123'), String)
 
         then:
         response.statusCode == HttpStatus.CREATED
