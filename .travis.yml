@@ -5,4 +5,4 @@ install: true
 script:
  ./gradlew build
 after_success:
-- ./gradlew jacocoTestReport coveralls CI_NAME=travis-ci
+- ./gradlew jacocoTestReport coveralls
