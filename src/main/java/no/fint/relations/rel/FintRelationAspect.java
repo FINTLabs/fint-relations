@@ -58,7 +58,6 @@ public class FintRelationAspect implements ApplicationContextAware {
 
             links.add(getSelfLink(metadata));
 
-
             Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
             return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
         }
