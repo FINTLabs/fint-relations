@@ -5,7 +5,7 @@ import org.springframework.hateoas.Link;
 
 public interface FintLinkMapper {
 
-    Link createRelation(Relation relation, Object ... arguments);
+    Link createRelation(Relation relation, Object selfIdProperty);
 
     Class<?> type();
 

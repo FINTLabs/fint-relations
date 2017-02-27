@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class TestLinkMapper implements FintLinkMapper {
 
     @Override
-    public Link createRelation(Relation relation, Object... arguments) {
+    public Link createRelation(Relation relation, Object selfIdProperty) {
         return null;
     }
 

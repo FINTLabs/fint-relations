@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class PersonLinkMapper implements FintLinkMapper {
 
     @Override
-    public Link createRelation(Relation relation, Object... arguments) {
+    public Link createRelation(Relation relation, Object selfIdProperty) {
         return new Link("http://localhost/address", "address");
     }
 

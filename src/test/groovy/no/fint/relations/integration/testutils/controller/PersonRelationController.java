@@ -1,5 +1,6 @@
 package no.fint.relations.integration.testutils.controller;
 
+import com.google.common.collect.Lists;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintSelfId;
 import no.fint.relations.integration.testutils.dto.Address;
@@ -34,6 +35,11 @@ public class PersonRelationController {
     @RequestMapping(value = "/responseHeaders", method = RequestMethod.POST)
     public ResponseEntity createResource(@RequestBody Person person) {
         return ResponseEntity.created(URI.create("/responseEntity/" + person.getName())).body("Created resource");
+    }
+
+    @RequestMapping(value = "/responseEntity/list")
+    public ResponseEntity getResponseEntityWithList() {
+        return ResponseEntity.ok(Lists.newArrayList(new Person("test1"), new Person("test2")));
     }
 
     @RequestMapping("/customObject")

@@ -5,6 +5,7 @@ import no.fint.relation.model.Relation;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintRelations;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,6 +19,7 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Slf4j
@@ -69,26 +71,37 @@ public class FintRelationAspect implements ApplicationContextAware {
         return Optional.empty();
     }
 
-    private ResponseEntity createResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
+    private ResponseEntity createResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
-            String relationId = getRelationId(metadata, relation);
-            Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
-            if (beans.size() > 0) {
-                Collection<FintLinkMapper> values = beans.values();
-                Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
-                if (metadata.getArguments().length > 0) {
-                    Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
-                    mapper.ifPresent(fintLinkMapper -> links.add(fintLinkMapper.createRelation(rel, metadata.getArguments())));
-                }
+            try {
+                addRelations(responseEntity, metadata, relation).ifPresent(links::add);
+            } catch (NoSuchMethodException e) {
+                log.info(e.getMessage());
             }
-
             links.add(getSelfLink(metadata));
         }
 
-
         Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
+    }
+
+    private Optional<Link> addRelations(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation relation) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Optional<Link> link = Optional.empty();
+        String relationId = getRelationId(metadata, relation);
+        Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
+        if (beans.size() > 0) {
+            Collection<FintLinkMapper> values = beans.values();
+            Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
+            if (metadata.getArguments().length > 0) {
+                Object property = PropertyUtils.getNestedProperty(responseEntity.getBody(), metadata.getSelfId().id());
+                Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
+                if (mapper.isPresent()) {
+                    link = Optional.ofNullable(mapper.get().createRelation(rel, property));
+                }
+            }
+        }
+        return link;
     }
 
     private String getRelationId(AspectMetadata metadata, FintRelation relation) {
