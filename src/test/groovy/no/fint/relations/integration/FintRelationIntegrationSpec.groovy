@@ -127,6 +127,7 @@ class FintRelationIntegrationSpec extends Specification {
         response.statusCode == HttpStatus.OK
         body.contains('_embedded')
         body.contains('_links')
+        body.contains('total_items')
     }
 
 }

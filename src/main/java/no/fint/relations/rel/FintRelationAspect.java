@@ -3,6 +3,7 @@ package no.fint.relations.rel;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relation.model.Relation;
 import no.fint.relations.AspectMetadata;
+import no.fint.relations.FintResources;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintRelations;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -15,7 +16,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -103,7 +103,7 @@ public class FintRelationAspect implements ApplicationContextAware {
             resources.add(resource);
         }
 
-        Resources<?> embedded = new Resources<>(resources, getSelfLink(metadata));
+        FintResources embedded = new FintResources(values.size(), resources, getSelfLink(metadata));
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
 
