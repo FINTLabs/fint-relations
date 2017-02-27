@@ -98,7 +98,7 @@ public class FintRelationAspect implements ApplicationContextAware {
         List<Resource> resources = new ArrayList<>();
         for (Object value : values) {
             String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
-            Link selfLink = ControllerLinkBuilder.linkTo(metadata.getCallingClass()).slash(metadata.getSelfId().id()).slash(id).withSelfRel();
+            Link selfLink = ControllerLinkBuilder.linkTo(metadata.getCallingClass()).slash(id).withSelfRel();
             Resource<?> resource = new Resource<>(value, selfLink);
             resources.add(resource);
         }
