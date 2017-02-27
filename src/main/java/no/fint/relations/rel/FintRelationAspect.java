@@ -1,6 +1,7 @@
 package no.fint.relations.rel;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.relation.model.Relation;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintRelations;
@@ -44,7 +45,6 @@ public class FintRelationAspect implements ApplicationContextAware {
 
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
         FintRelations fintRelations = metadata.getCallingClass().getAnnotation(FintRelations.class);
-        metadata.setSelf(fintRelations.self());
         return createResponse(responseEntity.get(), metadata, fintRelations.rels());
     }
 
@@ -59,10 +59,6 @@ public class FintRelationAspect implements ApplicationContextAware {
 
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
         FintRelation relation = metadata.getCallingClass().getAnnotation(FintRelation.class);
-        if (relation.self() == Object.class) {
-            throw new IllegalArgumentException("The self type is not set on @FintRelation");
-        }
-        metadata.setSelf(relation.self());
         return createResponse(responseEntity.get(), metadata, relation);
     }
 
@@ -76,13 +72,14 @@ public class FintRelationAspect implements ApplicationContextAware {
     private ResponseEntity createResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
-            String relationId = getRelationId(relation);
+            String relationId = getRelationId(metadata, relation);
             Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
             if (beans.size() > 0) {
                 Collection<FintLinkMapper> values = beans.values();
-                Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == relation.self()).findAny();
+                Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
                 if (metadata.getArguments().length > 0) {
-                    mapper.ifPresent(fintLinkMapper -> links.add(fintLinkMapper.createRelation(relationId, metadata.getArguments())));
+                    Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
+                    mapper.ifPresent(fintLinkMapper -> links.add(fintLinkMapper.createRelation(rel, metadata.getArguments())));
                 }
             }
 
@@ -94,8 +91,8 @@ public class FintRelationAspect implements ApplicationContextAware {
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
-    private String getRelationId(FintRelation relation) {
-        String leftKeyName = relation.self().getName().toLowerCase();
+    private String getRelationId(AspectMetadata metadata, FintRelation relation) {
+        String leftKeyName = metadata.getSelfId().self().getSimpleName().toLowerCase();
         String rightKeyName = relation.objectLink().getSimpleName().toLowerCase();
         return String.format("%s%s:%s", relationBase, leftKeyName, rightKeyName);
     }

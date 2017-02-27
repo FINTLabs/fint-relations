@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FintRelations {
-    FintRelation[] rels() default {};
+public @interface FintSelfId {
+    Class<?> self();
+
+    String id();
 }

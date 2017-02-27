@@ -1,10 +1,11 @@
 package no.fint.relations.rel;
 
+import no.fint.relation.model.Relation;
 import org.springframework.hateoas.Link;
 
 public interface FintLinkMapper {
 
-    Link createRelation(String type, Object... arguments);
+    Link createRelation(Relation relation, Object ... arguments);
 
     Class<?> type();
 
