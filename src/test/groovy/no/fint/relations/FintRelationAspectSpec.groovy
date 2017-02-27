@@ -1,5 +1,6 @@
-package no.fint.relations.rel
+package no.fint.relations
 
+import no.fint.relations.FintRelationAspect
 import no.fint.relations.integration.testutils.controller.PersonRelationController
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature

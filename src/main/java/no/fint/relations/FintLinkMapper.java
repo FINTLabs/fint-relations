@@ -1,4 +1,4 @@
-package no.fint.relations.rel;
+package no.fint.relations;
 
 import no.fint.relation.model.Relation;
 import org.springframework.hateoas.Link;

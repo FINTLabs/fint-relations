@@ -1,6 +1,6 @@
 package no.fint.relations.config;
 
-import no.fint.relations.rel.FintRelationAspect;
+import no.fint.relations.FintRelationAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

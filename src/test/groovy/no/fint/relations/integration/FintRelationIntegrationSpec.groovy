@@ -34,7 +34,7 @@ class FintRelationIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink('address') == null
+        resourceDto.getLink('address').href == 'http://localhost/address/test1'
     }
 
     def "Return custom DTO content"() {

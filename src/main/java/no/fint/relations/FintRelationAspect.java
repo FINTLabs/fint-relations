@@ -1,9 +1,7 @@
-package no.fint.relations.rel;
+package no.fint.relations;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relation.model.Relation;
-import no.fint.relations.AspectMetadata;
-import no.fint.relations.FintResources;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintRelations;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -97,9 +95,19 @@ public class FintRelationAspect implements ApplicationContextAware {
         Collection values = (Collection) responseEntity.getBody();
         List<Resource> resources = new ArrayList<>();
         for (Object value : values) {
+            List<Link> links = new ArrayList<>();
+            for (FintRelation relation : relations) {
+                try {
+                    addRelations(value, metadata, relation).ifPresent(links::add);
+                } catch (NoSuchMethodException e) {
+                    log.info(e.getMessage());
+                }
+            }
+
             String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
             Link selfLink = ControllerLinkBuilder.linkTo(metadata.getCallingClass()).slash(id).withSelfRel();
-            Resource<?> resource = new Resource<>(value, selfLink);
+            links.add(selfLink);
+            Resource<?> resource = new Resource<>(value, links);
             resources.add(resource);
         }
 
@@ -114,12 +122,10 @@ public class FintRelationAspect implements ApplicationContextAware {
         if (beans.size() > 0) {
             Collection<FintLinkMapper> values = beans.values();
             Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
-            if (metadata.getArguments().length > 0) {
-                Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
-                Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
-                if (mapper.isPresent()) {
-                    link = Optional.ofNullable(mapper.get().createRelation(rel, property));
-                }
+            Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
+            Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
+            if (mapper.isPresent()) {
+                link = Optional.ofNullable(mapper.get().createRelation(rel, property));
             }
         }
         return link;
