@@ -44,8 +44,7 @@ class FintSelfIdIntegrationSpec extends Specification {
         then:
         response.statusCode == HttpStatus.OK
         resourceDto.name == 'test1'
-        resourceDto.links.size() == 1
-        resourceDto.getLinks()[0].href == "http://localhost:${port}/responseEntity" as String
+        resourceDto.getLink(Link.REL_SELF).href == "http://localhost:${port}/responseEntity" as String
     }
 
     def "Add selfId when response type is ResponseEntity, one PathVariable"() {

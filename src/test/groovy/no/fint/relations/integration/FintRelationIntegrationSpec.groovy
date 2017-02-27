@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
-import spock.lang.Ignore
 import spock.lang.Specification
 
 @ContextConfiguration
@@ -17,7 +16,6 @@ class FintRelationIntegrationSpec extends Specification {
     @Autowired
     private TestRestTemplate restTemplate
 
-    @Ignore
     def "Add link to address in person response"() {
         when:
         def response = restTemplate.getForEntity('/responseEntity', PersonResource)
@@ -25,7 +23,7 @@ class FintRelationIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink('text').href != null
+        resourceDto.getLink('address').href != null
     }
 
 }
