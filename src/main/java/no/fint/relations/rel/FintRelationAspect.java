@@ -47,7 +47,7 @@ public class FintRelationAspect implements ApplicationContextAware {
 
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
         FintRelations fintRelations = metadata.getCallingClass().getAnnotation(FintRelations.class);
-        return createResponse(responseEntity.get(), metadata, fintRelations.rels());
+        return createSingleResponse(responseEntity.get(), metadata, fintRelations.rels());
     }
 
 
@@ -60,8 +60,14 @@ public class FintRelationAspect implements ApplicationContextAware {
         }
 
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
-        FintRelation relation = metadata.getCallingClass().getAnnotation(FintRelation.class);
-        return createResponse(responseEntity.get(), metadata, relation);
+        FintRelation[] relations = metadata.getCallingClass().getAnnotationsByType(FintRelation.class);
+
+        Object body = responseEntity.get().getBody();
+        if (body instanceof List) {
+            return createCollectionResponse(responseEntity.get(), metadata, relations);
+        } else {
+            return createSingleResponse(responseEntity.get(), metadata, relations);
+        }
     }
 
     private Optional<ResponseEntity> getResponseEntity(Object response) {
@@ -71,7 +77,7 @@ public class FintRelationAspect implements ApplicationContextAware {
         return Optional.empty();
     }
 
-    private ResponseEntity createResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    private ResponseEntity createSingleResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
             try {
@@ -84,6 +90,10 @@ public class FintRelationAspect implements ApplicationContextAware {
 
         Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
+    }
+
+    private ResponseEntity createCollectionResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
+        return null;
     }
 
     private Optional<Link> addRelations(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation relation) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {

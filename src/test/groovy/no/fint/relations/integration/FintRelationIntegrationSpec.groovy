@@ -3,7 +3,6 @@ package no.fint.relations.integration
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.integration.testutils.dto.PersonResource
-import org.junit.Ignore
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -119,7 +118,6 @@ class FintRelationIntegrationSpec extends Specification {
         resourceDto.links.size() == 0
     }
 
-    @Ignore
     def "Add relations to list content"() {
         when:
         def response = restTemplate.getForEntity('/responseEntity/list', PersonResource[])
