@@ -12,7 +12,7 @@ import java.net.URI;
 @FintRelation(self = Person.class, objectLink = Address.class, basePath = "/address")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class PersonController {
+public class PersonRelationController {
 
     @RequestMapping("/responseEntity")
     public ResponseEntity getResponseEntityNoInput() {

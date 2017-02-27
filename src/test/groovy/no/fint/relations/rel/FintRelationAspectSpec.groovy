@@ -1,18 +1,18 @@
 package no.fint.relations.rel
 
-import no.fint.relations.integration.testutils.PersonController
+import no.fint.relations.integration.testutils.PersonRelationController
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
 
 class FintRelationAspectSpec extends Specification {
     private FintRelationAspect aspect
-    private PersonController testController
+    private PersonRelationController testController
     private MethodSignature methodSignature
     private ProceedingJoinPoint joinPoint
 
     void setup() {
-        testController = new PersonController()
+        testController = new PersonRelationController()
         methodSignature = Mock(MethodSignature)
         joinPoint = Mock(ProceedingJoinPoint) {
             getSignature() >> methodSignature

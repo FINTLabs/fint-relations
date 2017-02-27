@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FintRelation {
-    Class<?> self();
+    Class<?> self() default Object.class;
+
     Class<?> objectLink();
+
     String basePath();
 }

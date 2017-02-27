@@ -3,6 +3,7 @@ package no.fint.relations.rel;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.annotations.FintRelation;
+import no.fint.relations.annotations.FintRelations;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,22 +34,49 @@ public class FintRelationAspect implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
+    @Around("execution(* (@no.fint.relations.annotations.FintRelations *).*(..))")
+    public Object fintRelationsEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        Object response = proceedingJoinPoint.proceed();
+        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
+        if (!responseEntity.isPresent()) {
+            return response;
+        }
+
+        AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
+        FintRelations fintRelations = metadata.getCallingClass().getAnnotation(FintRelations.class);
+        metadata.setSelf(fintRelations.self());
+        return createResponse(responseEntity.get(), metadata, fintRelations.rels());
+    }
+
+
     @Around("execution(* (@no.fint.relations.annotations.FintRelation *).*(..))")
     public Object fintRelationEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object response = proceedingJoinPoint.proceed();
-        if(response instanceof ResponseEntity) {
-            ResponseEntity responseEntity = (ResponseEntity) response;
+        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
+        if (!responseEntity.isPresent()) {
+            return response;
+        }
 
-            AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
+        AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
+        FintRelation relation = metadata.getCallingClass().getAnnotation(FintRelation.class);
+        if (relation.self() == Object.class) {
+            throw new IllegalArgumentException("The self type is not set on @FintRelation");
+        }
+        metadata.setSelf(relation.self());
+        return createResponse(responseEntity.get(), metadata, relation);
+    }
 
-            FintRelation relation = metadata.getCallingClass().getAnnotation(FintRelation.class);
+    private Optional<ResponseEntity> getResponseEntity(Object response) {
+        if (response instanceof ResponseEntity) {
+            return Optional.of((ResponseEntity) response);
+        }
+        return Optional.empty();
+    }
 
-            String simpleName = metadata.getCallingClass().getSimpleName();
-            String leftKeyName = simpleName.toLowerCase().replace("controller", "");
-            String rightKeyName = relation.objectLink().getSimpleName().toLowerCase();
-            String relationId = String.format("%s%s:%s", relationBase, leftKeyName, rightKeyName);
-
-            List<Link> links = new ArrayList<>();
+    private ResponseEntity createResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
+        List<Link> links = new ArrayList<>();
+        for (FintRelation relation : relations) {
+            String relationId = getRelationId(relation);
             Map<String, RelationMapper> beans = applicationContext.getBeansOfType(RelationMapper.class);
             if (beans.size() > 0) {
                 Collection<RelationMapper> values = beans.values();
@@ -57,12 +85,17 @@ public class FintRelationAspect implements ApplicationContextAware {
             }
 
             links.add(getSelfLink(metadata));
-
-            Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
-            return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
         }
 
-        return response;
+
+        Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
+        return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
+    }
+
+    private String getRelationId(FintRelation relation) {
+        String leftKeyName = relation.self().getName().toLowerCase();
+        String rightKeyName = relation.objectLink().getSimpleName().toLowerCase();
+        return String.format("%s%s:%s", relationBase, leftKeyName, rightKeyName);
     }
 
     private Link getSelfLink(AspectMetadata metadata) {

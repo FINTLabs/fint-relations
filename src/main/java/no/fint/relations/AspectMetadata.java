@@ -12,6 +12,8 @@ public class AspectMetadata {
     private Method method;
     private Object[] arguments;
 
+    private Class<?> self;
+
     private AspectMetadata(ProceedingJoinPoint joinPoint) {
         callingClass = joinPoint.getTarget().getClass();
 
