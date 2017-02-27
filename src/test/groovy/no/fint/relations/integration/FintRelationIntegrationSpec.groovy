@@ -120,10 +120,13 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Add relations to list content"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity/list', PersonResource[])
+        def response = restTemplate.getForEntity('/responseEntity/list', String)
+        def body = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
+        body.contains('_embedded')
+        body.contains('_links')
     }
 
 }

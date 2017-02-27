@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -63,7 +64,7 @@ public class FintRelationAspect implements ApplicationContextAware {
         FintRelation[] relations = metadata.getCallingClass().getAnnotationsByType(FintRelation.class);
 
         Object body = responseEntity.get().getBody();
-        if (body instanceof List) {
+        if (body instanceof Collection) {
             return createCollectionResponse(responseEntity.get(), metadata, relations);
         } else {
             return createSingleResponse(responseEntity.get(), metadata, relations);
@@ -81,7 +82,7 @@ public class FintRelationAspect implements ApplicationContextAware {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
             try {
-                addRelations(responseEntity, metadata, relation).ifPresent(links::add);
+                addRelations(responseEntity.getBody(), metadata, relation).ifPresent(links::add);
             } catch (NoSuchMethodException e) {
                 log.info(e.getMessage());
             }
@@ -92,11 +93,21 @@ public class FintRelationAspect implements ApplicationContextAware {
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
-    private ResponseEntity createCollectionResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
-        return null;
+    private ResponseEntity createCollectionResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        Collection values = (Collection) responseEntity.getBody();
+        List<Resource> resources = new ArrayList<>();
+        for (Object value : values) {
+            String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
+            Link selfLink = ControllerLinkBuilder.linkTo(metadata.getCallingClass()).slash(metadata.getSelfId().id()).slash(id).withSelfRel();
+            Resource<?> resource = new Resource<>(value, selfLink);
+            resources.add(resource);
+        }
+
+        Resources<?> embedded = new Resources<>(resources, getSelfLink(metadata));
+        return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
 
-    private Optional<Link> addRelations(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation relation) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private Optional<Link> addRelations(Object body, AspectMetadata metadata, FintRelation relation) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Optional<Link> link = Optional.empty();
         String relationId = getRelationId(metadata, relation);
         Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
@@ -104,7 +115,7 @@ public class FintRelationAspect implements ApplicationContextAware {
             Collection<FintLinkMapper> values = beans.values();
             Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
             if (metadata.getArguments().length > 0) {
-                Object property = PropertyUtils.getNestedProperty(responseEntity.getBody(), metadata.getSelfId().id());
+                Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
                 Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
                 if (mapper.isPresent()) {
                     link = Optional.ofNullable(mapper.get().createRelation(rel, property));
@@ -124,6 +135,4 @@ public class FintRelationAspect implements ApplicationContextAware {
         ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(metadata.getCallingClass(), metadata.getMethod(), metadata.getArguments());
         return linkBuilder.withSelfRel();
     }
-
-
 }
