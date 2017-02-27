@@ -1,4 +1,4 @@
-package no.fint.relations.integration.testutils;
+package no.fint.relations.integration.testutils.controller;
 
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintRelations;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @FintRelations(
         self = Person.class,
         rels = {
-                @FintRelation(objectLink = Address.class, basePath = "/address")
+                @FintRelation(objectLink = Address.class)
         }
 )
 @RestController

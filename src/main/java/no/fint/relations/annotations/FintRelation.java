@@ -11,6 +11,4 @@ public @interface FintRelation {
     Class<?> self() default Object.class;
 
     Class<?> objectLink();
-
-    String basePath();
 }

@@ -1,6 +1,6 @@
 package no.fint.relations.rel
 
-import no.fint.relations.integration.testutils.PersonRelationController
+import no.fint.relations.integration.testutils.controller.PersonRelationController
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification

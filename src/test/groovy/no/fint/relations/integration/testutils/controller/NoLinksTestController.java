@@ -1,4 +1,4 @@
-package no.fint.relations.integration.testutils;
+package no.fint.relations.integration.testutils.controller;
 
 import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.http.MediaType;

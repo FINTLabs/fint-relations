@@ -1,4 +1,4 @@
-package no.fint.relations.integration.testutils;
+package no.fint.relations.integration.testutils.controller;
 
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.integration.testutils.dto.Address;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@FintRelation(self = Person.class, objectLink = Address.class, basePath = "/address")
+@FintRelation(self = Person.class, objectLink = Address.class)
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class PersonRelationController {

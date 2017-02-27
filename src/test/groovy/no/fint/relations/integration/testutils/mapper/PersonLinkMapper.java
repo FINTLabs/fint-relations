@@ -1,15 +1,15 @@
-package no.fint.relations.integration.testutils;
+package no.fint.relations.integration.testutils.mapper;
 
 import no.fint.relations.integration.testutils.dto.Person;
-import no.fint.relations.rel.RelationMapper;
+import no.fint.relations.rel.FintLinkMapper;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PersonRelationMapper implements RelationMapper {
+public class PersonLinkMapper implements FintLinkMapper {
 
     @Override
-    public Link createRelation(String id) {
+    public Link createRelation(String type, Object... arguments) {
         return new Link("http://localhost/address", "address");
     }
 

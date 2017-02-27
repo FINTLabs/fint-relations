@@ -77,11 +77,13 @@ public class FintRelationAspect implements ApplicationContextAware {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
             String relationId = getRelationId(relation);
-            Map<String, RelationMapper> beans = applicationContext.getBeansOfType(RelationMapper.class);
+            Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
             if (beans.size() > 0) {
-                Collection<RelationMapper> values = beans.values();
-                Optional<RelationMapper> mapper = values.stream().filter(value -> value.type() == relation.self()).findAny();
-                mapper.ifPresent(relationMapper -> links.add(relationMapper.createRelation(relationId)));
+                Collection<FintLinkMapper> values = beans.values();
+                Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == relation.self()).findAny();
+                if (metadata.getArguments().length > 0) {
+                    mapper.ifPresent(fintLinkMapper -> links.add(fintLinkMapper.createRelation(relationId, metadata.getArguments())));
+                }
             }
 
             links.add(getSelfLink(metadata));
