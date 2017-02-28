@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/noLinks", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/noLinks", method = RequestMethod.GET, produces = {"application/hal+json"})
 public class NoLinksTestController {
 
     @RequestMapping("/responseEntity")

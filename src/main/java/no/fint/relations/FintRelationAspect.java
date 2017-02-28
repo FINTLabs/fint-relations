@@ -15,9 +15,14 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -53,6 +58,10 @@ public class FintRelationAspect implements ApplicationContextAware {
     @Around("execution(* (@no.fint.relations.annotations.FintRelation *).*(..))")
     public Object fintRelationEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object response = proceedingJoinPoint.proceed();
+        if (isNotHalAcceptHeader()) {
+            return response;
+        }
+
         Optional<ResponseEntity> responseEntity = getResponseEntity(response);
         if (!responseEntity.isPresent()) {
             return response;
@@ -67,6 +76,16 @@ public class FintRelationAspect implements ApplicationContextAware {
         } else {
             return createSingleResponse(responseEntity.get(), metadata, relations);
         }
+    }
+
+    private boolean isNotHalAcceptHeader() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
+            String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
+            return !(acceptHeader.startsWith("application/hal+json"));
+        }
+        return false;
     }
 
     private Optional<ResponseEntity> getResponseEntity(Object response) {
