@@ -123,9 +123,11 @@ public class FintRelationAspect implements ApplicationContextAware {
             Collection<FintLinkMapper> values = beans.values();
             Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
             Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
-            Relation rel = new Relation(relationId, metadata.getSelfId().id(), relation.id());
+            Relation rel = new Relation();
+            rel.setType(relationId);
+            rel.setLeftKey((String) property);
             if (mapper.isPresent()) {
-                link = Optional.ofNullable(mapper.get().createRelation(rel, property));
+                link = Optional.ofNullable(mapper.get().createRelation(rel));
             }
         }
         return link;
