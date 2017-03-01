@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.LinkDiscoverer
-import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -25,20 +23,13 @@ class FintRelationIntegrationSpec extends Specification {
 
     @Autowired
     private TestRestTemplate restTemplate
-    private HttpEntity entity
 
     @Autowired
     private LinkDiscoverer linkDiscoverer
 
-    void setup() {
-        HttpHeaders headers = new HttpHeaders()
-        headers.add(HttpHeaders.ACCEPT, 'application/hal+json')
-        entity = new HttpEntity(headers)
-    }
-
     def "Add link to address in person response"() {
         when:
-        def response = restTemplate.exchange('/responseEntity', HttpMethod.GET, entity, PersonResource)
+        def response = restTemplate.getForEntity('/responseEntity', PersonResource)
         def resourceDto = response.getBody()
 
         then:
@@ -48,7 +39,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Return custom DTO content"() {
         when:
-        def response = restTemplate.exchange('/responseEntity/test123', HttpMethod.GET, entity, Person)
+        def response = restTemplate.getForEntity('/responseEntity/test123', Person)
 
         then:
         response.statusCode == HttpStatus.OK
@@ -57,7 +48,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Add selfId when response type is ResponseEntity, no PathVariables"() {
         when:
-        def response = restTemplate.exchange('/responseEntity', HttpMethod.GET, entity, PersonResource)
+        def response = restTemplate.getForEntity('/responseEntity', PersonResource)
         def resourceDto = response.getBody()
 
         then:
@@ -68,7 +59,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Add selfId when response type is ResponseEntity, one PathVariable"() {
         when:
-        def response = restTemplate.exchange('/responseEntity/test123', HttpMethod.GET, entity, PersonResource)
+        def response = restTemplate.getForEntity('/responseEntity/test123', PersonResource)
         def resourceDto = response.getBody()
 
         then:
@@ -79,7 +70,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Add selfId when response type is ResponseEntity, two PathVariables"() {
         when:
-        def response = restTemplate.exchange('/responseEntity/test123/twoPathVariables/test234', HttpMethod.GET, entity, PersonResource)
+        def response = restTemplate.getForEntity('/responseEntity/test123/twoPathVariables/test234', PersonResource)
         def resourceDto = response.getBody()
 
         then:
@@ -90,7 +81,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Add selfId with string response"() {
         when:
-        def response = restTemplate.exchange('/responseEntity/test234', HttpMethod.GET, entity, String)
+        def response = restTemplate.getForEntity('/responseEntity/test234', String)
         def selfLink = linkDiscoverer.findLinkWithRel(Link.REL_SELF, response.getBody())
 
         then:
@@ -101,7 +92,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Do not add selfId when response type is a custom object"() {
         when:
-        def response = restTemplate.exchange('/customObject', HttpMethod.GET, entity, Person)
+        def response = restTemplate.getForEntity('/customObject', Person)
 
         then:
         response.statusCode == HttpStatus.OK
@@ -118,7 +109,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Do not add links when @FintSelfId is not present"() {
         when:
-        def response = restTemplate.exchange('/noLinks/responseEntity', HttpMethod.GET, entity, PersonResource)
+        def response = restTemplate.getForEntity('/noLinks/responseEntity', PersonResource)
         def resourceDto = response.getBody()
 
         then:
@@ -129,7 +120,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "Add relations to list content"() {
         when:
-        def response = restTemplate.exchange('/responseEntity/list', HttpMethod.GET, entity, String)
+        def response = restTemplate.getForEntity('/responseEntity/list', String)
         def body = response.getBody()
 
         then:

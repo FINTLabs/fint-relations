@@ -11,7 +11,11 @@ public class PersonLinkMapper implements FintLinkMapper {
 
     @Override
     public Link createRelation(Relation relation) {
-        return new Link("http://localhost/address/" + relation.getLeftKey(), "address");
+        if(relation.getType().endsWith("person:address")) {
+            return new Link("http://localhost/address/" + relation.getLeftKey(), "address");
+        } else {
+            return new Link("http://localhost/telephone/" + relation.getLeftKey(), "telephone");
+        }
     }
 
     @Override

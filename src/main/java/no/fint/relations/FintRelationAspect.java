@@ -18,6 +18,7 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -83,7 +84,7 @@ public class FintRelationAspect implements ApplicationContextAware {
         if (attributes != null) {
             HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
             String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
-            return !(acceptHeader.startsWith("application/hal+json"));
+            return StringUtils.isEmpty(acceptHeader) && !(acceptHeader.startsWith("application/hal+json"));
         }
         return false;
     }
@@ -103,9 +104,9 @@ public class FintRelationAspect implements ApplicationContextAware {
             } catch (NoSuchMethodException e) {
                 log.info(e.getMessage());
             }
-            links.add(getSelfLink(metadata));
         }
 
+        links.add(getSelfLink(metadata));
         Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
