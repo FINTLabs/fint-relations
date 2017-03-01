@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
+import org.springframework.hateoas.Resources
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -17,7 +18,7 @@ class FintRelationsIntegrationSpec extends Specification {
     @Autowired
     private TestRestTemplate restTemplate
 
-    def "Call relations"() {
+    def "Multiple relations"() {
         when:
         def response = restTemplate.getForEntity('/relations/responseEntity', PersonResource)
         def personResource = response.getBody()
@@ -28,5 +29,16 @@ class FintRelationsIntegrationSpec extends Specification {
         personResource.getLink(Link.REL_SELF).href.endsWith('/relations/responseEntity')
         personResource.getLink('address').href == 'http://localhost/address/test123'
         personResource.getLink('telephone').href == 'http://localhost/telephone/test123'
+    }
+
+    def "Multiple relations on list of resources"() {
+        when:
+        def response = restTemplate.getForEntity('/relations/responseEntity/list', Resources)
+        def resources = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        resources.links.size() == 1
+        resources.content.size() == 2
     }
 }

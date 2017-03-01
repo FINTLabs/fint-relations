@@ -45,14 +45,23 @@ public class FintRelationAspect implements ApplicationContextAware {
     @Around("execution(* (@no.fint.relations.annotations.FintRelations *).*(..))")
     public Object fintRelationsEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object response = proceedingJoinPoint.proceed();
+        if (isNotHalAcceptHeader()) {
+            return response;
+        }
+
         Optional<ResponseEntity> responseEntity = getResponseEntity(response);
         if (!responseEntity.isPresent()) {
             return response;
         }
 
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
-        FintRelations fintRelations = metadata.getCallingClass().getAnnotation(FintRelations.class);
-        return createSingleResponse(responseEntity.get(), metadata, fintRelations.rels());
+        FintRelations relations = metadata.getCallingClass().getAnnotation(FintRelations.class);
+        Object body = responseEntity.get().getBody();
+        if (body instanceof Collection) {
+            return createCollectionResponse(responseEntity.get(), metadata, relations.rels());
+        } else {
+            return createSingleResponse(responseEntity.get(), metadata, relations.rels());
+        }
     }
 
 

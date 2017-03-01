@@ -1,5 +1,6 @@
 package no.fint.relations.integration.testutils.controller;
 
+import com.google.common.collect.Lists;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.annotations.FintRelations;
 import no.fint.relations.annotations.FintSelfId;
@@ -25,5 +26,10 @@ public class PersonRelationsController {
     @RequestMapping("/responseEntity")
     public ResponseEntity getResponseEntity() {
         return ResponseEntity.ok(new Person("test123"));
+    }
+
+    @RequestMapping("/responseEntity/list")
+    public ResponseEntity getResponseEntityList() {
+        return ResponseEntity.ok(Lists.newArrayList(new Person("test123"), new Person("test234")));
     }
 }
