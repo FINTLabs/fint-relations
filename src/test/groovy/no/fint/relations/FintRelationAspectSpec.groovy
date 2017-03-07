@@ -1,7 +1,8 @@
 package no.fint.relations
 
-import no.fint.relations.FintRelationAspect
+import no.fint.relations.annotations.FintRelation
 import no.fint.relations.integration.testutils.controller.PersonRelationController
+import no.fint.relations.relations.FintRelationHal
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
@@ -11,6 +12,7 @@ class FintRelationAspectSpec extends Specification {
     private PersonRelationController testController
     private MethodSignature methodSignature
     private ProceedingJoinPoint joinPoint
+    private FintRelationHal fintRelationHal
 
     void setup() {
         testController = new PersonRelationController()
@@ -20,7 +22,8 @@ class FintRelationAspectSpec extends Specification {
             getTarget() >> testController
             getArgs() >> new Object[0]
         }
-        aspect = new FintRelationAspect()
+        fintRelationHal = Mock(FintRelationHal)
+        aspect = new FintRelationAspect(fintRelHal: fintRelationHal)
     }
 
     def "Call aspect method"() {
@@ -29,6 +32,7 @@ class FintRelationAspectSpec extends Specification {
 
         then:
         1 * joinPoint.proceed() >> 'test'
+        1 * fintRelationHal.addRelations(_ as AspectMetadata, _ as FintRelation[], _ as Object) >> 'test'
         response == 'test'
     }
 
