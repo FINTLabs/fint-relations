@@ -44,30 +44,22 @@ public class FintRelationAspect implements ApplicationContextAware {
 
     @Around("execution(* (@no.fint.relations.annotations.FintRelations *).*(..))")
     public Object fintRelationsEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Object response = proceedingJoinPoint.proceed();
-        if (isNotHalAcceptHeader()) {
-            return response;
-        }
-
-        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
-        if (!responseEntity.isPresent()) {
-            return response;
-        }
-
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
         FintRelations relations = metadata.getCallingClass().getAnnotation(FintRelations.class);
-        Object body = responseEntity.get().getBody();
-        if (body instanceof Collection) {
-            return createCollectionResponse(responseEntity.get(), metadata, relations.rels());
-        } else {
-            return createSingleResponse(responseEntity.get(), metadata, relations.rels());
-        }
+        Object response = proceedingJoinPoint.proceed();
+        return execute(response, metadata, relations.value());
     }
 
 
     @Around("execution(* (@no.fint.relations.annotations.FintRelation *).*(..))")
     public Object fintRelationEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
+        FintRelation[] relations = metadata.getCallingClass().getAnnotationsByType(FintRelation.class);
         Object response = proceedingJoinPoint.proceed();
+        return execute(response, metadata, relations);
+    }
+
+    private Object execute(Object response, AspectMetadata metadata, FintRelation[] relations) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (isNotHalAcceptHeader()) {
             return response;
         }
@@ -76,9 +68,6 @@ public class FintRelationAspect implements ApplicationContextAware {
         if (!responseEntity.isPresent()) {
             return response;
         }
-
-        AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
-        FintRelation[] relations = metadata.getCallingClass().getAnnotationsByType(FintRelation.class);
 
         Object body = responseEntity.get().getBody();
         if (body instanceof Collection) {
