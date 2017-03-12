@@ -8,12 +8,12 @@ import no.fint.relations.FintResources;
 import no.fint.relations.annotations.FintRelation;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,6 +25,9 @@ public class FintRelationHal implements ApplicationContextAware {
 
     @Value("${relation-id-base:uri:https://api.felleskomponent.no/rel/}")
     private String relationBase;
+
+    @Autowired
+    private SpringHateoasIntegration springHateoasIntegration;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -45,6 +48,7 @@ public class FintRelationHal implements ApplicationContextAware {
                 return createSingleResponse(responseEntity.get(), metadata, relations);
             }
         } catch (IllegalArgumentException e) {
+            log.warn("Exception occurred when trying to add relations", e);
             return response;
         }
     }
@@ -53,6 +57,7 @@ public class FintRelationHal implements ApplicationContextAware {
         if (response instanceof ResponseEntity) {
             return Optional.of((ResponseEntity) response);
         }
+        log.warn("ResponseEntity return type not found, type: {}", response.getClass().getSimpleName());
         return Optional.empty();
     }
 
@@ -62,7 +67,7 @@ public class FintRelationHal implements ApplicationContextAware {
             addRelations(responseEntity.getBody(), metadata, relation).ifPresent(links::add);
         }
 
-        links.add(getSelfLink(metadata));
+        links.add(springHateoasIntegration.getSelfLink(metadata));
         Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
@@ -78,7 +83,7 @@ public class FintRelationHal implements ApplicationContextAware {
 
             try {
                 String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
-                Link selfLink = ControllerLinkBuilder.linkTo(metadata.getCallingClass()).slash(id).withSelfRel();
+                Link selfLink = springHateoasIntegration.getSelfLinkCollection(metadata, id);
                 links.add(selfLink);
                 Resource<?> resource = new Resource<>(value, links);
                 resources.add(resource);
@@ -87,7 +92,7 @@ public class FintRelationHal implements ApplicationContextAware {
             }
         }
 
-        FintResources embedded = new FintResources(values.size(), resources, getSelfLink(metadata));
+        FintResources embedded = new FintResources(values.size(), resources, springHateoasIntegration.getSelfLink(metadata));
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
 
@@ -117,10 +122,5 @@ public class FintRelationHal implements ApplicationContextAware {
         String leftKeyName = metadata.getSelfId().self().getSimpleName().toLowerCase();
         String rightKeyName = relation.objectLink().getSimpleName().toLowerCase();
         return String.format("%s%s:%s", relationBase, leftKeyName, rightKeyName);
-    }
-
-    private Link getSelfLink(AspectMetadata metadata) {
-        ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(metadata.getCallingClass(), metadata.getMethod(), metadata.getArguments());
-        return linkBuilder.withSelfRel();
     }
 }
