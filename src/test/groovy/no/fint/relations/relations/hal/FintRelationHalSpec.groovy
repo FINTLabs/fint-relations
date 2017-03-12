@@ -1,4 +1,4 @@
-package no.fint.relations.relations
+package no.fint.relations.relations.hal
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger

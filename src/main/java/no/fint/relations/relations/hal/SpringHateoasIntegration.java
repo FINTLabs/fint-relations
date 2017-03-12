@@ -1,4 +1,4 @@
-package no.fint.relations.relations;
+package no.fint.relations.relations.hal;
 
 import no.fint.relations.AspectMetadata;
 import org.springframework.hateoas.Link;

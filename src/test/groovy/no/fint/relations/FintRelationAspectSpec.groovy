@@ -2,7 +2,7 @@ package no.fint.relations
 
 import no.fint.relations.annotations.FintRelation
 import no.fint.relations.integration.testutils.controller.PersonRelationController
-import no.fint.relations.relations.FintRelationHal
+import no.fint.relations.relations.hal.FintRelationHal
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification

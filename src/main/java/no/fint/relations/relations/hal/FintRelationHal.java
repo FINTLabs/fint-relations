@@ -1,4 +1,4 @@
-package no.fint.relations.relations;
+package no.fint.relations.relations.hal;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relation.model.Relation;
