@@ -1,18 +1,20 @@
 package no.fint.relations.integration.testutils.mapper;
 
 import no.fint.relation.model.Relation;
-import no.fint.relations.FintLinkMapper;
+import no.fint.relations.annotations.FintLinkMapper;
+import no.fint.relations.annotations.FintLinkRelation;
+import no.fint.relations.integration.testutils.dto.Address;
+import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
+@FintLinkMapper
 @Component
-public class TestLinkMapper implements FintLinkMapper {
+public class TestLinkMapper {
 
-    @Override
-    public Optional<Link> createLink(Relation relation) {
-        return Optional.empty();
+    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Address.class, rightId = "street")
+    public Link createLink(Relation relation) {
+        return null;
     }
 
 }

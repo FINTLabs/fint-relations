@@ -130,4 +130,25 @@ class FintRelationIntegrationSpec extends Specification {
         body.contains('total_items')
     }
 
+    def "No links added when no matching link mapper is found"() {
+        when:
+        def response = restTemplate.getForEntity('/noMatchingLinkMappers', PersonResource)
+        def resourceDto = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        resourceDto.links.size() == 1
+        resourceDto.getLink(Link.REL_SELF).href == "http://localhost:${port}/noMatchingLinkMappers" as String
+    }
+
+    def "Return original response when invalid method on link mapper"() {
+        when:
+        def response = restTemplate.getForEntity('/invalidLinkMapper', PersonResource)
+        def resourceDto = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        resourceDto.links.size() == 0
+    }
+
 }

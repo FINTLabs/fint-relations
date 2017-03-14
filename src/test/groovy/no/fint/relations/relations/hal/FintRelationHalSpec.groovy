@@ -2,14 +2,14 @@ package no.fint.relations.relations.hal
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
-import no.fint.relation.model.Relation
 import no.fint.relations.AspectMetadata
-import no.fint.relations.FintLinkMapper
+import no.fint.relations.annotations.FintLinkMapper
 import no.fint.relations.annotations.FintRelation
 import no.fint.relations.annotations.FintSelfId
 import no.fint.relations.integration.testutils.controller.PersonRelationController
 import no.fint.relations.integration.testutils.dto.Address
 import no.fint.relations.integration.testutils.dto.Person
+import no.fint.relations.integration.testutils.mapper.AddressLinkMapper
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.hateoas.Link
@@ -96,11 +96,9 @@ class FintRelationHalSpec extends Specification {
         given:
         def relationAnnotation = Mock(FintRelation) {
             objectLink() >> Address
+            id() >> 'street'
         }
-
-        def linkMapper = Mock(FintLinkMapper) {
-            createLink(_ as Relation) >> Optional.of(new Link('http://localhost', 'address'))
-        }
+        def linkMapper = new AddressLinkMapper()
 
         def response = ResponseEntity.ok(new Person(name: 'test'))
         def relations = [relationAnnotation] as FintRelation[]
@@ -111,7 +109,7 @@ class FintRelationHalSpec extends Specification {
         def body = (Resource) responseEntity.getBody()
 
         then:
-        1 * applicationContext.getBeansOfType(FintLinkMapper) >> ['testLinkMapper': linkMapper]
+        1 * applicationContext.getBeansWithAnnotation(FintLinkMapper) >> ['testLinkMapper': linkMapper]
         responseEntity.statusCode == HttpStatus.OK
         body.links.size() == 2
     }
@@ -120,11 +118,9 @@ class FintRelationHalSpec extends Specification {
         given:
         def relationAnnotation = Mock(FintRelation) {
             objectLink() >> Address
+            id() >> 'street'
         }
-
-        def linkMapper = Mock(FintLinkMapper) {
-            createLink(_ as Relation) >> Optional.of(new Link('http://localhost', 'address'))
-        }
+        def linkMapper = new AddressLinkMapper()
 
         def response = ResponseEntity.ok([new Person(name: 'test')])
         def relations = [relationAnnotation] as FintRelation[]
@@ -135,7 +131,7 @@ class FintRelationHalSpec extends Specification {
         def body = (Resources) responseEntity.getBody()
 
         then:
-        1 * applicationContext.getBeansOfType(FintLinkMapper) >> ['testLinkMapper': linkMapper]
+        1 * applicationContext.getBeansWithAnnotation(FintLinkMapper) >> ['testLinkMapper': linkMapper]
         responseEntity.statusCode == HttpStatus.OK
         body.links.size() == 1
         body.links[0].rel == Link.REL_SELF

@@ -3,8 +3,9 @@ package no.fint.relations.relations.hal;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relation.model.Relation;
 import no.fint.relations.AspectMetadata;
-import no.fint.relations.FintLinkMapper;
 import no.fint.relations.FintResources;
+import no.fint.relations.annotations.FintLinkMapper;
+import no.fint.relations.annotations.FintLinkRelation;
 import no.fint.relations.annotations.FintRelation;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.BeansException;
@@ -12,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @Slf4j
@@ -101,25 +104,48 @@ public class FintRelationHal implements ApplicationContextAware {
 
     private List<Link> getLinks(Object body, AspectMetadata metadata, FintRelation relation) {
         List<Link> links = new ArrayList<>();
-        Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
-        if (beans.size() > 0) {
-            String relationId = getRelationId(metadata, relation);
-            Collection<FintLinkMapper> linkMappers = beans.values();
-            for (FintLinkMapper linkMapper : linkMappers) {
-                try {
-                    Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
-                    Relation rel = new Relation();
-                    rel.setType(relationBase + relationId);
-                    rel.setLeftKey((String) property);
+        Map<String, Object> beans = applicationContext.getBeansWithAnnotation(FintLinkMapper.class);
+        String relationId = getRelationId(metadata, relation);
+        Collection<?> linkMappers = beans.values();
+        for (Object linkMapper : linkMappers) {
 
-                    Optional<Link> link = linkMapper.createLink(rel);
-                    link.ifPresent(links::add);
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
+            Method[] methods = linkMapper.getClass().getMethods();
+            for (Method method : methods) {
+                FintLinkRelation fintLinkRelation = AnnotationUtils.getAnnotation(method, FintLinkRelation.class);
+                String linkRelationId = getRelationId(fintLinkRelation);
+                if (fintLinkRelation != null && relationId.equals(linkRelationId)) {
+                    validateLinkMapperMethod(method);
+
+                    Link link = getLink(body, metadata, relationId, linkMapper, method);
+                    if (link != null) {
+                        links.add(link);
+                    }
                 }
             }
         }
         return links;
+    }
+
+    private Link getLink(Object body, AspectMetadata metadata, String relationId, Object linkMapper, Method method) {
+        try {
+            Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
+            Relation rel = new Relation();
+            rel.setType(relationBase + relationId);
+            rel.setLeftKey((String) property);
+
+            return (Link) method.invoke(linkMapper, rel);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
+        }
+    }
+
+    private void validateLinkMapperMethod(Method method) {
+        int parameterCount = method.getParameterCount();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        Class<?> returnType = method.getReturnType();
+        if (parameterCount != 1 || parameterTypes[0] != Relation.class || returnType != Link.class) {
+            throw new IllegalArgumentException(String.format("The method %s needs to take a Relation object as input and return a Link", method.getName()));
+        }
     }
 
     private String getRelationId(AspectMetadata metadata, FintRelation relation) {
@@ -127,6 +153,18 @@ public class FintRelationHal implements ApplicationContextAware {
         String leftKeyProperty = metadata.getSelfId().id();
         String rightKeyClass = relation.objectLink().getSimpleName().toLowerCase();
         String rightKeyProperty = relation.id();
+        return String.format("%s.%s:%s.%s", leftKeyClass, leftKeyProperty, rightKeyClass, rightKeyProperty);
+    }
+
+    private String getRelationId(FintLinkRelation fintLinkRelation) {
+        if(fintLinkRelation == null) {
+            return null;
+        }
+
+        String leftKeyClass = fintLinkRelation.leftObject().getSimpleName().toLowerCase();
+        String leftKeyProperty = fintLinkRelation.leftId();
+        String rightKeyClass = fintLinkRelation.rightObject().getSimpleName().toLowerCase();
+        String rightKeyProperty = fintLinkRelation.rightId();
         return String.format("%s.%s:%s.%s", leftKeyClass, leftKeyProperty, rightKeyClass, rightKeyProperty);
     }
 }

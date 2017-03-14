@@ -1,21 +1,24 @@
 package no.fint.relations.integration.testutils.mapper;
 
 import no.fint.relation.model.Relation;
-import no.fint.relations.FintLinkMapper;
+import no.fint.relations.annotations.FintLinkMapper;
+import no.fint.relations.annotations.FintLinkRelation;
+import no.fint.relations.integration.testutils.dto.Person;
+import no.fint.relations.integration.testutils.dto.Telephone;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
+@FintLinkMapper
 @Component
-public class TelephoneLinkMapper implements FintLinkMapper {
+public class TelephoneLinkMapper {
 
-    @Override
-    public Optional<Link> createLink(Relation relation) {
-        if (relation.getType().endsWith("person.name:telephone.number")) {
-            return Optional.of(new Link("http://localhost/telephone/" + relation.getLeftKey(), "telephone"));
-        }
+    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Telephone.class, rightId = "mainNumber")
+    public Link createMainTelephonNumberLink(Relation relation) {
+        return new Link("http://localhost/telephone/" + relation.getLeftKey(), "mainTelephoneNumber");
+    }
 
-        return Optional.empty();
+    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Telephone.class, rightId = "secondaryNumber")
+    public Link createSecondaryTelephoneNumberLink(Relation relation) {
+        return new Link("http://localhost/telephone/" + relation.getLeftKey(), "secondaryTelephoneNumber");
     }
 }

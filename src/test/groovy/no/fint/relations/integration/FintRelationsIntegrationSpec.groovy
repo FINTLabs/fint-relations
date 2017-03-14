@@ -25,10 +25,11 @@ class FintRelationsIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        personResource.links.size() == 3
+        personResource.links.size() == 4
         personResource.getLink(Link.REL_SELF).href.endsWith('/relations/responseEntity')
         personResource.getLink('address').href == 'http://localhost/address/test123'
-        personResource.getLink('telephone').href == 'http://localhost/telephone/test123'
+        personResource.getLink('mainTelephoneNumber').href == 'http://localhost/telephone/test123'
+        personResource.getLink('secondaryTelephoneNumber').href == 'http://localhost/telephone/test123'
     }
 
     def "Multiple relations on list of resources"() {
