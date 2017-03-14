@@ -23,7 +23,7 @@ import java.util.*;
 public class FintRelationHal implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
-    @Value("${relation-id-base:uri:https://api.felleskomponent.no/rel/}")
+    @Value("${relation-id-base:https://api.felleskomponent.no/rel/}")
     private String relationBase;
 
     @Autowired
@@ -64,7 +64,7 @@ public class FintRelationHal implements ApplicationContextAware {
     private ResponseEntity createSingleResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
-            addRelations(responseEntity.getBody(), metadata, relation).ifPresent(links::add);
+            links.addAll(getLinks(responseEntity.getBody(), metadata, relation));
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
@@ -78,49 +78,55 @@ public class FintRelationHal implements ApplicationContextAware {
         for (Object value : values) {
             List<Link> links = new ArrayList<>();
             for (FintRelation relation : relations) {
-                addRelations(value, metadata, relation).ifPresent(links::add);
+                links.addAll(getLinks(value, metadata, relation));
             }
 
-            try {
-                String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
-                Link selfLink = springHateoasIntegration.getSelfLinkCollection(metadata, id);
-                links.add(selfLink);
-                Resource<?> resource = new Resource<>(value, links);
-                resources.add(resource);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
-            }
+            links.add(getSelfLinkCollection(metadata, value));
+            Resource<?> resource = new Resource<>(value, links);
+            resources.add(resource);
         }
 
         FintResources embedded = new FintResources(values.size(), resources, springHateoasIntegration.getSelfLink(metadata));
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
 
-    private Optional<Link> addRelations(Object body, AspectMetadata metadata, FintRelation relation) {
-        Optional<Link> link = Optional.empty();
-        String relationId = getRelationId(metadata, relation);
+    private Link getSelfLinkCollection(AspectMetadata metadata, Object value) {
+        try {
+            String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
+            return springHateoasIntegration.getSelfLinkCollection(metadata, id);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
+        }
+    }
+
+    private List<Link> getLinks(Object body, AspectMetadata metadata, FintRelation relation) {
+        List<Link> links = new ArrayList<>();
         Map<String, FintLinkMapper> beans = applicationContext.getBeansOfType(FintLinkMapper.class);
         if (beans.size() > 0) {
-            Collection<FintLinkMapper> values = beans.values();
-            Optional<FintLinkMapper> mapper = values.stream().filter(value -> value.type() == metadata.getSelfId().self()).findAny();
-            try {
-                Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
-                Relation rel = new Relation();
-                rel.setType(relationId);
-                rel.setLeftKey((String) property);
-                if (mapper.isPresent()) {
-                    link = Optional.ofNullable(mapper.get().createRelation(rel));
+            String relationId = getRelationId(metadata, relation);
+            Collection<FintLinkMapper> linkMappers = beans.values();
+            for (FintLinkMapper linkMapper : linkMappers) {
+                try {
+                    Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
+                    Relation rel = new Relation();
+                    rel.setType(relationBase + relationId);
+                    rel.setLeftKey((String) property);
+
+                    Optional<Link> link = linkMapper.createLink(rel);
+                    link.ifPresent(links::add);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
                 }
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
             }
         }
-        return link;
+        return links;
     }
 
     private String getRelationId(AspectMetadata metadata, FintRelation relation) {
-        String leftKeyName = metadata.getSelfId().self().getSimpleName().toLowerCase();
-        String rightKeyName = relation.objectLink().getSimpleName().toLowerCase();
-        return String.format("%s%s:%s", relationBase, leftKeyName, rightKeyName);
+        String leftKeyClass = metadata.getSelfId().self().getSimpleName().toLowerCase();
+        String leftKeyProperty = metadata.getSelfId().id();
+        String rightKeyClass = relation.objectLink().getSimpleName().toLowerCase();
+        String rightKeyProperty = relation.id();
+        return String.format("%s.%s:%s.%s", leftKeyClass, leftKeyProperty, rightKeyClass, rightKeyProperty);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @FintSelfId(self = Person.class, id = "name")
-@FintRelation(objectLink = Address.class, id = "streetr")
+@FintRelation(objectLink = Address.class, id = "street")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json"})
 public class PersonRelationController {

@@ -8,11 +8,13 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class TestLinkMapper implements FintLinkMapper {
+public class AddressLinkMapper implements FintLinkMapper {
 
     @Override
     public Optional<Link> createLink(Relation relation) {
+        if (relation.getType().endsWith("person.name:address.street")) {
+            return Optional.of(new Link("http://localhost/address/" + relation.getLeftKey(), "address"));
+        }
         return Optional.empty();
     }
-
 }

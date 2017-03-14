@@ -99,8 +99,7 @@ class FintRelationHalSpec extends Specification {
         }
 
         def linkMapper = Mock(FintLinkMapper) {
-            createRelation(_ as Relation) >> new Link('http://localhost', 'address')
-            type() >> Person
+            createLink(_ as Relation) >> Optional.of(new Link('http://localhost', 'address'))
         }
 
         def response = ResponseEntity.ok(new Person(name: 'test'))
@@ -124,8 +123,7 @@ class FintRelationHalSpec extends Specification {
         }
 
         def linkMapper = Mock(FintLinkMapper) {
-            createRelation(_ as Relation) >> new Link('http://localhost', 'address')
-            type() >> Person
+            createLink(_ as Relation) >> Optional.of(new Link('http://localhost', 'address'))
         }
 
         def response = ResponseEntity.ok([new Person(name: 'test')])

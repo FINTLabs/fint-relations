@@ -3,10 +3,10 @@ package no.fint.relations;
 import no.fint.relation.model.Relation;
 import org.springframework.hateoas.Link;
 
+import java.util.Optional;
+
 public interface FintLinkMapper {
 
-    Link createRelation(Relation relation);
-
-    Class<?> type();
+    Optional<Link> createLink(Relation relation);
 
 }
