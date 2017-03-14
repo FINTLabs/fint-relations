@@ -1,11 +1,12 @@
 package no.fint.relations.relations.hal;
 
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.relation.model.Relation;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.FintResources;
-import no.fint.relations.annotations.FintLinkMapper;
-import no.fint.relations.annotations.FintLinkRelation;
+import no.fint.relations.annotations.mapper.FintLinkMapper;
+import no.fint.relations.annotations.mapper.FintLinkRelation;
 import no.fint.relations.annotations.FintRelation;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.BeansException;
@@ -67,7 +68,7 @@ public class FintRelationHal implements ApplicationContextAware {
     private ResponseEntity createSingleResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
         List<Link> links = new ArrayList<>();
         for (FintRelation relation : relations) {
-            links.addAll(getLinks(responseEntity.getBody(), metadata, relation));
+            links.addAll(getRelationLinks(responseEntity.getBody(), metadata, relation));
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
@@ -81,7 +82,7 @@ public class FintRelationHal implements ApplicationContextAware {
         for (Object value : values) {
             List<Link> links = new ArrayList<>();
             for (FintRelation relation : relations) {
-                links.addAll(getLinks(value, metadata, relation));
+                links.addAll(getRelationLinks(value, metadata, relation));
             }
 
             links.add(getSelfLinkCollection(metadata, value));
@@ -102,13 +103,12 @@ public class FintRelationHal implements ApplicationContextAware {
         }
     }
 
-    private List<Link> getLinks(Object body, AspectMetadata metadata, FintRelation relation) {
+    private List<Link> getRelationLinks(Object body, AspectMetadata metadata, FintRelation relation) {
         List<Link> links = new ArrayList<>();
         Map<String, Object> beans = applicationContext.getBeansWithAnnotation(FintLinkMapper.class);
         String relationId = getRelationId(metadata, relation);
         Collection<?> linkMappers = beans.values();
         for (Object linkMapper : linkMappers) {
-
             Method[] methods = linkMapper.getClass().getMethods();
             for (Method method : methods) {
                 FintLinkRelation fintLinkRelation = AnnotationUtils.getAnnotation(method, FintLinkRelation.class);
@@ -116,9 +116,9 @@ public class FintRelationHal implements ApplicationContextAware {
                 if (fintLinkRelation != null && relationId.equals(linkRelationId)) {
                     validateLinkMapperMethod(method);
 
-                    Link link = getLink(body, metadata, relationId, linkMapper, method);
-                    if (link != null) {
-                        links.add(link);
+                    List<Link> linkMapperLinks = getLinks(body, metadata.getSelfId().id(), relationId, linkMapper, method);
+                    if (linkMapperLinks != null) {
+                        links.addAll(linkMapperLinks);
                     }
                 }
             }
@@ -126,16 +126,24 @@ public class FintRelationHal implements ApplicationContextAware {
         return links;
     }
 
-    private Link getLink(Object body, AspectMetadata metadata, String relationId, Object linkMapper, Method method) {
+    @SuppressWarnings("unchecked")
+    private List<Link> getLinks(Object body, String selfId, String relationId, Object linkMapper, Method method) {
         try {
-            Object property = PropertyUtils.getNestedProperty(body, metadata.getSelfId().id());
+            Object property = PropertyUtils.getNestedProperty(body, selfId);
             Relation rel = new Relation();
             rel.setType(relationBase + relationId);
             rel.setLeftKey((String) property);
 
-            return (Link) method.invoke(linkMapper, rel);
+            Object response = method.invoke(linkMapper, rel);
+            if (response instanceof List) {
+                return (List<Link>) response;
+            } else if (response instanceof Link) {
+                return Lists.newArrayList((Link) response);
+            } else {
+                return Collections.emptyList();
+            }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
+            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", selfId), e);
         }
     }
 
@@ -143,8 +151,8 @@ public class FintRelationHal implements ApplicationContextAware {
         int parameterCount = method.getParameterCount();
         Class<?>[] parameterTypes = method.getParameterTypes();
         Class<?> returnType = method.getReturnType();
-        if (parameterCount != 1 || parameterTypes[0] != Relation.class || returnType != Link.class) {
-            throw new IllegalArgumentException(String.format("The method %s needs to take a Relation object as input and return a Link", method.getName()));
+        if (parameterCount != 1 || parameterTypes[0] != Relation.class || (returnType != Link.class && returnType != List.class)) {
+            throw new IllegalArgumentException(String.format("The method %s needs to take a Relation object as input and return a Link or a list of Link objects", method.getName()));
         }
     }
 
@@ -157,7 +165,7 @@ public class FintRelationHal implements ApplicationContextAware {
     }
 
     private String getRelationId(FintLinkRelation fintLinkRelation) {
-        if(fintLinkRelation == null) {
+        if (fintLinkRelation == null) {
             return null;
         }
 

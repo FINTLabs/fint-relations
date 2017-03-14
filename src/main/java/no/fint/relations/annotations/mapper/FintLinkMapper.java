@@ -1,4 +1,4 @@
-package no.fint.relations.annotations;
+package no.fint.relations.annotations.mapper;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

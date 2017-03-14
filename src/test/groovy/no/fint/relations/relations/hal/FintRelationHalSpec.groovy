@@ -3,7 +3,7 @@ package no.fint.relations.relations.hal
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import no.fint.relations.AspectMetadata
-import no.fint.relations.annotations.FintLinkMapper
+import no.fint.relations.annotations.mapper.FintLinkMapper
 import no.fint.relations.annotations.FintRelation
 import no.fint.relations.annotations.FintSelfId
 import no.fint.relations.integration.testutils.controller.PersonRelationController
