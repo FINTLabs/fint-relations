@@ -7,4 +7,4 @@
 
 ## Installation
 
-`compile('no.fint:fint-relations:0.0.4')`
+`compile('no.fint:fint-relations:<version>')`
