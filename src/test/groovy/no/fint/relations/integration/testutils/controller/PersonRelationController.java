@@ -46,4 +46,8 @@ public class PersonRelationController {
         return new Person("test123");
     }
 
+    @RequestMapping("/nullValue")
+    public Person getNullValue() {
+        return new Person(null);
+    }
 }

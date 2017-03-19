@@ -9,14 +9,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.*;
 
 @Slf4j
-@Component
 public class FintMappers implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private Map<String, FintRelationObjectMethod> mapperMethods;

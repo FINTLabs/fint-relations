@@ -129,6 +129,7 @@ class FintRelationIntegrationSpec extends Specification {
         response.statusCode == HttpStatus.OK
         body.contains('_embedded')
         body.contains('_links')
+        body.contains('_entries')
         body.contains('total_items')
     }
 
@@ -164,6 +165,14 @@ class FintRelationIntegrationSpec extends Specification {
         then:
         response.statusCode == HttpStatus.OK
         response.getBody() != null
+    }
+
+    def "Skip null values in serialization"() {
+        when:
+        def response = restTemplate.getForEntity('/nullValue', String)
+
+        then:
+        !response.body.contains('name')
     }
 
 }
