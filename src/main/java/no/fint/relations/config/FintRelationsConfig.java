@@ -1,6 +1,7 @@
 package no.fint.relations.config;
 
 import no.fint.relations.FintRelationAspect;
+import no.fint.relations.relations.hal.FintMappers;
 import no.fint.relations.relations.hal.FintRelationHal;
 import no.fint.relations.relations.hal.HalResourceLinks;
 import no.fint.relations.relations.jsonld.FintRelationJsonLd;
@@ -14,6 +15,11 @@ public class FintRelationsConfig {
     @Bean
     public SpringHateoasIntegration springHateoasIntegration() {
         return new SpringHateoasIntegration();
+    }
+
+    @Bean
+    public FintMappers fintMappers() {
+        return new FintMappers();
     }
 
     @Bean
