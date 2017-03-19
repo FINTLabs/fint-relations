@@ -31,11 +31,11 @@ public class Application {
 }
 ```
 
-In the controller class add the relation mapping. Make sure the `@RequestMapping` method return `ResponseEntity`.
-The `@FintSelfId` is used to identify the main resource the controller is responsible for. For example in PersonController, this resource is Person.  
+In the controller class add the relation mapping. Make sure the `@RequestMapping` method return `ResponseEntity`. 
+The `@FintSelfId` is used to identify the main resource the controller is responsible for. For example in PersonController, this resource is Person. 
 The name in `@FintSelfId` is the property that is used to identify this resource. This can be a nested property.  
 
-`@FintRelation` is used to connect to other resources. For example the Person resource is connected to the Address resource.  
+`@FintRelation` is used to connect to other resources. For example the Person resource is connected to the Address resource. 
 These values are used to find the correct LinkMapper.
 
 ```
