@@ -5,6 +5,7 @@ import no.fint.relations.integration.testutils.controller.PersonRelationControll
 import no.fint.relations.relations.hal.FintRelationHal
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
+import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
 class FintRelationAspectSpec extends Specification {
@@ -31,9 +32,29 @@ class FintRelationAspectSpec extends Specification {
         def response = aspect.fintRelationEndpoint(joinPoint)
 
         then:
+        1 * joinPoint.proceed() >> ResponseEntity.ok('test')
+        1 * fintRelationHal.addRelations(_ as AspectMetadata, _ as FintRelation[], _ as ResponseEntity) >> ResponseEntity.ok('test')
+        ((ResponseEntity)response).body == 'test'
+    }
+
+    def "Return original single response if return value is not ResponseEntity"() {
+        when:
+        def response = aspect.fintRelationEndpoint(joinPoint)
+
+        then:
         1 * joinPoint.proceed() >> 'test'
-        1 * fintRelationHal.addRelations(_ as AspectMetadata, _ as FintRelation[], _ as Object) >> 'test'
         response == 'test'
     }
 
+    def "Return original collection response if return value is not ResponseEntity"() {
+        when:
+        def response = aspect.fintRelationsEndpoint(joinPoint)
+        def collectionResponse = (Collection)response
+
+        then:
+        1 * joinPoint.proceed() >> ['test1', 'test2']
+        collectionResponse.size() == 2
+        collectionResponse[0] == 'test1'
+        collectionResponse[1] == 'test2'
+    }
 }

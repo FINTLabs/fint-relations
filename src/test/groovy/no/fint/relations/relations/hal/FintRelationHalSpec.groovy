@@ -44,18 +44,6 @@ class FintRelationHalSpec extends Specification {
         fintRelationHal = new FintRelationHal(springHateoasIntegration: springHateoasIntegration, halResourceLinks: halResourceLinks)
     }
 
-    def "Return original response if class is not ResponseEntity"() {
-        given:
-        def response = 'test response'
-        def relations = [] as FintRelation[]
-
-        when:
-        def returnValue = fintRelationHal.addRelations(metadata, relations, response)
-
-        then:
-        returnValue == response
-    }
-
     def "Add self relation to single resource"() {
         given:
         def response = ResponseEntity.ok(new Person(name: 'test'))

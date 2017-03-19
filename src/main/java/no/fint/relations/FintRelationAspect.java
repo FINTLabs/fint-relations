@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Slf4j
 @Aspect
@@ -34,10 +36,15 @@ public class FintRelationAspect {
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
         FintRelations relations = metadata.getCallingClass().getAnnotation(FintRelations.class);
         Object response = proceedingJoinPoint.proceed();
+        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
+        if (!responseEntity.isPresent()) {
+            return response;
+        }
+
         if (hasJsonLdAcceptHeader()) {
-            return fintRelJsonLd.addRelations(metadata, relations.value(), response);
+            return fintRelJsonLd.addRelations(metadata, relations.value(), responseEntity.get());
         } else {
-            return fintRelHal.addRelations(metadata, relations.value(), response);
+            return fintRelHal.addRelations(metadata, relations.value(), responseEntity.get());
         }
     }
 
@@ -47,11 +54,24 @@ public class FintRelationAspect {
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
         FintRelation[] relations = metadata.getCallingClass().getAnnotationsByType(FintRelation.class);
         Object response = proceedingJoinPoint.proceed();
-        if (hasJsonLdAcceptHeader()) {
-            return fintRelJsonLd.addRelations(metadata, relations, response);
-        } else {
-            return fintRelHal.addRelations(metadata, relations, response);
+        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
+        if (!responseEntity.isPresent()) {
+            return response;
         }
+
+        if (hasJsonLdAcceptHeader()) {
+            return fintRelJsonLd.addRelations(metadata, relations, responseEntity.get());
+        } else {
+            return fintRelHal.addRelations(metadata, relations, responseEntity.get());
+        }
+    }
+
+    private Optional<ResponseEntity> getResponseEntity(Object response) {
+        if (response instanceof ResponseEntity) {
+            return Optional.of((ResponseEntity) response);
+        }
+        log.warn("ResponseEntity return type not found, type: {}", response.getClass().getSimpleName());
+        return Optional.empty();
     }
 
     private boolean hasJsonLdAcceptHeader() {

@@ -14,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 public class FintRelationHal {
@@ -25,31 +24,18 @@ public class FintRelationHal {
     @Autowired
     private HalResourceLinks halResourceLinks;
 
-    public Object addRelations(AspectMetadata metadata, FintRelation[] relations, Object response) {
-        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
-        if (!responseEntity.isPresent()) {
-            return response;
-        }
-
+    public ResponseEntity addRelations(AspectMetadata metadata, FintRelation[] relations, ResponseEntity responseEntity) {
         try {
-            Object body = responseEntity.get().getBody();
+            Object body = responseEntity.getBody();
             if (body instanceof Collection) {
-                return createCollectionResponse(responseEntity.get(), metadata, relations);
+                return createCollectionResponse(responseEntity, metadata, relations);
             } else {
-                return createSingleResponse(responseEntity.get(), metadata, relations);
+                return createSingleResponse(responseEntity, metadata, relations);
             }
         } catch (IllegalArgumentException e) {
             log.warn("Exception occurred when trying to add relations", e);
-            return response;
+            return responseEntity;
         }
-    }
-
-    private Optional<ResponseEntity> getResponseEntity(Object response) {
-        if (response instanceof ResponseEntity) {
-            return Optional.of((ResponseEntity) response);
-        }
-        log.warn("ResponseEntity return type not found, type: {}", response.getClass().getSimpleName());
-        return Optional.empty();
     }
 
     private ResponseEntity createSingleResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {

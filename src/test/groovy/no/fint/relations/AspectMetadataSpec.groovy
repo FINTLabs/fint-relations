@@ -41,5 +41,4 @@ class AspectMetadataSpec extends Specification {
         metadata.selfId.id() == 'name'
         metadata.arguments.length == 0
     }
-
 }

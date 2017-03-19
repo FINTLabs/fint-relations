@@ -2,6 +2,7 @@ package no.fint.relations.relations.jsonld
 
 import no.fint.relations.AspectMetadata
 import no.fint.relations.annotations.FintRelation
+import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
 class FintRelationJsonLdSpec extends Specification {
@@ -19,9 +20,9 @@ class FintRelationJsonLdSpec extends Specification {
         def relations = [] as FintRelation[]
 
         when:
-        def returnValue = fintRelationJsonLd.addRelations(metadata, relations, response)
+        def returnValue = fintRelationJsonLd.addRelations(metadata, relations, ResponseEntity.ok(response))
 
         then:
-        returnValue == response
+        returnValue.body == response
     }
 }
