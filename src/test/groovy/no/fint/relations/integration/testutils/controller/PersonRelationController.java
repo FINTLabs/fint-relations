@@ -13,7 +13,7 @@ import java.net.URI;
 @FintSelfId(self = Person.class, id = "name")
 @FintRelation(objectLink = Address.class, id = "street")
 @RestController
-@RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json"})
+@RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json", "application/ld+json"})
 public class PersonRelationController {
 
     @RequestMapping("/responseEntity")

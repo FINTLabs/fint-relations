@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.LinkDiscoverer
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -149,6 +151,19 @@ class FintRelationIntegrationSpec extends Specification {
         then:
         response.statusCode == HttpStatus.OK
         resourceDto.links.size() == 0
+    }
+
+    def "Return original response when using the application/ld+json accept header"() {
+        given:
+        def headers = new HttpHeaders()
+        headers.add(HttpHeaders.ACCEPT, 'application/ld+json')
+
+        when:
+        def response = restTemplate.exchange('/responseEntity', HttpMethod.GET, new HttpEntity<>(headers), Person)
+
+        then:
+        response.statusCode == HttpStatus.OK
+        response.getBody() != null
     }
 
 }
