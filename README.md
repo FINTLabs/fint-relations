@@ -32,8 +32,9 @@ public class Application {
 ```
 
 In the controller class add the relation mapping. Make sure the `@RequestMapping` method return `ResponseEntity`. 
-The `@FintSelfId` is used to identify the main resource the controller is responsible for. For example in PersonController, this resource is Person. 
-The name in `@FintSelfId` is the property that is used to identify this resource (can be a nested property), it will automatically generate the `_self` link. 
+The `@FintSelfId` is used to identify the main resource the controller is responsible for and it will automatically generate the `_self` link. 
+For example in PersonController, this resource is Person. 
+The name in `@FintSelfId` is the property that is used to identify this resource (can be a nested property). 
 
 `@FintRelation` is used to connect to other resources. For example the Person resource is connected to the Address resource. 
 These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
@@ -61,9 +62,13 @@ The method responsible for creating the `Link` (can be both a single link or a L
 @Component
 public class AddressLinkMapper {
 
+    @Autowired
+    private MyService myService;
+
     @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Address.class, rightId = "street")
     public Link createLink(Relation relation) {
-        return new Link("http://localhost/address/" + relation.getLeftKey(), "address");
+        String href = myService.getHref(relation);
+        return new Link(href, "address");
     }
 }
 
@@ -75,3 +80,10 @@ public class AddressLinkMapper {
 | Key | Description | Default value |
 |-----|-------------|---------------|
 | fint.relations.force-https | Force the use of HTTPS for the generated self links for both single resource and collection resources | true |
+
+
+## References
+
+- [Spring HATEOAS](http://docs.spring.io/spring-hateoas/docs/0.23.0.RELEASE/reference/html/)
+- [Implementing HAL hypermedia REST API using Spring HATEOAS](https://opencredo.com/hal-hypermedia-api-spring-hateoas/)
+- [The REST APIs and HATEOAS](https://developer.paypal.com/docs/api/hateoas-links/)
