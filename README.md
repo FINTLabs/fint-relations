@@ -33,10 +33,11 @@ public class Application {
 
 In the controller class add the relation mapping. Make sure the `@RequestMapping` method return `ResponseEntity`. 
 The `@FintSelfId` is used to identify the main resource the controller is responsible for. For example in PersonController, this resource is Person. 
-The name in `@FintSelfId` is the property that is used to identify this resource. This can be a nested property.  
+The name in `@FintSelfId` is the property that is used to identify this resource (can be a nested property), it will automatically generate the `_self` link. 
 
 `@FintRelation` is used to connect to other resources. For example the Person resource is connected to the Address resource. 
-These values are used to find the correct LinkMapper.
+These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
+
 
 ```
 @FintSelfId(self = Person.class, id = "name")
