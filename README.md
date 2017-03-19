@@ -7,7 +7,7 @@
 
 ## Installation
 
-```
+```groovy
 repositories {
     maven {
         url  "http://dl.bintray.com/fint/maven" 
@@ -21,7 +21,7 @@ compile('no.fint:fint-relations:<version>')
 
 Add `@EnableFintRelations` to the main Application class
 
-```
+```java
 @EnableFintRelations
 @SpringBootApplication
 public class Application {
@@ -40,7 +40,7 @@ The name in `@FintSelfId` is the property that is used to identify this resource
 These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
 
 
-```
+```java
 @FintSelfId(self = Person.class, id = "name")
 @FintRelation(objectLink = Address.class, id = "street")
 @RestController
@@ -57,7 +57,7 @@ public class PersonController {
 Create a `@Component` that has the annotation `@FintLinkMapper`. This component will be responsible to build the links that are populated in the response.
 The method responsible for creating the `Link` (can be both a single link or a List of links) is annotated with `@FintLinkRelation`.
 
-```
+```java
 @FintLinkMapper
 @Component
 public class AddressLinkMapper {
