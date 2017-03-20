@@ -31,14 +31,7 @@ public class Application {
 }
 ```
 
-In the controller class add the relation mapping. Make sure the `@RequestMapping` method return `ResponseEntity`. 
-The `@FintSelfId` is used to identify the main resource the controller is responsible for and it will automatically generate the `_self` link. 
-For example in PersonController, this resource is Person. 
-The name in `@FintSelfId` is the property that is used to identify this resource (can be a nested property). 
-
-`@FintRelation` is used to connect to other resources. For example the Person resource is connected to the Address resource. 
-These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
-
+In the controller class add the relation mapping.
 
 ```java
 @FintSelfId(self = Person.class, id = "name")
@@ -53,6 +46,14 @@ public class PersonController {
     }
 }
 ```
+
+Make sure the `@RequestMapping` method return `ResponseEntity`. 
+The `@FintSelfId` is used to identify the main resource the controller is responsible for and it will automatically generate the `_self` link. 
+For example in PersonController, this resource is Person. 
+The name in `@FintSelfId` is the property that is used to identify this resource (can be a nested property). 
+
+`@FintRelation` is used to connect to other resources. For example the Person resource is connected to the Address resource. 
+These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
 
 Create a `@Component` that has the annotation `@FintLinkMapper`. This component will be responsible to build the links that are populated in the response.
 The method responsible for creating the `Link` (can be both a single link or a List of links) is annotated with `@FintLinkRelation`.
