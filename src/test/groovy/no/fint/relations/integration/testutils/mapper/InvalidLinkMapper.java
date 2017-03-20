@@ -7,11 +7,11 @@ import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-@FintLinkMapper
+@FintLinkMapper(leftObject = Person.class, leftId = "name")
 @Component
 public class InvalidLinkMapper {
 
-    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Address.class, rightId = "street2")
+    @FintLinkRelation(rightObject = Address.class, rightId = "street2")
     public Link createLink(String invalidInput) {
         return null;
     }

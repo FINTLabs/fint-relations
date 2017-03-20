@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@FintLinkMapper
+@FintLinkMapper(leftObject = Person.class, leftId = "name")
 @Component
 public class TelephoneLinkMapper {
 
-    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Telephone.class, rightId = "mainNumber")
+    @FintLinkRelation(rightObject = Telephone.class, rightId = "mainNumber")
     public Link createMainTelephonNumberLink(Relation relation) {
         return new Link("http://localhost/telephone/" + relation.getLeftKey(), "mainTelephoneNumber");
     }
 
-    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Telephone.class, rightId = "secondaryNumber")
+    @FintLinkRelation(rightObject = Telephone.class, rightId = "secondaryNumber")
     public List<Link> createSecondaryTelephoneNumberLink(Relation relation) {
         return Lists.newArrayList(new Link("http://localhost/telephone/" + relation.getLeftKey(), "secondaryTelephoneNumber"));
     }

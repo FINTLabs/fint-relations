@@ -37,8 +37,9 @@ public class FintMappers implements ApplicationContextAware {
     private void addRelationObjects(Object linkMapper) {
         Method[] methods = linkMapper.getClass().getMethods();
         for (Method method : methods) {
+            FintLinkMapper fintLinkerMapper = linkMapper.getClass().getAnnotation(FintLinkMapper.class);
             FintLinkRelation fintLinkRelation = AnnotationUtils.getAnnotation(method, FintLinkRelation.class);
-            String relationId = getRelationId(fintLinkRelation);
+            String relationId = getRelationId(fintLinkerMapper, fintLinkRelation);
             if (relationId != null) {
                 validateLinkMapperMethod(method);
                 mapperMethods.put(relationId, new FintRelationObjectMethod(method, linkMapper));
@@ -63,13 +64,13 @@ public class FintMappers implements ApplicationContextAware {
         }
     }
 
-    private String getRelationId(FintLinkRelation fintLinkRelation) {
+    private String getRelationId(FintLinkMapper fintLinkMapper, FintLinkRelation fintLinkRelation) {
         if (fintLinkRelation == null) {
             return null;
         }
 
-        String leftKeyClass = fintLinkRelation.leftObject().getSimpleName().toLowerCase();
-        String leftKeyProperty = fintLinkRelation.leftId();
+        String leftKeyClass = fintLinkMapper.leftObject().getSimpleName().toLowerCase();
+        String leftKeyProperty = fintLinkMapper.leftId();
         String rightKeyClass = fintLinkRelation.rightObject().getSimpleName().toLowerCase();
         String rightKeyProperty = fintLinkRelation.rightId();
         return String.format("%s.%s:%s.%s", leftKeyClass, leftKeyProperty, rightKeyClass, rightKeyProperty);

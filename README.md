@@ -60,14 +60,14 @@ This component will be responsible to build the links that are populated in the 
 The method responsible for creating the `Link` (can be both a single link or a List of links) is annotated with `@FintLinkRelation`.
 
 ```java
-@FintLinkMapper
+@FintLinkMapper(leftObject = Person.class, leftId = "name")
 @Component
 public class AddressLinkMapper {
 
     @Autowired
     private MyService myService;
 
-    @FintLinkRelation(leftObject = Person.class, leftId = "name", rightObject = Address.class, rightId = "street")
+    @FintLinkRelation(rightObject = Address.class, rightId = "street")
     public Link createLink(Relation relation) {
         String href = myService.getHref(relation);
         return new Link(href, "address");

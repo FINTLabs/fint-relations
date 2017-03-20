@@ -8,10 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FintLinkRelation {
-    Class<?> leftObject();
-
-    String leftId();
-
     Class<?> rightObject();
 
     String rightId();
