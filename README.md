@@ -55,7 +55,7 @@ The name in `@FintSelfId` is the property that is used to identify this resource
 `@FintRelation` is used to connect to other resources. In the example above the Person is connected to the Address resource. 
 These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
 
-### 3. Create a `@Component` that has the annotation `@FintLinkMapper`.
+### 3. Create a `@Component` with the `@FintLinkMapper` annotation.
 This component will be responsible to build the links that are populated in the response.
 The method responsible for creating the `Link` (can be both a single link or a List of links) is annotated with `@FintLinkRelation`.
 
