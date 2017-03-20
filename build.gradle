@@ -10,7 +10,7 @@ apply plugin: 'jacoco'
 
 jar {
     baseName = 'fint-relations'
-    version = '0.0.5-SNAPSHOT'
+    version = '0.0.5'
 }
 
 sourceCompatibility = 1.8
