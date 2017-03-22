@@ -52,7 +52,13 @@ public class FintMappers implements ApplicationContextAware {
     }
 
     public Optional<FintRelationObjectMethod> getMethod(String relationId) {
-        return Optional.ofNullable(mapperMethods.get(relationId));
+        FintRelationObjectMethod objectMethod = mapperMethods.get(relationId);
+        if (objectMethod == null) {
+            log.warn("Unable to find relation for {}", relationId);
+            return Optional.empty();
+        } else {
+            return Optional.of(mapperMethods.get(relationId));
+        }
     }
 
     private void validateLinkMapperMethod(Method method) {

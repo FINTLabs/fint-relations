@@ -23,6 +23,11 @@ public class FintRelationsConfig {
     }
 
     @Bean
+    public FintRelationsProps fintRelationsProps() {
+        return new FintRelationsProps();
+    }
+
+    @Bean
     public SpringHateoasIntegration springHateoasIntegration() {
         return new SpringHateoasIntegration();
     }
