@@ -1,7 +1,7 @@
 package no.fint.relations.relations.hal;
 
 import com.google.common.collect.Lists;
-import no.fint.relation.model.Relation;
+import no.fint.model.relation.Relation;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.annotations.FintRelation;
 import no.fint.relations.config.FintRelationsProps;
@@ -43,7 +43,7 @@ public class HalResourceLinks {
             Object property = PropertyUtils.getNestedProperty(body, selfId);
             Relation rel = new Relation();
             rel.setType(props.getRelationBase() + relationId);
-            rel.setLeftKey((String) property);
+            rel.setMain((String)property);
 
             Object response = fintRelation.getMethod().invoke(fintRelation.getLinkMapper(), rel);
             if (response instanceof List) {

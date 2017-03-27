@@ -1,6 +1,6 @@
 package no.fint.relations.relations.hal
 
-import no.fint.relation.model.Relation
+import no.fint.model.relation.Relation
 import no.fint.relations.AspectMetadata
 import no.fint.relations.annotations.FintRelation
 import no.fint.relations.annotations.FintSelfId

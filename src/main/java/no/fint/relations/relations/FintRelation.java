@@ -22,4 +22,9 @@ public class FintRelation {
             throw new IllegalArgumentException(String.format("The relation is not valid: %s", relation));
         }
     }
+
+    public FintRelation(String namespace, Class<?> main, String mainClassId, Class<?> related, String relatedClassId) {
+        this.namespace = namespace;
+        this.mainClass = main.getSimpleName().toLowerCase();
+    }
 }
