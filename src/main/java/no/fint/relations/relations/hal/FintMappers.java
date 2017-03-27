@@ -2,6 +2,7 @@ package no.fint.relations.relations.hal;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.relation.Relation;
+import no.fint.model.relation.RelationType;
 import no.fint.relations.annotations.mapper.FintLinkMapper;
 import no.fint.relations.annotations.mapper.FintLinkRelation;
 import org.springframework.beans.BeansException;
@@ -37,12 +38,14 @@ public class FintMappers implements ApplicationContextAware {
     private void addRelationObjects(Object linkMapper) {
         Method[] methods = linkMapper.getClass().getMethods();
         for (Method method : methods) {
-            FintLinkMapper fintLinkerMapper = linkMapper.getClass().getAnnotation(FintLinkMapper.class);
+            FintLinkMapper fintLinkMapper = linkMapper.getClass().getAnnotation(FintLinkMapper.class);
             FintLinkRelation fintLinkRelation = AnnotationUtils.getAnnotation(method, FintLinkRelation.class);
-            String relationId = getRelationId(fintLinkerMapper, fintLinkRelation);
-            if (relationId != null) {
-                validateLinkMapperMethod(method);
-                mapperMethods.put(relationId, new FintRelationObjectMethod(method, linkMapper));
+            if (fintLinkMapper != null && fintLinkRelation != null) {
+                RelationType relationType = new RelationType(fintLinkMapper.value(), fintLinkRelation.value());
+                if (relationType.getType() != null) {
+                    validateLinkMapperMethod(method);
+                    mapperMethods.put(relationType.getType(), new FintRelationObjectMethod(method, linkMapper));
+                }
             }
         }
     }
@@ -68,18 +71,6 @@ public class FintMappers implements ApplicationContextAware {
         if (parameterCount != 1 || parameterTypes[0] != Relation.class || (returnType != Link.class && returnType != List.class)) {
             log.error("The method {} needs to take a Relation object as input and return a Link or a list of Link objects", method.getName());
         }
-    }
-
-    private String getRelationId(FintLinkMapper fintLinkMapper, FintLinkRelation fintLinkRelation) {
-        if (fintLinkRelation == null) {
-            return null;
-        }
-
-        String leftKeyClass = fintLinkMapper.leftObject().getSimpleName().toLowerCase();
-        String leftKeyProperty = fintLinkMapper.leftId();
-        String rightKeyClass = fintLinkRelation.rightObject().getSimpleName().toLowerCase();
-        String rightKeyProperty = fintLinkRelation.rightId();
-        return String.format("%s.%s:%s.%s", leftKeyClass, leftKeyProperty, rightKeyClass, rightKeyProperty);
     }
 
 }

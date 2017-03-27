@@ -3,10 +3,9 @@ package no.fint.relations.relations.hal
 import no.fint.model.relation.Relation
 import no.fint.relations.AspectMetadata
 import no.fint.relations.annotations.FintRelation
-import no.fint.relations.annotations.FintSelfId
+import no.fint.relations.annotations.FintSelf
 import no.fint.relations.config.FintRelationsProps
 import no.fint.relations.integration.testutils.controller.PersonRelationController
-import no.fint.relations.integration.testutils.dto.Address
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.integration.testutils.mapper.AddressLinkMapper
 import org.springframework.util.ReflectionUtils
@@ -24,13 +23,13 @@ class HalResourceLinksSpec extends Specification {
             getCallingClass() >> PersonRelationController
             getMethod() >> ReflectionUtils.findMethod(PersonRelationController, 'getResponseEntityNoInput')
             getArguments() >> new Object[0]
-            getSelfId() >> Mock(FintSelfId) {
+            getFintSelf() >> Mock(FintSelf) {
                 self() >> Person
                 id() >> 'name'
             }
         }
         fintRelation = Mock(FintRelation) {
-            objectLink() >> Address
+            value() >> 'REL_ID_ADDRESS'
         }
         fintMappers = Mock(FintMappers)
         fintRelationsProps = Mock(FintRelationsProps) {

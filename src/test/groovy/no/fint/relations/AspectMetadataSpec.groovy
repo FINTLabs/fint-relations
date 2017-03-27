@@ -37,8 +37,8 @@ class AspectMetadataSpec extends Specification {
 
         then:
         metadata.callingClass == PersonRelationController
-        metadata.selfId.self() == Person
-        metadata.selfId.id() == 'name'
+        metadata.fintSelf.self() == Person
+        metadata.fintSelf.id() == 'name'
         metadata.arguments.length == 0
     }
 }

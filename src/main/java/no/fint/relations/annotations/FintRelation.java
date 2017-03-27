@@ -6,7 +6,9 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FintRelation {
-    Class<?> objectLink();
+    String value();
 
-    String id();
+    String mainProperty() default "";
+
+    String relatedProperty() default "";
 }

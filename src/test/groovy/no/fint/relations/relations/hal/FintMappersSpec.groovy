@@ -1,6 +1,10 @@
 package no.fint.relations.relations.hal
 
+import no.fint.model.relation.RelationType
 import no.fint.relations.annotations.mapper.FintLinkMapper
+import no.fint.relations.integration.testutils.dto.Address
+import no.fint.relations.integration.testutils.dto.Person
+import no.fint.relations.integration.testutils.dto.Telephone
 import no.fint.relations.integration.testutils.mapper.AddressLinkMapper
 import no.fint.relations.integration.testutils.mapper.TelephoneLinkMapper
 import org.springframework.context.ApplicationContext
@@ -27,14 +31,14 @@ class FintMappersSpec extends Specification {
 
         then:
         mappers.size() == 3
-        mappers.containsKey('person.name:address.street')
-        mappers.containsKey('person.name:telephone.mainNumber')
-        mappers.containsKey('person.name:telephone.secondaryNumber')
+        mappers.containsKey(new RelationType.Builder().namespace('fint.no').relationName('address').main(Person, 'name').related(Address, 'street').buildTypeString())
+        mappers.containsKey(new RelationType.Builder().namespace('fint.no').relationName('mainNumber').main(Person, 'name').related(Telephone, 'mainNumber').buildTypeString())
+        mappers.containsKey(new RelationType.Builder().namespace('fint.no').relationName('secondaryNumber').main(Person, 'name').related(Telephone, 'secondaryNumber').buildTypeString())
     }
 
     def "Get method by relation id"() {
         when:
-        def method = fintRelationMappers.getMethod('person.name:address.street')
+        def method = fintRelationMappers.getMethod(new RelationType.Builder().namespace('fint.no').relationName('address').main(Person, 'name').related(Address, 'street').buildTypeString())
 
         then:
         method.isPresent()

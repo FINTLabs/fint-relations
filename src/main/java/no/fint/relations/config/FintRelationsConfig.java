@@ -3,6 +3,7 @@ package no.fint.relations.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.fint.relations.FintRelationAspect;
+import no.fint.relations.relations.hal.FintMappers;
 import no.fint.relations.relations.hal.*;
 import no.fint.relations.relations.jsonld.FintRelationJsonLd;
 import org.springframework.beans.factory.annotation.Autowired;

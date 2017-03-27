@@ -4,9 +4,8 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import no.fint.relations.AspectMetadata
 import no.fint.relations.annotations.FintRelation
-import no.fint.relations.annotations.FintSelfId
+import no.fint.relations.annotations.FintSelf
 import no.fint.relations.integration.testutils.controller.PersonRelationController
-import no.fint.relations.integration.testutils.dto.Address
 import no.fint.relations.integration.testutils.dto.Person
 import org.slf4j.LoggerFactory
 import org.springframework.hateoas.Link
@@ -31,7 +30,7 @@ class FintRelationHalSpec extends Specification {
             getCallingClass() >> PersonRelationController
             getMethod() >> ReflectionUtils.findMethod(PersonRelationController, 'getResponseEntityNoInput')
             getArguments() >> new Object[0]
-            getSelfId() >> Mock(FintSelfId) {
+            getFintSelf() >> Mock(FintSelf) {
                 self() >> Person
                 id() >> 'name'
             }
@@ -79,13 +78,8 @@ class FintRelationHalSpec extends Specification {
 
     def "Add self and relation to other resource for single resource response"() {
         given:
-        def relationAnnotation = Mock(FintRelation) {
-            objectLink() >> Address
-            id() >> 'street'
-        }
-
         def response = ResponseEntity.ok(new Person(name: 'test'))
-        def relations = [relationAnnotation] as FintRelation[]
+        def relations = [Mock(FintRelation)] as FintRelation[]
 
         when:
         def returnValue = fintRelationHal.addRelations(metadata, relations, response)
@@ -100,13 +94,8 @@ class FintRelationHalSpec extends Specification {
 
     def "Add self and relation to other resource for collection resource response"() {
         given:
-        def relationAnnotation = Mock(FintRelation) {
-            objectLink() >> Address
-            id() >> 'street'
-        }
-
         def response = ResponseEntity.ok([new Person(name: 'test')])
-        def relations = [relationAnnotation] as FintRelation[]
+        def relations = [Mock(FintRelation)] as FintRelation[]
 
         when:
         def returnValue = fintRelationHal.addRelations(metadata, relations, response)

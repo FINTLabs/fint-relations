@@ -2,19 +2,17 @@ package no.fint.relations.integration.testutils.controller;
 
 import com.google.common.collect.Lists;
 import no.fint.relations.annotations.FintRelation;
-import no.fint.relations.annotations.FintSelfId;
-import no.fint.relations.integration.testutils.dto.Address;
+import no.fint.relations.annotations.FintSelf;
 import no.fint.relations.integration.testutils.dto.Person;
-import no.fint.relations.integration.testutils.dto.Telephone;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@FintSelfId(self = Person.class, id = "name")
-@FintRelation(objectLink = Address.class, id = "street")
-@FintRelation(objectLink = Telephone.class, id = "mainNumber")
-@FintRelation(objectLink = Telephone.class, id = "secondaryNumber")
+@FintSelf(self = Person.class, id = "name")
+@FintRelation("REL_ID_ADDRESS")
+@FintRelation("REL_ID_MAINNUMBER")
+@FintRelation("REL_ID_SECONDARYNUMBER")
 @RestController
 @RequestMapping(value = "/relations", method = RequestMethod.GET, produces = {"application/hal+json"})
 public class PersonRelationsController {

@@ -13,7 +13,7 @@ import spock.lang.Specification
 
 @ContextConfiguration
 @SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FintRelationsIntegrationSpec extends Specification {
+class FintRelationConstantsIntegrationSpec extends Specification {
 
     @Autowired
     private TestRestTemplate restTemplate

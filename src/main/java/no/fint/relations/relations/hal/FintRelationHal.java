@@ -69,10 +69,10 @@ public class FintRelationHal {
 
     private Link getSelfLinkCollection(AspectMetadata metadata, Object value) {
         try {
-            String id = (String) PropertyUtils.getNestedProperty(value, metadata.getSelfId().id());
+            String id = (String) PropertyUtils.getNestedProperty(value, metadata.getFintSelf().id());
             return springHateoasIntegration.getSelfLinkCollection(metadata, id);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelfId was not found", metadata.getSelfId().id()), e);
+            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelf was not found", metadata.getFintSelf().id()), e);
         }
     }
 
