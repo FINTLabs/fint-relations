@@ -175,4 +175,16 @@ class FintRelationIntegrationSpec extends Specification {
         !response.body.contains('name')
     }
 
+    def "Add relations with different property name"() {
+        when:
+        def response = restTemplate.getForEntity('/differentProperty', PersonResource)
+        def resourceDto = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        resourceDto.links.size() == 2
+        resourceDto.hasLink(Link.REL_SELF)
+        resourceDto.hasLink('differentproperty')
+    }
+
 }

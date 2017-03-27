@@ -9,6 +9,4 @@ public @interface FintRelation {
     String value();
 
     String mainProperty() default "";
-
-    String relatedProperty() default "";
 }

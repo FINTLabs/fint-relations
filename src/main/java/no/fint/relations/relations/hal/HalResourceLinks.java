@@ -9,6 +9,7 @@ import no.fint.relations.config.FintRelationsProps;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ public class HalResourceLinks {
         if (relationId.isPresent()) {
             Optional<FintRelationObjectMethod> fintRelation = fintMappers.getMethod(relationId.get());
             if (fintRelation.isPresent()) {
-                List<Link> mapperLinks = getLinksFromMapper(body, metadata.getFintSelf().id(), relationId.get(), fintRelation.get());
+                String property = (StringUtils.isEmpty(relation.mainProperty())) ? metadata.getFintSelf().id() : relation.mainProperty();
+                List<Link> mapperLinks = getLinksFromMapper(body, property, relationId.get(), fintRelation.get());
                 if (mapperLinks != null) {
                     links.addAll(mapperLinks);
                 }
@@ -45,7 +47,7 @@ public class HalResourceLinks {
         try {
             Object property = PropertyUtils.getNestedProperty(body, selfId);
             Relation rel = new Relation();
-            rel.setType(props.getRelationBase() + relationId);
+            rel.setType(relationId);
             rel.setMain((String) property);
 
             Object response = fintRelation.getMethod().invoke(fintRelation.getLinkMapper(), rel);

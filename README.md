@@ -74,7 +74,14 @@ public class AddressLinkMapper {
         return new Link(href, "address");
     }
 }
+```
 
+If the mainId is not the same as the id specified in the relation type, it is possible to add this in `@FintLinkRelation`.
+```java
+@FintRelation(value = "REL_ID_MYADDRESS", mainProperty = "address.value")
+public Link createLink(Relation relation) {
+    ...
+}
 ```
 
 

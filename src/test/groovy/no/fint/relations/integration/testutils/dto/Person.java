@@ -12,6 +12,9 @@ public class Person {
     public static final String REL_ID_ADDRESS = new RelationType.Builder()
             .namespace("fint.no").relationName("address").main(Person.class, "name").related(Address.class, "street").buildTypeString();
 
+    public static final String REL_ID_DIFFERENTPROPERTY = new RelationType.Builder()
+            .namespace("fint.no").relationName("differentproperty").main(Person.class, "name").related(Address.class, "street").buildTypeString();
+
     public static final String REL_ID_INVALIDLINK = new RelationType.Builder()
             .namespace("fint.no").relationName("invalidLink").main(Person.class, "name").related(Address.class, "street").buildTypeString();
 
@@ -22,4 +25,9 @@ public class Person {
             .namespace("fint.no").relationName("secondaryNumber").main(Person.class, "name").related(Telephone.class, "secondaryNumber").buildTypeString();
 
     private String name;
+    private String name2;
+
+    public Person(String name) {
+        this.name = name;
+    }
 }
