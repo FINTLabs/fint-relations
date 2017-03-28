@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@FintSelf(self = Person.class, id = "name")
+@FintSelf(Person.class)
 @FintRelation("REL_ID_ADDRESS")
 @FintRelation("REL_ID_MAINNUMBER")
 @FintRelation("REL_ID_SECONDARYNUMBER")

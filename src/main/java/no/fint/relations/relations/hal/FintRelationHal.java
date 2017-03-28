@@ -1,16 +1,15 @@
 package no.fint.relations.relations.hal;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.relation.Identifiable;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.FintResources;
 import no.fint.relations.annotations.FintRelation;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -40,8 +39,12 @@ public class FintRelationHal {
 
     private ResponseEntity createSingleResponse(ResponseEntity responseEntity, AspectMetadata metadata, FintRelation... relations) {
         List<Link> links = new ArrayList<>();
-        for (FintRelation relation : relations) {
-            links.addAll(halResourceLinks.getLinks(responseEntity.getBody(), metadata, relation));
+        try {
+            for (FintRelation relation : relations) {
+                links.addAll(halResourceLinks.getLinks((Identifiable) responseEntity.getBody(), metadata, relation));
+            }
+        } catch (ClassCastException e) {
+            log.error("The response is not of type Identifiable, {}", e.getMessage());
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
@@ -54,11 +57,16 @@ public class FintRelationHal {
         List<Resource> resources = new ArrayList<>();
         for (Object value : values) {
             List<Link> links = new ArrayList<>();
-            for (FintRelation relation : relations) {
-                links.addAll(halResourceLinks.getLinks(value, metadata, relation));
+            try {
+                Identifiable identifiable = (Identifiable) value;
+                for (FintRelation relation : relations) {
+                    links.addAll(halResourceLinks.getLinks(identifiable, metadata, relation));
+                }
+                links.add(springHateoasIntegration.getSelfLinkCollection(metadata, identifiable.getId()));
+            } catch (ClassCastException e) {
+                log.error("The response is not of type Identifiable, {}", e.getMessage());
             }
 
-            links.add(getSelfLinkCollection(metadata, value));
             Resource<?> resource = new Resource<>(value, links);
             resources.add(resource);
         }
@@ -66,14 +74,4 @@ public class FintRelationHal {
         FintResources embedded = new FintResources(values.size(), resources, springHateoasIntegration.getSelfLink(metadata));
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
-
-    private Link getSelfLinkCollection(AspectMetadata metadata, Object value) {
-        try {
-            String id = (String) PropertyUtils.getNestedProperty(value, metadata.getFintSelf().id());
-            return springHateoasIntegration.getSelfLinkCollection(metadata, id);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelf was not found", metadata.getFintSelf().id()), e);
-        }
-    }
-
 }

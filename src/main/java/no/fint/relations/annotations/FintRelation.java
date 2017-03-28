@@ -7,6 +7,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FintRelation {
     String value();
-
-    String mainProperty() default "";
 }

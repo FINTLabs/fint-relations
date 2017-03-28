@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@FintSelf(self = Address.class, id = "street")
+@FintSelf(Address.class)
 @FintRelation("unkown-property")
 @RestController
 @RequestMapping(value = "/noMatchingLinkMappers", method = RequestMethod.GET)

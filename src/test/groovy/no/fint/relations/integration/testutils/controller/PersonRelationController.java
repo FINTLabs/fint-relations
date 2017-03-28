@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@FintSelf(self = Person.class, id = "name")
+@FintSelf(Person.class)
 @FintRelation("REL_ID_ADDRESS")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json", "application/ld+json"})

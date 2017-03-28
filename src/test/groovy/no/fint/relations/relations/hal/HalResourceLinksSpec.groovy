@@ -4,7 +4,6 @@ import no.fint.model.relation.Relation
 import no.fint.relations.AspectMetadata
 import no.fint.relations.annotations.FintRelation
 import no.fint.relations.annotations.FintSelf
-import no.fint.relations.config.FintRelationsProps
 import no.fint.relations.integration.testutils.controller.PersonRelationController
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.integration.testutils.mapper.AddressLinkMapper
@@ -16,7 +15,6 @@ class HalResourceLinksSpec extends Specification {
     private AspectMetadata metadata
     private FintRelation fintRelation
     private FintMappers fintMappers
-    private FintRelationsProps fintRelationsProps
 
     void setup() {
         metadata = Mock(AspectMetadata) {
@@ -24,18 +22,14 @@ class HalResourceLinksSpec extends Specification {
             getMethod() >> ReflectionUtils.findMethod(PersonRelationController, 'getResponseEntityNoInput')
             getArguments() >> new Object[0]
             getFintSelf() >> Mock(FintSelf) {
-                self() >> Person
-                id() >> 'name'
+                value() >> Person
             }
         }
         fintRelation = Mock(FintRelation) {
             value() >> 'REL_ID_ADDRESS'
         }
         fintMappers = Mock(FintMappers)
-        fintRelationsProps = Mock(FintRelationsProps) {
-            getRelationBase() >> 'http://localhost:8080/'
-        }
-        halResourceLinks = new HalResourceLinks(fintMappers: fintMappers, props: fintRelationsProps)
+        halResourceLinks = new HalResourceLinks(fintMappers: fintMappers)
     }
 
     def "Get links from LinkMapper"() {

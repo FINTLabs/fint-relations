@@ -10,7 +10,7 @@ apply plugin: 'jacoco'
 
 jar {
     baseName = 'fint-relations'
-    version = '0.0.9'
+    version = '0.0.10'
 }
 
 sourceCompatibility = 1.8
@@ -27,11 +27,10 @@ repositories {
 
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.2/dependencies.gradle'
 dependencies {
-    compile('no.fint:fint-relation-model:0.0.8')
+    compile('no.fint:fint-relation-model:0.0.10')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
     compile("org.projectlombok:lombok:${lombokVersion}")
-    compile('commons-beanutils:commons-beanutils:1.9.3')
 
     compile("org.springframework.boot:spring-boot-starter-hateoas:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")

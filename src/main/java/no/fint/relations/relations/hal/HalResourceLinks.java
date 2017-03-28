@@ -1,38 +1,31 @@
 package no.fint.relations.relations.hal;
 
 import com.google.common.collect.Lists;
+import no.fint.model.relation.Identifiable;
 import no.fint.model.relation.Relation;
 import no.fint.model.relation.RelationUtil;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.annotations.FintRelation;
-import no.fint.relations.config.FintRelationsProps;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class HalResourceLinks {
 
     @Autowired
-    private FintRelationsProps props;
-
-    @Autowired
     private FintMappers fintMappers;
 
-    public List<Link> getLinks(Object body, AspectMetadata metadata, FintRelation relation) {
+    private final Map<String, String> constants = new HashMap<>();
+
+    public List<Link> getLinks(Identifiable identifiable, AspectMetadata metadata, FintRelation relation) {
         List<Link> links = new ArrayList<>();
-        Optional<String> relationId = RelationUtil.getConstantValue(metadata.getFintSelf().self(), relation.value());
+        Optional<String> relationId = getConstantValue(metadata.getFintSelf().value(), relation.value());
         if (relationId.isPresent()) {
             Optional<FintRelationObjectMethod> fintRelation = fintMappers.getMethod(relationId.get());
             if (fintRelation.isPresent()) {
-                String property = (StringUtils.isEmpty(relation.mainProperty())) ? metadata.getFintSelf().id() : relation.mainProperty();
-                List<Link> mapperLinks = getLinksFromMapper(body, property, relationId.get(), fintRelation.get());
+                List<Link> mapperLinks = getLinksFromMapper(identifiable, identifiable.getId(), relationId.get(), fintRelation.get());
                 if (mapperLinks != null) {
                     links.addAll(mapperLinks);
                 }
@@ -42,13 +35,28 @@ public class HalResourceLinks {
         return links;
     }
 
+    private Optional<String> getConstantValue(Class<?> clazz, String constant) {
+        String id = String.format("%s.%s", clazz.getSimpleName(), constant);
+        String constantValue = constants.get(id);
+        if (constantValue == null) {
+            Optional<String> val = RelationUtil.getConstantValue(clazz, constant);
+            if (val.isPresent()) {
+                constants.put(id, val.get());
+                return val;
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        return Optional.of(constantValue);
+    }
+
     @SuppressWarnings("unchecked")
-    private List<Link> getLinksFromMapper(Object body, String selfId, String relationId, FintRelationObjectMethod fintRelation) {
+    private List<Link> getLinksFromMapper(Identifiable identifiable, String selfId, String relationId, FintRelationObjectMethod fintRelation) {
         try {
-            Object property = PropertyUtils.getNestedProperty(body, selfId);
             Relation rel = new Relation();
             rel.setType(relationId);
-            rel.setMain((String) property);
+            rel.setMain(identifiable.getId());
 
             Object response = fintRelation.getMethod().invoke(fintRelation.getLinkMapper(), rel);
             if (response instanceof List) {
@@ -58,8 +66,8 @@ public class HalResourceLinks {
             } else {
                 return Collections.emptyList();
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("The id (%s) in @FintSelf was not found", selfId), e);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalArgumentException(String.format("Exception when trying to call method on the @FintLinkMapper, id: %s", selfId), e);
         }
     }
 }

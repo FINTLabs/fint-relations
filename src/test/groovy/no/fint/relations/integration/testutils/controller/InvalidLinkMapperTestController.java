@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@FintSelf(self = Person.class, id = "name")
+@FintSelf(Person.class)
 @FintRelation("REL_ID_INVALIDLINK")
 @RestController
 @RequestMapping(value = "/invalidLinkMapper", method = RequestMethod.GET)

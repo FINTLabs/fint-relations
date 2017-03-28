@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@FintSelf(self = Person.class, id = "name")
-@FintRelation(value = "REL_ID_DIFFERENTPROPERTY", mainProperty = "name2")
+@FintSelf(Person.class)
+@FintRelation("REL_ID_DIFFERENTPROPERTY")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json", "application/ld+json"})
 public class DifferentPropertyNameController {
