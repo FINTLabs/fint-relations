@@ -26,9 +26,7 @@ public class HalResourceLinks {
             Optional<FintRelationObjectMethod> fintRelation = fintMappers.getMethod(relationId.get());
             if (fintRelation.isPresent()) {
                 List<Link> mapperLinks = getLinksFromMapper(identifiable, identifiable.getId(), relationId.get(), fintRelation.get());
-                if (mapperLinks != null) {
-                    links.addAll(mapperLinks);
-                }
+                links.addAll(mapperLinks);
             }
         }
 
