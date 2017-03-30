@@ -2,7 +2,6 @@ package no.fint.relations.relations.hal;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.relation.Relation;
-import no.fint.model.relation.RelationType;
 import no.fint.relations.annotations.mapper.FintLinkMapper;
 import no.fint.relations.annotations.mapper.FintLinkRelation;
 import org.springframework.beans.BeansException;

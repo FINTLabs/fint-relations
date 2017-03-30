@@ -1,6 +1,7 @@
 package no.fint.relations.relations.hal;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.model.relation.FintModel;
 import no.fint.model.relation.Identifiable;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.FintResources;
@@ -41,7 +42,7 @@ public class FintRelationHal {
         List<Link> links = new ArrayList<>();
         try {
             for (FintRelation relation : relations) {
-                links.addAll(halResourceLinks.getLinks((Identifiable) responseEntity.getBody(), metadata, relation));
+                links.addAll(halResourceLinks.getLinks((FintModel) responseEntity.getBody(), metadata, relation));
             }
         } catch (ClassCastException e) {
             log.error("The response is not of type Identifiable, {}", e.getMessage());
@@ -58,11 +59,11 @@ public class FintRelationHal {
         for (Object value : values) {
             List<Link> links = new ArrayList<>();
             try {
-                Identifiable identifiable = (Identifiable) value;
+                FintModel fintModel = (FintModel) value;
                 for (FintRelation relation : relations) {
-                    links.addAll(halResourceLinks.getLinks(identifiable, metadata, relation));
+                    links.addAll(halResourceLinks.getLinks(fintModel, metadata, relation));
                 }
-                links.add(springHateoasIntegration.getSelfLinkCollection(metadata, identifiable.getId()));
+                links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintModel.getId()));
             } catch (ClassCastException e) {
                 log.error("The response is not of type Identifiable, {}", e.getMessage());
             }
