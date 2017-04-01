@@ -1,39 +1,41 @@
 package no.fint.relations.integration.testutils.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.fint.model.relation.Identifiable;
-import no.fint.model.relation.RelationType;
+import no.fint.model.relation.FintModel;
+import no.fint.model.relation.Relation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class Person implements Identifiable {
-    public static final String REL_ID_ADDRESS = new RelationType.Builder()
-            .namespace("fint.no").relationName("address").main(Person.class, "name").related(Address.class, "street").buildTypeString();
-
-    public static final String REL_ID_DIFFERENTPROPERTY = new RelationType.Builder()
-            .namespace("fint.no").relationName("differentproperty").main(Person.class, "name").related(Address.class, "street").buildTypeString();
-
-    public static final String REL_ID_INVALIDLINK = new RelationType.Builder()
-            .namespace("fint.no").relationName("invalidLink").main(Person.class, "name").related(Address.class, "street").buildTypeString();
-
-    public static final String REL_ID_MAINNUMBER = new RelationType.Builder()
-            .namespace("fint.no").relationName("mainNumber").main(Person.class, "name").related(Telephone.class, "mainNumber").buildTypeString();
-
-    public static final String REL_ID_SECONDARYNUMBER = new RelationType.Builder()
-            .namespace("fint.no").relationName("secondaryNumber").main(Person.class, "name").related(Telephone.class, "secondaryNumber").buildTypeString();
+public class Person implements FintModel {
+    public enum Relasjonsnavn {
+        ADDRESS,
+        DIFFERENTPROPERTY,
+        INVALIDLINK,
+        MAINNUMBER,
+        SECONDARYNUMBER
+    }
 
     private String name;
     private String name2;
+    private List<Relation> relasjoner = new ArrayList<>();
 
     public Person(String name) {
         this.name = name;
     }
 
+    @JsonIgnore
     @Override
     public String getId() {
         return this.getName();
+    }
+
+    @Override
+    public void addRelasjon(Relation relation) {
+        this.relasjoner.add(relation);
     }
 }

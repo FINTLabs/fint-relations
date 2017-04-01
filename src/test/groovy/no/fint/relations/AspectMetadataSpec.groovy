@@ -9,19 +9,6 @@ import spock.lang.Specification
 
 class AspectMetadataSpec extends Specification {
 
-    def "Throw IllegalArgumentException when no @FintSelfId annotation is found on calling class"() {
-        given:
-        def proceedingJoinPoint = Mock(ProceedingJoinPoint) {
-            getTarget() >> new String()
-        }
-
-        when:
-        AspectMetadata.with(proceedingJoinPoint)
-
-        then:
-        thrown(IllegalArgumentException)
-    }
-
     def "Create AspectMetadata from ProceedingJoinPoint"() {
         given:
         def proceedingJoinPoint = Mock(ProceedingJoinPoint) {
@@ -37,7 +24,6 @@ class AspectMetadataSpec extends Specification {
 
         then:
         metadata.callingClass == PersonRelationController
-        metadata.fintSelf.value() == Person
         metadata.arguments.length == 0
     }
 }

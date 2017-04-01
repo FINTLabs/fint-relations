@@ -1,11 +1,10 @@
 package no.fint.relations.relations.jsonld
 
 import no.fint.relations.AspectMetadata
-import no.fint.relations.annotations.FintRelation
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
-class FintRelationJsonLdSpec extends Specification {
+class FintRelationsJsonLdSpec extends Specification {
     private FintRelationJsonLd fintRelationJsonLd
     private AspectMetadata metadata
 
@@ -17,10 +16,9 @@ class FintRelationJsonLdSpec extends Specification {
     def "Return original response"() {
         given:
         def response = 'test response'
-        def relations = [] as FintRelation[]
 
         when:
-        def returnValue = fintRelationJsonLd.addRelations(metadata, relations, ResponseEntity.ok(response))
+        def returnValue = fintRelationJsonLd.addRelations(metadata, ResponseEntity.ok(response))
 
         then:
         returnValue.body == response

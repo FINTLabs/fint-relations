@@ -1,8 +1,6 @@
 package no.fint.relations;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.relations.annotations.FintRelation;
-import no.fint.relations.annotations.FintRelations;
 import no.fint.relations.relations.hal.FintRelationHal;
 import no.fint.relations.relations.jsonld.FintRelationJsonLd;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -29,28 +27,9 @@ public class FintRelationAspect {
     @Autowired
     private FintRelationJsonLd fintRelJsonLd;
 
-    @Around("execution(* (@no.fint.relations.annotations.FintRelations *).*(..))")
-    public Object fintRelationsEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
-        FintRelations relations = metadata.getCallingClass().getAnnotation(FintRelations.class);
-        Object response = proceedingJoinPoint.proceed();
-        Optional<ResponseEntity> responseEntity = getResponseEntity(response);
-        if (!responseEntity.isPresent()) {
-            return response;
-        }
-
-        if (hasJsonLdAcceptHeader()) {
-            return fintRelJsonLd.addRelations(metadata, relations.value(), responseEntity.get());
-        } else {
-            return fintRelHal.addRelations(metadata, relations.value(), responseEntity.get());
-        }
-    }
-
-
-    @Around("execution(* (@no.fint.relations.annotations.FintRelation *).*(..))")
+    @Around("@annotation(no.fint.relations.annotations.FintRelations)")
     public Object fintRelationEndpoint(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         AspectMetadata metadata = AspectMetadata.with(proceedingJoinPoint);
-        FintRelation[] relations = metadata.getCallingClass().getAnnotationsByType(FintRelation.class);
         Object response = proceedingJoinPoint.proceed();
         Optional<ResponseEntity> responseEntity = getResponseEntity(response);
         if (!responseEntity.isPresent()) {
@@ -58,9 +37,9 @@ public class FintRelationAspect {
         }
 
         if (hasJsonLdAcceptHeader()) {
-            return fintRelJsonLd.addRelations(metadata, relations, responseEntity.get());
+            return fintRelJsonLd.addRelations(metadata, responseEntity.get());
         } else {
-            return fintRelHal.addRelations(metadata, relations, responseEntity.get());
+            return fintRelHal.addRelations(metadata, responseEntity.get());
         }
     }
 

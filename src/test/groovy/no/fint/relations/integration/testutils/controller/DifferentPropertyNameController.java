@@ -1,24 +1,26 @@
 package no.fint.relations.integration.testutils.controller;
 
 
-import no.fint.relations.annotations.FintRelation;
-import no.fint.relations.annotations.FintSelf;
+import no.fint.model.relation.Relation;
+import no.fint.relations.annotations.FintRelations;
+import no.fint.relations.integration.testutils.dto.Address;
 import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@FintSelf(Person.class)
-@FintRelation("REL_ID_DIFFERENTPROPERTY")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json", "application/ld+json"})
 public class DifferentPropertyNameController {
 
+    @FintRelations
     @RequestMapping("/differentProperty")
     public ResponseEntity getDifferentProperty() {
+        Relation relation = new Relation.Builder().with(Person.Relasjonsnavn.DIFFERENTPROPERTY).forType(Address.class).path("/test").value("123").build();
         Person person = new Person();
         person.setName2("name2");
+        person.addRelasjon(relation);
         return ResponseEntity.ok(person);
     }
 }
