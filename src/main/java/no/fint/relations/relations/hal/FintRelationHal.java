@@ -52,7 +52,7 @@ public class FintRelationHal {
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
-        Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
+        Resource<?> resource = new Resource<>(getResource(responseEntity.getBody()), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
@@ -71,7 +71,7 @@ public class FintRelationHal {
                 log.error("The response is not of type Identifiable, {}", e.getMessage());
             }
 
-            Resource<?> resource = new Resource<>(value, links);
+            Resource<?> resource = new Resource<>(getResource(value), links);
             resources.add(resource);
         }
 
@@ -86,5 +86,14 @@ public class FintRelationHal {
             String link = rel.getLink();
             return new Link(fintLinkMapper.getLink(link), rel.getRelationName());
         }).collect(Collectors.toList());
+    }
+
+
+    private Object getResource(Object body) {
+        if (body instanceof FintResource) {
+            return ((FintResource) body).getResource();
+        } else {
+            return body;
+        }
     }
 }

@@ -2,6 +2,7 @@ package no.fint.relations.relations.hal
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
+import no.fint.model.relation.FintResource
 import no.fint.model.relation.Relation
 import no.fint.relations.AspectMetadata
 import no.fint.relations.integration.testutils.controller.PersonRelationController
@@ -77,8 +78,7 @@ class FintRelationsHalSpec extends Specification {
         given:
         def relation = new Relation.Builder().with(Person.Relasjonsnavn.ADDRESS).link('http://localhost/pereson').build()
         def person = new Person(name: 'test')
-        person.addRelasjon(relation)
-        def response = ResponseEntity.ok(person)
+        def response = ResponseEntity.ok(FintResource.with(person).addRelasjon(relation))
 
         when:
         def returnValue = fintRelationHal.addRelations(metadata, response)
@@ -94,8 +94,7 @@ class FintRelationsHalSpec extends Specification {
         given:
         def relation = new Relation.Builder().with(Person.Relasjonsnavn.ADDRESS).link('http://localhost/pereson').build()
         def person = new Person(name: 'test')
-        person.addRelasjon(relation)
-        def response = ResponseEntity.ok([person])
+        def response = ResponseEntity.ok([FintResource.with(person).addRelasjon(relation)])
 
         when:
         def returnValue = fintRelationHal.addRelations(metadata, response)
