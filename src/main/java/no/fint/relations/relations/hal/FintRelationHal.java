@@ -1,7 +1,8 @@
 package no.fint.relations.relations.hal;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.relation.FintModel;
+import no.fint.model.relation.FintResource;
+import no.fint.model.relation.Relation;
 import no.fint.relations.AspectMetadata;
 import no.fint.relations.FintResources;
 import no.fint.relations.relations.FintLinkMapper;
@@ -42,16 +43,16 @@ public class FintRelationHal {
         List<Link> links = new ArrayList<>();
         try {
             Object response = responseEntity.getBody();
-            if (response instanceof FintModel) {
-                FintModel fintModel = (FintModel) response;
-                links.addAll(getLinks(fintModel));
+            if (response instanceof FintResource) {
+                FintResource fintResource = (FintResource) response;
+                links.addAll(getLinks(fintResource));
             }
         } catch (ClassCastException e) {
             log.error("The response is not of type Identifiable, {}", e.getMessage());
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
-        Resource<?> resource = new Resource<>(removeInternalRelations(responseEntity.getBody()), links);
+        Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
@@ -61,16 +62,16 @@ public class FintRelationHal {
         for (Object value : values) {
             List<Link> links = new ArrayList<>();
             try {
-                if (value instanceof FintModel) {
-                    FintModel fintModel = (FintModel) value;
-                    links.addAll(getLinks(fintModel));
-                    links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintModel.getId()));
+                if (value instanceof FintResource) {
+                    FintResource fintResource = (FintResource) value;
+                    links.addAll(getLinks(fintResource));
+                    links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintResource.getResource().getId()));
                 }
             } catch (ClassCastException e) {
                 log.error("The response is not of type Identifiable, {}", e.getMessage());
             }
 
-            Resource<?> resource = new Resource<>(removeInternalRelations(value), links);
+            Resource<?> resource = new Resource<>(value, links);
             resources.add(resource);
         }
 
@@ -78,21 +79,12 @@ public class FintRelationHal {
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
 
-
-    private List<Link> getLinks(FintModel fintModel) {
-        return fintModel.getRelasjoner().stream().map(rel -> {
+    @SuppressWarnings("unchecked")
+    private List<Link> getLinks(FintResource fintResource) {
+        List<Relation> relations = fintResource.getRelasjoner();
+        return relations.stream().map(rel -> {
             String link = rel.getLink();
             return new Link(fintLinkMapper.getLink(link), rel.getRelationName());
         }).collect(Collectors.toList());
-    }
-
-    private Object removeInternalRelations(Object response) {
-        if (response instanceof FintModel) {
-            FintModel fintModel = (FintModel) response;
-            fintModel.setRelasjoner(null);
-            return fintModel;
-        } else {
-            return response;
-        }
     }
 }

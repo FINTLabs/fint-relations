@@ -1,7 +1,7 @@
 package no.fint.relations.integration.testutils.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
+import no.fint.model.relation.FintResource;
 import no.fint.model.relation.Relation;
 import no.fint.relations.annotations.FintRelations;
 import no.fint.relations.integration.testutils.dto.Address;
@@ -26,9 +26,8 @@ public class PersonRelationController {
                 .build();
 
         Person person = new Person("test1");
-        person.addRelasjon(relation);
-
-        return ResponseEntity.ok(person);
+        FintResource<Person> fintResource = FintResource.with(person).addRelasjon(relation);
+        return ResponseEntity.ok(fintResource);
     }
 
     @FintRelations

@@ -1,6 +1,7 @@
 package no.fint.relations.integration.testutils.controller;
 
 
+import no.fint.model.relation.FintResource;
 import no.fint.model.relation.Relation;
 import no.fint.relations.annotations.FintRelations;
 import no.fint.relations.integration.testutils.dto.Address;
@@ -20,7 +21,8 @@ public class DifferentPropertyNameController {
         Relation relation = new Relation.Builder().with(Person.Relasjonsnavn.DIFFERENTPROPERTY).forType(Address.class).path("/test").value("123").build();
         Person person = new Person();
         person.setName2("name2");
-        person.addRelasjon(relation);
-        return ResponseEntity.ok(person);
+
+        FintResource<Person> fintResource = FintResource.with(person).addRelasjon(relation);
+        return ResponseEntity.ok(fintResource);
     }
 }
