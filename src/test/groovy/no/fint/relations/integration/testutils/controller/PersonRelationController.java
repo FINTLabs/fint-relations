@@ -1,5 +1,6 @@
 package no.fint.relations.integration.testutils.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
 import no.fint.model.relation.Relation;
 import no.fint.relations.annotations.FintRelations;

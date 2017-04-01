@@ -22,6 +22,7 @@ public class Person implements FintModel {
 
     private String name;
     private String name2;
+
     private List<Relation> relasjoner = new ArrayList<>();
 
     public Person(String name) {

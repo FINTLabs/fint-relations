@@ -43,14 +43,15 @@ public class FintRelationHal {
         try {
             Object response = responseEntity.getBody();
             if (response instanceof FintModel) {
-                links.addAll(getLinks((FintModel) response));
+                FintModel fintModel = (FintModel) response;
+                links.addAll(getLinks(fintModel));
             }
         } catch (ClassCastException e) {
             log.error("The response is not of type Identifiable, {}", e.getMessage());
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
-        Resource<?> resource = new Resource<>(responseEntity.getBody(), links);
+        Resource<?> resource = new Resource<>(removeInternalRelations(responseEntity.getBody()), links);
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
@@ -69,7 +70,7 @@ public class FintRelationHal {
                 log.error("The response is not of type Identifiable, {}", e.getMessage());
             }
 
-            Resource<?> resource = new Resource<>(value, links);
+            Resource<?> resource = new Resource<>(removeInternalRelations(value), links);
             resources.add(resource);
         }
 
@@ -77,10 +78,21 @@ public class FintRelationHal {
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(embedded);
     }
 
+
     private List<Link> getLinks(FintModel fintModel) {
         return fintModel.getRelasjoner().stream().map(rel -> {
             String link = rel.getLink();
             return new Link(fintLinkMapper.getLink(link), rel.getRelationName());
         }).collect(Collectors.toList());
+    }
+
+    private Object removeInternalRelations(Object response) {
+        if (response instanceof FintModel) {
+            FintModel fintModel = (FintModel) response;
+            fintModel.setRelasjoner(null);
+            return fintModel;
+        } else {
+            return response;
+        }
     }
 }

@@ -89,6 +89,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
+        !response.getBody().contains('relasjoner')
         selfLink.getRel() == Link.REL_SELF
         selfLink.getHref() == "http://localhost:${port}/responseEntity/test234" as String
     }
