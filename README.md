@@ -90,7 +90,8 @@ public Link createLink(Relation relation) {
 | Key | Description | Default value |
 |-----|-------------|---------------|
 | fint.relations.force-https | Force the use of HTTPS for the generated self links for both single resource and collection resources | true |
-| fint.relations.default-base-url | The base URL used if no other value is found | https://api.felleskomponent.no/ |
+| fint.relations.default-base-url | The base URL used if no other value is found | https://api.felleskomponent.no |
+| fint.relations.test-base-url | The base URL used if the 'test' profile is enabled. This link can contain the port 'http://localhost:8080' or not 'http://localhost'. If no port is specified the 'local.server.port' is used. | http://localhost |
 
 
 ## References
