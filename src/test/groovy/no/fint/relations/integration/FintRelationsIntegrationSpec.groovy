@@ -4,7 +4,7 @@ import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.integration.testutils.dto.PersonResource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
@@ -13,14 +13,15 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
 @ContextConfiguration
-@SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FintRelationIntegrationSpec extends Specification {
-
-    @Value('${local.server.port}')
+@ActiveProfiles('test')
+@SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = ['server.port=8989'])
+class FintRelationsIntegrationSpec extends Specification {
+    @LocalServerPort
     private int port
 
     @Autowired
@@ -36,7 +37,7 @@ class FintRelationIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink('address').href == 'http://localhost/address/test1'
+        resourceDto.getLink('address').href == "http://localhost:${port}/address/test1" as String
     }
 
     def "Return custom DTO content"() {
@@ -109,17 +110,6 @@ class FintRelationIntegrationSpec extends Specification {
         response.headers.get(HttpHeaders.LOCATION)[0] == '/responseEntity/test123'
     }
 
-    def "Do not add links when @FintSelfId is not present"() {
-        when:
-        def response = restTemplate.getForEntity('/noLinks/responseEntity', PersonResource)
-        def resourceDto = response.getBody()
-
-        then:
-        response.statusCode == HttpStatus.OK
-        resourceDto.name == 'test123'
-        resourceDto.links.size() == 0
-    }
-
     def "Add relations to list content"() {
         when:
         def response = restTemplate.getForEntity('/responseEntity/list', String)
@@ -135,18 +125,7 @@ class FintRelationIntegrationSpec extends Specification {
 
     def "No links added when no matching link mapper is found"() {
         when:
-        def response = restTemplate.getForEntity('/noMatchingLinkMappers', PersonResource)
-        def resourceDto = response.getBody()
-
-        then:
-        response.statusCode == HttpStatus.OK
-        resourceDto.links.size() == 1
-        resourceDto.getLink(Link.REL_SELF).href == "http://localhost:${port}/noMatchingLinkMappers" as String
-    }
-
-    def "Return original response when invalid method on link mapper"() {
-        when:
-        def response = restTemplate.getForEntity('/invalidLinkMapper', PersonResource)
+        def response = restTemplate.getForEntity('/noLinkMappers', PersonResource)
         def resourceDto = response.getBody()
 
         then:

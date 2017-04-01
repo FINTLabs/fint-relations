@@ -90,7 +90,7 @@ public Link createLink(Relation relation) {
 | Key | Description | Default value |
 |-----|-------------|---------------|
 | fint.relations.force-https | Force the use of HTTPS for the generated self links for both single resource and collection resources | true |
-| fint.relations.relation-id-base | The base of the relation id, use to build the type value in the Relation object | https://dokumentasjon.felleskomponent.no/relasjoner/ |
+| fint.relations.default-base-url | The base URL used if no other value is found | https://api.felleskomponent.no/ |
 
 
 ## References

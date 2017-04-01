@@ -15,7 +15,7 @@ import spock.lang.Specification
 
 @ContextConfiguration
 @SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "fint.relations.force-https=true")
-class FintRelationHttpsIntegrationSpec extends Specification {
+class FintRelationsHttpsIntegrationSpec extends Specification {
 
     @Value('${local.server.port}')
     private int port

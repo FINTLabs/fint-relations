@@ -1,3 +1,7 @@
 fint:
  relations:
   force-https: false
+
+local:
+ server:
+  port: 8989

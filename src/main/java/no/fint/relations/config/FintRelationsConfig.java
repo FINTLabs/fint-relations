@@ -3,8 +3,10 @@ package no.fint.relations.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.fint.relations.FintRelationAspect;
-import no.fint.relations.relations.hal.FintMappers;
-import no.fint.relations.relations.hal.*;
+import no.fint.relations.relations.FintLinkMapper;
+import no.fint.relations.relations.hal.FintRelProvider;
+import no.fint.relations.relations.hal.FintRelationHal;
+import no.fint.relations.relations.hal.SpringHateoasIntegration;
 import no.fint.relations.relations.jsonld.FintRelationJsonLd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,11 @@ public class FintRelationsConfig {
     }
 
     @Bean
+    public FintLinkMapper fintLinkMapper() {
+        return new FintLinkMapper();
+    }
+
+    @Bean
     public SpringHateoasIntegration springHateoasIntegration() {
         return new SpringHateoasIntegration();
     }
@@ -36,16 +43,6 @@ public class FintRelationsConfig {
     @Bean
     public FintRelProvider fintRelProvider() {
         return new FintRelProvider();
-    }
-
-    @Bean
-    public FintMappers fintMappers() {
-        return new FintMappers();
-    }
-
-    @Bean
-    public HalResourceLinks fintResourceLinks() {
-        return new HalResourceLinks();
     }
 
     @Bean
