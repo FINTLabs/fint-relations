@@ -41,14 +41,10 @@ public class FintRelationHal {
 
     private ResponseEntity createSingleResponse(ResponseEntity responseEntity, AspectMetadata metadata) {
         List<Link> links = new ArrayList<>();
-        try {
-            Object response = responseEntity.getBody();
-            if (response instanceof FintResource) {
-                FintResource fintResource = (FintResource) response;
-                links.addAll(getLinks(fintResource));
-            }
-        } catch (ClassCastException e) {
-            log.error("The response is not of type Identifiable, {}", e.getMessage());
+        Object response = responseEntity.getBody();
+        if (response instanceof FintResource) {
+            FintResource fintResource = (FintResource) response;
+            links.addAll(getLinks(fintResource));
         }
 
         links.add(springHateoasIntegration.getSelfLink(metadata));
@@ -61,14 +57,10 @@ public class FintRelationHal {
         List<Resource> resources = new ArrayList<>();
         for (Object value : values) {
             List<Link> links = new ArrayList<>();
-            try {
-                if (value instanceof FintResource) {
-                    FintResource fintResource = (FintResource) value;
-                    links.addAll(getLinks(fintResource));
-                    links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintResource.getId()));
-                }
-            } catch (ClassCastException e) {
-                log.error("The response is not of type Identifiable, {}", e.getMessage());
+            if (value instanceof FintResource) {
+                FintResource fintResource = (FintResource) value;
+                links.addAll(getLinks(fintResource));
+                links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintResource.getId()));
             }
 
             Resource<?> resource = new Resource<>(getResource(value), links);
