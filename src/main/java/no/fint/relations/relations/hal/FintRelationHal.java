@@ -26,16 +26,11 @@ public class FintRelationHal {
     private FintLinkMapper fintLinkMapper;
 
     public ResponseEntity addRelations(AspectMetadata metadata, ResponseEntity responseEntity) {
-        try {
-            Object body = responseEntity.getBody();
-            if (body instanceof Collection) {
-                return createCollectionResponse(responseEntity, metadata);
-            } else {
-                return createSingleResponse(responseEntity, metadata);
-            }
-        } catch (IllegalArgumentException e) {
-            log.warn("Exception occurred when trying to add relations", e);
-            return responseEntity;
+        Object body = responseEntity.getBody();
+        if (body instanceof Collection) {
+            return createCollectionResponse(responseEntity, metadata);
+        } else {
+            return createSingleResponse(responseEntity, metadata);
         }
     }
 
