@@ -2,7 +2,6 @@ package no.fint.relations.relations
 
 import no.fint.relations.annotations.FintSelf
 import no.fint.relations.integration.testutils.fintself.InvalidPropertyFintSelf
-import no.fint.relations.integration.testutils.fintself.InvalidPropertyImplFintSelf
 import no.fint.relations.integration.testutils.fintself.NotIdentifiableFintSelf
 import no.fint.relations.integration.testutils.fintself.ValidFintSelf
 import org.springframework.context.ApplicationContext
@@ -41,15 +40,6 @@ class FintRelationsVerifierSpec extends Specification {
 
         then:
         1 * applicationContext.getBeansWithAnnotation(FintSelf) >> ['test': new NotIdentifiableFintSelf()]
-        thrown(IllegalArgumentException)
-    }
-
-    def "Throw exception when the Identifiable implementation is wrong"() {
-        when:
-        verifier.init()
-
-        then:
-        1 * applicationContext.getBeansWithAnnotation(FintSelf) >> ['test': new InvalidPropertyImplFintSelf()]
         thrown(IllegalArgumentException)
     }
 }
