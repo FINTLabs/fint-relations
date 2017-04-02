@@ -47,9 +47,6 @@ public class FintRelationsVerifier implements ApplicationContextAware {
             if (!(value instanceof Identifiable)) {
                 throw new IllegalArgumentException(String.format("The type %s must implement Identifiable", type.getSimpleName()));
             }
-
-            Identifiable identifiable = (Identifiable) value;
-            identifiable.getId();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException(String.format("Verification of type %s failed", type.getSimpleName()), e);
         }
