@@ -53,7 +53,7 @@ public class FintRelationsVerifier implements ApplicationContextAware {
 
             PropertyUtils.setProperty(value, property, "test");
             Identifiable identifiable = (Identifiable) value;
-            if (!identifiable.getId().equals("test")) {
+            if (!"test".equals(identifiable.getId())) {
                 throw new IllegalArgumentException(String.format("Unable to set and get Identifiable value for type %s", type.getSimpleName()));
             }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
