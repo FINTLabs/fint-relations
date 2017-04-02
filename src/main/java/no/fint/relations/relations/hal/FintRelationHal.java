@@ -65,7 +65,7 @@ public class FintRelationHal {
                 if (value instanceof FintResource) {
                     FintResource fintResource = (FintResource) value;
                     links.addAll(getLinks(fintResource));
-                    links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintResource.getResource().getId()));
+                    links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintResource.getId()));
                 }
             } catch (ClassCastException e) {
                 log.error("The response is not of type Identifiable, {}", e.getMessage());
