@@ -1,16 +1,19 @@
 package no.fint.relations.integration.testutils.controller;
 
-import com.google.common.collect.Lists;
 import no.fint.model.relation.FintResource;
 import no.fint.model.relation.Relation;
 import no.fint.relations.annotations.FintRelations;
+import no.fint.relations.annotations.FintSelf;
 import no.fint.relations.integration.testutils.dto.Address;
 import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+@FintSelf(type = Person.class, property = "name")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json", "application/ld+json"})
 public class PersonRelationController {
@@ -51,7 +54,13 @@ public class PersonRelationController {
     @FintRelations
     @RequestMapping(value = "/responseEntity/list")
     public ResponseEntity getResponseEntityWithList() {
-        return ResponseEntity.ok(Lists.newArrayList(new Person("test1"), new Person("test2")));
+        FintResource<Person> person1 = new FintResource<>(Person.class, new Person("test1"));
+        FintResource<Person> person2 = new FintResource<>(Person.class, new Person("test2"));
+        List<FintResource<Person>> personer = new ArrayList<>();
+        personer.add(person1);
+        personer.add(person2);
+
+        return ResponseEntity.ok(personer);
     }
 
     @FintRelations

@@ -1,5 +1,6 @@
 package no.fint.relations.integration
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.integration.testutils.dto.PersonResource
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.LinkDiscoverer
+import org.springframework.hateoas.Resources
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -29,6 +31,9 @@ class FintRelationsIntegrationSpec extends Specification {
 
     @Autowired
     private LinkDiscoverer linkDiscoverer
+
+    @Autowired
+    private ObjectMapper objectMapper
 
     def "Add link to address in person response"() {
         when:
@@ -122,6 +127,16 @@ class FintRelationsIntegrationSpec extends Specification {
         body.contains('_links')
         body.contains('_entries')
         body.contains('total_items')
+    }
+
+    def "Add self rel to all relations in list content"() {
+        when:
+        def response = restTemplate.getForEntity('/responseEntity/list', Resources)
+        def person = objectMapper.convertValue(response.getBody().content[0], PersonResource)
+
+        then:
+        response.statusCode == HttpStatus.OK
+        person.getLink(Link.REL_SELF).href == "http://localhost:${port}/name/test1" as String
     }
 
     def "No links added when no matching link mapper is found"() {

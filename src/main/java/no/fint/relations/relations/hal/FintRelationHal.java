@@ -91,7 +91,7 @@ public class FintRelationHal {
 
     private Object getResource(Object body) {
         if (body instanceof FintResource) {
-            return ((FintResource) body).getResource();
+            return ((FintResource) body).getConvertedResource();
         } else {
             return body;
         }

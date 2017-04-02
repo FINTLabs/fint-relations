@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.fint.relations.FintRelationAspect;
 import no.fint.relations.relations.FintLinkMapper;
+import no.fint.relations.relations.FintRelationsVerifier;
 import no.fint.relations.relations.hal.FintRelProvider;
 import no.fint.relations.relations.hal.FintRelationHal;
 import no.fint.relations.relations.hal.SpringHateoasIntegration;
@@ -28,6 +29,11 @@ public class FintRelationsConfig {
     @Bean
     public FintRelationsProps fintRelationsProps() {
         return new FintRelationsProps();
+    }
+
+    @Bean
+    public FintRelationsVerifier fintRelationsVerifier() {
+        return new FintRelationsVerifier();
     }
 
     @Bean

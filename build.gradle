@@ -27,10 +27,12 @@ repositories {
 
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.2/dependencies.gradle'
 dependencies {
-    compile('no.fint:fint-relation-model:0.0.19')
+    compile('no.fint:fint-relation-model:0.0.20-SNAPSHOT')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
     compile("org.projectlombok:lombok:${lombokVersion}")
+    compile('commons-beanutils:commons-beanutils:1.9.3')
+
 
     compile("org.springframework.boot:spring-boot-starter-hateoas:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")

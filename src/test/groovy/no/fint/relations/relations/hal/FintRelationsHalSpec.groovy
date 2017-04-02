@@ -92,7 +92,7 @@ class FintRelationsHalSpec extends Specification {
 
     def "Add self and relation to other resource for collection resource response"() {
         given:
-        def relation = new Relation.Builder().with(Person.Relasjonsnavn.ADDRESS).link('http://localhost/pereson').build()
+        def relation = new Relation.Builder().with(Person.Relasjonsnavn.ADDRESS).link('http://localhost/person').build()
         def person = new Person(name: 'test')
         def response = ResponseEntity.ok([FintResource.with(person).addRelasjon(relation)])
 

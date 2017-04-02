@@ -1,6 +1,7 @@
 package no.fint.relations;
 
 import lombok.Data;
+import no.fint.relations.annotations.FintSelf;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -11,9 +12,12 @@ public class AspectMetadata {
     private Class<?> callingClass;
     private Method method;
     private Object[] arguments;
+    private FintSelf fintSelf;
 
     private AspectMetadata(ProceedingJoinPoint joinPoint) {
         callingClass = joinPoint.getTarget().getClass();
+        fintSelf = callingClass.getAnnotation(FintSelf.class);
+
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         method = methodSignature.getMethod();
         arguments = joinPoint.getArgs();
