@@ -13,7 +13,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-relations:0.0.16')
+compile('no.fint:fint-relations:0.0.17')
 ```
 
 ## Usage
@@ -96,6 +96,7 @@ public Link createLink(Relation relation) {
 
 ## References
 
+- [HAL - Hypertext Application Language](http://stateless.co/hal_specification.html)
 - [Spring HATEOAS](http://docs.spring.io/spring-hateoas/docs/0.23.0.RELEASE/reference/html/)
 - [Implementing HAL hypermedia REST API using Spring HATEOAS](https://opencredo.com/hal-hypermedia-api-spring-hateoas/)
 - [The REST APIs and HATEOAS](https://developer.paypal.com/docs/api/hateoas-links/)

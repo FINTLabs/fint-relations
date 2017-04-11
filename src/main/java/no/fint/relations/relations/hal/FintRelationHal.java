@@ -47,6 +47,7 @@ public class FintRelationHal {
         return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(resource);
     }
 
+    @SuppressWarnings("unchecked")
     private ResponseEntity createCollectionResponse(ResponseEntity responseEntity, AspectMetadata metadata) {
         Collection values = (Collection) responseEntity.getBody();
         List<Resource> resources = new ArrayList<>();
@@ -55,7 +56,7 @@ public class FintRelationHal {
             if (value instanceof FintResource) {
                 FintResource fintResource = (FintResource) value;
                 links.addAll(getLinks(fintResource));
-                links.add(springHateoasIntegration.getSelfLinkCollection(metadata, fintResource.getId()));
+                fintResource.getId().ifPresent(id -> links.add(springHateoasIntegration.getSelfLinkCollection(metadata, (String) id)));
             }
 
             Resource<?> resource = new Resource<>(getResource(value), links);
@@ -74,7 +75,6 @@ public class FintRelationHal {
             return new Link(fintLinkMapper.getLink(link), rel.getRelationName());
         }).collect(Collectors.toList());
     }
-
 
     private Object getResource(Object body) {
         if (body instanceof FintResource) {

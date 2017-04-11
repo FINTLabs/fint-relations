@@ -7,11 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
-    public enum Relasjonsnavn {
-        COUNTRY
-    }
-
-    private String street;
-    private String street2;
+public class Country {
+    private String country;
 }

@@ -182,4 +182,15 @@ class FintRelationsIntegrationSpec extends Specification {
         resourceDto.hasLink('differentproperty')
     }
 
+    def "Add relation to FintResource where the resource is not of type Identifiable"() {
+        when:
+        def response = restTemplate.getForEntity('/fintResource', Resources)
+        def resources = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        resources.links.size() == 1
+        resources.content[0]['_links'].size() == 1
+    }
+
 }
