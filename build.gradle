@@ -10,7 +10,7 @@ apply plugin: 'jacoco'
 
 jar {
     baseName = 'fint-relations'
-    version = '0.0.17'
+    version = '0.0.18-SNAPSHOT'
 }
 
 sourceCompatibility = 1.8
@@ -25,7 +25,7 @@ repositories {
 }
 
 
-apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.2/dependencies.gradle'
+apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.5/dependencies.gradle'
 dependencies {
     compile('no.fint:fint-relation-model:0.0.21')
 
@@ -52,5 +52,5 @@ jacocoTestReport {
 }
 
 if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.2/bintray.gradle'
+    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.5/bintray.gradle'
 }
