@@ -51,7 +51,7 @@ The `@FintSelf` is used to identify the main resource the controller is responsi
 For example in PersonController this resource is Person. 
 The id in `@FintSelf` is the property that is used to identify this resource (can be a nested property). 
 
-`@FintRelations` is used to generate the HATEOAS resources. 
+`@FintRelations` is used to generate the HATEOAS resources. It takes the relations added to the `FintResource`and appends them to a Spring HATEOAS resource object.
 
 ### 3. Add custom link mapper configuration
 
