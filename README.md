@@ -84,6 +84,22 @@ public Link createLink(Relation relation) {
 }
 ```
 
+**Add custom link mapper configuration**
+
+This will replace the `${}` values with configured values from the map.  
+Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper".  
+In the example below the String `${no.fint.relations.integration.testutils.dto.Person}/test` is replaced with `http://my-test-url/test`.
+
+```java
+@Qualifier("linkMapper")
+@Bean
+public Map<String, String> linkMapper() {
+    Map<String, String> links = new HashMap<>();
+    links.put(Person.class.getName(), "http://my-test-url");
+    return links;
+}
+```
+
 
 ## Configuration
 
