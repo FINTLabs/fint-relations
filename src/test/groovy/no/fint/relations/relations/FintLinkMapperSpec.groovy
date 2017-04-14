@@ -12,9 +12,10 @@ class FintLinkMapperSpec extends Specification {
     void setup() {
         props = Mock(FintRelationsProps)
         environment = Mock(Environment) {
-            acceptsProfiles() >> true
+            acceptsProfiles(_ as String) >> true
         }
         fintLinkMapper = new FintLinkMapper(props: props, environment: environment)
+        fintLinkMapper.init()
     }
 
     def "Get same link if no template value is provided"() {
@@ -27,19 +28,20 @@ class FintLinkMapperSpec extends Specification {
 
     def "Get link with base url when string template is provided"() {
         when:
-        def link = fintLinkMapper.getLink('{no.fint.TestDto}/test')
+        def link = fintLinkMapper.getLink('${no.fint.TestDto}/test')
 
         then:
-        1 * props.getRelationBase() >> 'https://api.felleskomponent.no'
+        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/test'
     }
 
     def "Get link with configured props when string template is provided"() {
         given:
         fintLinkMapper = new FintLinkMapper(links: ['no.fint.TestDto': 'http://local'])
+        fintLinkMapper.init()
 
         when:
-        def link = fintLinkMapper.getLink('{no.fint.TestDto}/test')
+        def link = fintLinkMapper.getLink('${no.fint.TestDto}/test')
 
         then:
         link == 'http://local/test'

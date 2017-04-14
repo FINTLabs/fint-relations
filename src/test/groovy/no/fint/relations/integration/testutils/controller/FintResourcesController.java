@@ -22,7 +22,6 @@ public class FintResourcesController {
         FintResource<Address> fintResource = FintResource.with(address).addRelasjoner(
                 new Relation.Builder().with(Address.Relasjonsnavn.COUNTRY)
                         .forType(Address.class)
-                        .path("/address")
                         .value("street").build()
         );
         return ResponseEntity.ok(Lists.newArrayList(fintResource));

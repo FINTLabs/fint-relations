@@ -23,13 +23,13 @@ public class PersonRelationController {
     public ResponseEntity getResponseEntityNoInput() {
         Relation relation = new Relation.Builder()
                 .with(Person.Relasjonsnavn.ADDRESS)
-                .path("/address")
                 .forType(Address.class)
+                .field("address")
                 .value("test1")
                 .build();
 
         Person person = new Person("test1");
-        FintResource<Person> fintResource = FintResource.with(person).addRelasjon(relation);
+        FintResource<Person> fintResource = FintResource.with(person).addRelasjoner(relation);
         return ResponseEntity.ok(fintResource);
     }
 

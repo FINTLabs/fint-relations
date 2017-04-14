@@ -78,7 +78,7 @@ class FintRelationsHalSpec extends Specification {
         given:
         def relation = new Relation.Builder().with(Person.Relasjonsnavn.ADDRESS).link('http://localhost/pereson').build()
         def person = new Person(name: 'test')
-        def response = ResponseEntity.ok(FintResource.with(person).addRelasjon(relation))
+        def response = ResponseEntity.ok(FintResource.with(person).addRelasjoner(relation))
 
         when:
         def returnValue = fintRelationHal.addRelations(metadata, response)
@@ -94,7 +94,7 @@ class FintRelationsHalSpec extends Specification {
         given:
         def relation = new Relation.Builder().with(Person.Relasjonsnavn.ADDRESS).link('http://localhost/person').build()
         def person = new Person(name: 'test')
-        def response = ResponseEntity.ok([FintResource.with(person).addRelasjon(relation)])
+        def response = ResponseEntity.ok([FintResource.with(person).addRelasjoner(relation)])
 
         when:
         def returnValue = fintRelationHal.addRelations(metadata, response)
