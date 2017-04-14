@@ -30,21 +30,17 @@ public class FintLinkMapper {
     }
 
     public String getLink(String link) {
-        String linkReplacement = strSubstitutor.replace(link);
-        if (linkReplacement.startsWith("${") && linkReplacement.contains("}")) {
-            String path = link.substring(link.indexOf("}") + 1, link.length());
-            return getConfiguredLink(path);
+        if (link.startsWith("${") && link.contains("}")) {
+            String defaultLink = getConfiguredLink();
+            link = link.replace("}", String.format(":-%s}", defaultLink));
+            return strSubstitutor.replace(link);
         } else {
-            return linkReplacement;
+            return link;
         }
     }
 
-    private String getConfiguredLink(String path) {
-        if (environment.acceptsProfiles("test")) {
-            return props.getTestRelationBase() + path;
-        } else {
-            return props.getRelationBase() + path;
-        }
+    private String getConfiguredLink() {
+        return environment.acceptsProfiles("test") ? props.getTestRelationBase() : props.getRelationBase();
     }
 
 }

@@ -37,13 +37,14 @@ class FintLinkMapperSpec extends Specification {
 
     def "Get link with configured props when string template is provided"() {
         given:
-        fintLinkMapper = new FintLinkMapper(links: ['no.fint.TestDto': 'http://local'])
+        fintLinkMapper = new FintLinkMapper(links: ['no.fint.TestDto': 'http://local'], environment: environment, props: props)
         fintLinkMapper.init()
 
         when:
         def link = fintLinkMapper.getLink('${no.fint.TestDto}/test')
 
         then:
+        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'http://local/test'
     }
 }
