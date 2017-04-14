@@ -33,12 +33,12 @@ public class Application {
 ### 2. In the controller class add the relation mapping.
 
 ```java
-@FintSelf(self = Person.class, id = "name")
-@FintRelation("REL_ID_ADDRESS")
+@FintSelf(type = Person.class, property = "name")
 @RestController
 @RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json"})
 public class PersonController {
 
+    @FintRelations
     @RequestMapping("/person")
     public ResponseEntity getPerson() {
         return ResponseEntity.ok(new Person("test1"));
@@ -51,44 +51,13 @@ The `@FintSelf` is used to identify the main resource the controller is responsi
 For example in PersonController this resource is Person. 
 The id in `@FintSelf` is the property that is used to identify this resource (can be a nested property). 
 
-`@FintRelation` is used to connect to other resources, for example Person is connected to the Address resource. 
-The value should point to a `public static final String` constant (in the example above it is called "REL_ID_ADDRESS"). 
+`@FintRelations` is used to generate the HATEOAS resources. 
 
-These values are used to find the correct LinkMapper. A class can have multiple `@FintRelation` annotations.  
-
-### 3. Create a `@Component` with the `@FintLinkMapper` annotation.
-This component will be responsible to build the links that are populated in the response.
-The method responsible for creating the `Link` (can be both a single link or a List of links) is annotated with `@FintLinkRelation`.
-
-```java
-@FintLinkMapper(Person.class)
-@Component
-public class AddressLinkMapper {
-
-    @Autowired
-    private MyService myService;
-
-    @FintLinkRelation("REL_ID_ADDRESS")
-    public Link createLink(Relation relation) {
-        String href = myService.getHref(relation);
-        return new Link(href, "address");
-    }
-}
-```
-
-If the mainId is not the same as the id specified in the relation type, it is possible to add this in `@FintLinkRelation`.
-```java
-@FintRelation(value = "REL_ID_MYADDRESS", mainProperty = "address.value")
-public Link createLink(Relation relation) {
-    ...
-}
-```
-
-**Add custom link mapper configuration**
+### 3. Add custom link mapper configuration
 
 This will replace the `${}` values with configured values from the map.  
 Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper".  
-In the example below the String `${no.fint.relations.integration.testutils.dto.Person}/test` is replaced with `http://my-test-url/test`.
+In the example below the value `${no.fint.relations.integration.testutils.dto.Person}/test` is replaced with `http://my-test-url/test`.
 
 ```java
 @Qualifier("linkMapper")
