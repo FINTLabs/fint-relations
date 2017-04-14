@@ -47,4 +47,17 @@ class FintLinkMapperSpec extends Specification {
         1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'http://local/test'
     }
+
+    def "Combine configured path with default base url"() {
+        given:
+        fintLinkMapper = new FintLinkMapper(links: ['no.fint.TestDto': '/id'], environment: environment, props: props)
+        fintLinkMapper.init()
+
+        when:
+        def link = fintLinkMapper.getLink('${no.fint.TestDto}')
+
+        then:
+        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+        link == 'https://api.felleskomponent.no/id'
+    }
 }

@@ -56,7 +56,7 @@ The id in `@FintSelf` is the property that is used to identify this resource (ca
 ### 3. Add custom link mapper configuration
 
 This will replace the `${}` values with configured values from the map.  
-Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper".  
+Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper". The value of the map is the fully qualified class name of the resource.  
 In the example below the value `${no.fint.relations.integration.testutils.dto.Person}/test` is replaced with `http://my-test-url/test`.
 
 ```java
@@ -65,9 +65,13 @@ In the example below the value `${no.fint.relations.integration.testutils.dto.Pe
 public Map<String, String> linkMapper() {
     Map<String, String> links = new HashMap<>();
     links.put(Person.class.getName(), "http://my-test-url");
+    links.put(Address.class.getName(), "/address");
     return links;
 }
 ```
+
+The value provided can either be a full url or a path. If a path is provided, the base url is appended from the configuration values.  
+For example, the Address url will be `https://api.felleskomponent.no/address`.
 
 
 ## Configuration

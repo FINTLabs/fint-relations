@@ -33,10 +33,13 @@ public class FintLinkMapper {
         if (link.startsWith("${") && link.contains("}")) {
             String defaultLink = getConfiguredLink();
             link = link.replace("}", String.format(":-%s}", defaultLink));
-            return strSubstitutor.replace(link);
-        } else {
-            return link;
+            link = strSubstitutor.replace(link);
+            if (link.startsWith("/")) {
+                return defaultLink + link;
+            }
         }
+
+        return link;
     }
 
     private String getConfiguredLink() {
