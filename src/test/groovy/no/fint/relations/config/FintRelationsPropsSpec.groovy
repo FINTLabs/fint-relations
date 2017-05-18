@@ -19,4 +19,22 @@ class FintRelationsPropsSpec extends Specification {
         then:
         props.testRelationBase == 'http://localhost:8080'
     }
+
+    def "Use local server port when configured"() {
+        when:
+        def props = new FintRelationsProps(localServerPort: 1234)
+        props.init()
+
+        then:
+        props.getPort() == 1234
+    }
+
+    def "Use server port when configured"() {
+        when:
+        def props = new FintRelationsProps(serverPort: 2345)
+        props.init()
+
+        then:
+        props.getPort() == 2345
+    }
 }
