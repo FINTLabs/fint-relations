@@ -49,7 +49,19 @@ public class PersonController {
 Make sure the `@RequestMapping` method return `ResponseEntity`. 
 The `@FintSelf` is used to identify the main resource the controller is responsible for and it will automatically generate the `_self` link. 
 For example in PersonController this resource is Person. 
-The id in `@FintSelf` is the property that is used to identify this resource (can be a nested property). 
+The id in `@FintSelf` is the property that is used to identify this resource (can be a nested property).
+ 
+When generating the `_self` link for a single resource, make sure the first argument in the controller is the id. This will be used to generate the value in the link.
+
+```java
+@FintRelations
+@GetMapping("/{id}")
+public ResponseEntity getPerson(@PathVariable String id,
+                                @RequestHeader(value = "x-org-id") String orgId,
+                                @RequestHeader(value = "x-client") String client) {
+    ...
+}
+```
 
 `@FintRelations` is used to generate the HATEOAS resources. It takes the relations added to the `FintResource`and appends them to a Spring HATEOAS resource object.
 
