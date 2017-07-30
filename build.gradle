@@ -1,6 +1,7 @@
 plugins {
     id 'com.jfrog.bintray' version '1.7.3'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
+    id 'com.github.ben-manes.versions' version '0.15.0'
+    id 'com.github.kt3k.coveralls' version '2.8.1'
 }
 
 apply plugin: 'java'
@@ -25,19 +26,19 @@ repositories {
 }
 
 
-apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.5/dependencies.gradle'
+apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.14/dependencies.gradle'
 dependencies {
     compile('no.fint:fint-relation-model:0.0.22')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
     compile("org.projectlombok:lombok:${lombokVersion}")
-    compile('org.apache.commons:commons-lang3:3.5')
+    compile('org.apache.commons:commons-lang3:3.6')
 
     compile("org.springframework.boot:spring-boot-starter-hateoas:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
 
-    testCompile('cglib:cglib-nodep:3.2.4')
+    testCompile('cglib:cglib-nodep:3.2.5')
     testCompile("org.spockframework:spock-spring:${spockSpringVersion}")
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
 }
@@ -53,5 +54,5 @@ jacocoTestReport {
 }
 
 if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.5/bintray.gradle'
+    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.14/bintray.gradle'
 }
