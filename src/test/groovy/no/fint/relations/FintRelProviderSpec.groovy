@@ -4,10 +4,10 @@ import no.fint.relations.integration.testutils.dto.Person
 import spock.lang.Specification
 
 class FintRelProviderSpec extends Specification {
-    private no.fint.relations.FintRelProvider fintRelProvider
+    private FintRelProvider fintRelProvider
 
     void setup() {
-        fintRelProvider = new no.fint.relations.FintRelProvider()
+        fintRelProvider = new FintRelProvider()
     }
 
     def "Return class simple name for single resource"() {

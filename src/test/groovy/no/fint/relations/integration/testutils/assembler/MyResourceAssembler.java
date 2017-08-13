@@ -1,4 +1,4 @@
-package no.fint.relations.integration.testutils;
+package no.fint.relations.integration.testutils.assembler;
 
 import no.fint.model.relation.FintResource;
 import no.fint.relations.FintResourceAssembler;

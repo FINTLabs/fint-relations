@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 public abstract class FintResourceAssembler<T, D extends ResourceSupport> extends ResourceAssemblerSupport<FintResource<T>, D> {
     private final Class<?> controllerClass;
 
@@ -23,14 +25,16 @@ public abstract class FintResourceAssembler<T, D extends ResourceSupport> extend
         this.controllerClass = controllerClass;
     }
 
+    public D createResourceWithId(Object id, FintResource<T> entity, String path) {
+        D instance = instantiateResource(entity);
+        instance.add(linkTo(controllerClass).slash(path).slash(id).withSelfRel());
+        return instance;
+    }
+
     @Override
     public D toResource(FintResource<T> fintResource) {
         List<Relation> relations = fintResource.getRelasjoner();
-
-        List<Link> links = relations.stream().map(relation -> {
-            String link = fintLinkMapper.getLink(relation.getLink());
-            return new Link(link, relation.getRelationName());
-        }).collect(Collectors.toList());
+        List<Link> links = relations.stream().map(relation -> new Link(relation.getLink(),  "${test1:" + relation.getRelationName() + "}")).collect(Collectors.toList());
 
         D resource = mapToResource(fintResource);
         List<Link> resourceLinks = resource.getLinks();
