@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.hateoas.Link
-import org.springframework.hateoas.LinkDiscoverer
 import org.springframework.hateoas.Resources
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
@@ -23,26 +22,23 @@ class FintRelationsHttpsIntegrationSpec extends Specification {
     @Autowired
     private TestRestTemplate restTemplate
 
-    @Autowired
-    private LinkDiscoverer linkDiscoverer
-
     def "Force https in self link when fint.relations.force-https property is set to true"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity', PersonResource)
+        def response = restTemplate.getForEntity('/person/resource/with-link-mapper', PersonResource)
         def resourceDto = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink(Link.REL_SELF).href == "https://localhost:${port}/responseEntity" as String
+        resourceDto.getLink(Link.REL_SELF).href == "https://localhost:${port}/person/test1" as String
     }
 
     def "Force https in self link for collection when fint.relations.force-https property is set to true"() {
         when:
-        def response = restTemplate.getForEntity('/responseEntity/list', Resources)
+        def response = restTemplate.getForEntity('/person/resources/with-link-mapper', Resources)
         def body = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
-        body.getLink(Link.REL_SELF).href == "https://localhost:${port}/responseEntity/list" as String
+        body.getLink(Link.REL_SELF).href == "https://localhost:${port}/person" as String
     }
 }

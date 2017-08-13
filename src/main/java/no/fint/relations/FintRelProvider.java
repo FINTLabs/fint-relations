@@ -1,4 +1,4 @@
-package no.fint.relations.relations.hal;
+package no.fint.relations;
 
 import org.springframework.hateoas.RelProvider;
 import org.springframework.util.StringUtils;

@@ -1,13 +1,13 @@
-package no.fint.relations.relations.hal
+package no.fint.relations
 
 import no.fint.relations.integration.testutils.dto.Person
 import spock.lang.Specification
 
 class FintRelProviderSpec extends Specification {
-    private FintRelProvider fintRelProvider
+    private no.fint.relations.FintRelProvider fintRelProvider
 
     void setup() {
-        fintRelProvider = new FintRelProvider()
+        fintRelProvider = new no.fint.relations.FintRelProvider()
     }
 
     def "Return class simple name for single resource"() {

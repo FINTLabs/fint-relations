@@ -1,11 +1,11 @@
-package no.fint.relations.relations
+package no.fint.relations
 
 import no.fint.relations.config.FintRelationsProps
 import org.springframework.core.env.Environment
 import spock.lang.Specification
 
 class FintLinkMapperSpec extends Specification {
-    private FintLinkMapper fintLinkMapper
+    private no.fint.relations.FintLinkMapper fintLinkMapper
     private FintRelationsProps props
     private Environment environment
 
@@ -14,7 +14,7 @@ class FintLinkMapperSpec extends Specification {
         environment = Mock(Environment) {
             acceptsProfiles(_ as String) >> true
         }
-        fintLinkMapper = new FintLinkMapper(props: props, environment: environment)
+        fintLinkMapper = new no.fint.relations.FintLinkMapper(props: props, environment: environment)
         fintLinkMapper.init()
     }
 
@@ -37,7 +37,7 @@ class FintLinkMapperSpec extends Specification {
 
     def "Get link with configured props when string template is provided"() {
         given:
-        fintLinkMapper = new FintLinkMapper(links: ['no.fint.TestDto': 'http://local'], environment: environment, props: props)
+        fintLinkMapper = new no.fint.relations.FintLinkMapper(links: ['no.fint.TestDto': 'http://local'], environment: environment, props: props)
         fintLinkMapper.init()
 
         when:
@@ -50,7 +50,7 @@ class FintLinkMapperSpec extends Specification {
 
     def "Combine configured path with default base url"() {
         given:
-        fintLinkMapper = new FintLinkMapper(links: ['no.fint.TestDto': '/id'], environment: environment, props: props)
+        fintLinkMapper = new no.fint.relations.FintLinkMapper(links: ['no.fint.TestDto': '/id'], environment: environment, props: props)
         fintLinkMapper.init()
 
         when:

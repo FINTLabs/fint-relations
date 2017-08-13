@@ -2,7 +2,7 @@ package no.fint.relations.integration
 
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.Person
-import no.fint.relations.relations.FintLinkMapper
+import no.fint.relations.FintLinkMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
