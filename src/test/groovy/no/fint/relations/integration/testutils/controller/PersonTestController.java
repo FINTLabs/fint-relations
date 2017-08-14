@@ -54,7 +54,7 @@ public class PersonTestController {
                 .link("http://localhost/address/test")
                 .build();
 
-        return FintResource.with(new Person(name)).addRelasjoner(relation);
+        return FintResource.with(new Person(name)).addRelations(relation);
     }
 
     private FintResource<Person> createPersonWithLinkMapper(String name) {
@@ -65,7 +65,7 @@ public class PersonTestController {
                 .value("test")
                 .build();
 
-        return FintResource.with(new Person(name)).addRelasjoner(relation);
+        return FintResource.with(new Person(name)).addRelations(relation);
     }
 
 }

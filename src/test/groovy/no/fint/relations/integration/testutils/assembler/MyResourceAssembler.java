@@ -20,4 +20,9 @@ public class MyResourceAssembler extends FintResourceAssembler<Person, PersonRes
         personResource.setPerson(person);
         return personResource;
     }
+
+    @Override
+    public PersonResource createResourceWithId(Object id, FintResource<Person> entity, String path) {
+        return super.createResourceWithId(id, entity, path);
+    }
 }
