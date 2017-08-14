@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment
 import spock.lang.Specification
 
 class FintLinkMapperSpec extends Specification {
-    private no.fint.relations.FintLinkMapper fintLinkMapper
+    private FintLinkMapper fintLinkMapper
     private FintRelationsProps props
     private Environment environment
 
@@ -14,7 +14,7 @@ class FintLinkMapperSpec extends Specification {
         environment = Mock(Environment) {
             acceptsProfiles(_ as String) >> true
         }
-        fintLinkMapper = new no.fint.relations.FintLinkMapper(props: props, environment: environment)
+        fintLinkMapper = new FintLinkMapper(props: props, environment: environment)
         fintLinkMapper.init()
     }
 
@@ -37,27 +37,33 @@ class FintLinkMapperSpec extends Specification {
 
     def "Get link with configured props when string template is provided"() {
         given:
-        fintLinkMapper = new no.fint.relations.FintLinkMapper(links: ['no.fint.TestDto': 'http://local'], environment: environment, props: props)
+        def tempProps = Mock(FintRelationsProps) {
+            getLinks() >> ['testdto': 'http://local']
+        }
+        fintLinkMapper = new FintLinkMapper(environment: environment, props: tempProps)
         fintLinkMapper.init()
 
         when:
-        def link = fintLinkMapper.getLink('${no.fint.TestDto}/test')
+        def link = fintLinkMapper.getLink('${testdto}/test')
 
         then:
-        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+        1 * tempProps.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'http://local/test'
     }
 
     def "Combine configured path with default base url"() {
         given:
-        fintLinkMapper = new no.fint.relations.FintLinkMapper(links: ['no.fint.TestDto': '/id'], environment: environment, props: props)
+        def tempProps = Mock(FintRelationsProps) {
+            getLinks() >> ['testdto': '/id']
+        }
+        fintLinkMapper = new FintLinkMapper(environment: environment, props: tempProps)
         fintLinkMapper.init()
 
         when:
-        def link = fintLinkMapper.getLink('${no.fint.TestDto}')
+        def link = fintLinkMapper.getLink('${testdto}')
 
         then:
-        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+        1 * tempProps.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/id'
     }
 }

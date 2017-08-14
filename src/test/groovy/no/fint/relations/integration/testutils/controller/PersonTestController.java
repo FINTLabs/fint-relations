@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,31 +24,31 @@ public class PersonTestController {
 
     @GetMapping("/resource/without-link-mapper")
     public ResponseEntity getPersonWithoutLinkMapper() {
-        return assembler.resource(createPersonWithoutCurie("test1"));
+        return assembler.resource(createPersonWithoutLinkMapper("test1"));
     }
 
     @GetMapping("/resource/with-link-mapper")
     public ResponseEntity getPersonWithLinkMapper() {
-        return assembler.resource(createPersonWithCurie("test1"));
+        return assembler.resource(createPersonWithLinkMapper("test1"));
     }
 
     @GetMapping("/resources/without-link-mapper")
     public ResponseEntity getPersonsWithoutLinkMapper() {
-        FintResource<Person> person1 = createPersonWithoutCurie("test1");
-        FintResource<Person> person2 = createPersonWithoutCurie("test2");
+        FintResource<Person> person1 = createPersonWithoutLinkMapper("test1");
+        FintResource<Person> person2 = createPersonWithoutLinkMapper("test2");
         List<FintResource<Person>> personer = Lists.newArrayList(person1, person2);
         return assembler.resources(personer);
     }
 
     @GetMapping("/resources/with-link-mapper")
     public ResponseEntity getPersonsWithLinkMapper() {
-        FintResource<Person> person1 = createPersonWithCurie("test1");
-        FintResource<Person> person2 = createPersonWithCurie("test2");
+        FintResource<Person> person1 = createPersonWithLinkMapper("test1");
+        FintResource<Person> person2 = createPersonWithLinkMapper("test2");
         List<FintResource<Person>> personer = Lists.newArrayList(person1, person2);
         return assembler.resources(personer);
     }
 
-    private FintResource<Person> createPersonWithoutCurie(String name) {
+    private FintResource<Person> createPersonWithoutLinkMapper(String name) {
         Relation relation = new Relation.Builder()
                 .with(Person.Relasjonsnavn.ADDRESS)
                 .link("http://localhost/address/test")
@@ -58,10 +57,12 @@ public class PersonTestController {
         return FintResource.with(new Person(name)).addRelasjoner(relation);
     }
 
-    private FintResource<Person> createPersonWithCurie(String name) {
+    private FintResource<Person> createPersonWithLinkMapper(String name) {
         Relation relation = new Relation.Builder()
                 .with(Person.Relasjonsnavn.ADDRESS)
-                .link("/address/test")
+                .forType(Address.class)
+                .field("address")
+                .value("test")
                 .build();
 
         return FintResource.with(new Person(name)).addRelasjoner(relation);

@@ -1,8 +1,6 @@
 fint:
  relations:
   force-https: false
-  curies:
-   test1: http://localhost/testing
 
 local:
  server:

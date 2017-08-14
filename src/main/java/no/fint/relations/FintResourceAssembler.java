@@ -34,7 +34,10 @@ public abstract class FintResourceAssembler<T, D extends ResourceSupport> extend
     @Override
     public D toResource(FintResource<T> fintResource) {
         List<Relation> relations = fintResource.getRelasjoner();
-        List<Link> links = relations.stream().map(relation -> new Link(relation.getLink(),  "${test1:" + relation.getRelationName() + "}")).collect(Collectors.toList());
+        List<Link> links = relations.stream().map(relation -> {
+            String link = fintLinkMapper.getLink(relation.getLink());
+            return new Link(link, relation.getRelationName());
+        }).collect(Collectors.toList());
 
         D resource = mapToResource(fintResource);
         List<Link> resourceLinks = resource.getLinks();
