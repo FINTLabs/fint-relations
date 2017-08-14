@@ -2,13 +2,9 @@ package no.fint.relations.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
-@ConfigurationProperties(prefix = "fint.relations")
 public class FintRelationsProps {
 
     @Value("${server.port:0}")
@@ -23,9 +19,6 @@ public class FintRelationsProps {
     @Getter
     @Value("${fint.relations.default-base-url:https://api.felleskomponent.no}")
     private String relationBase;
-
-    @Getter
-    private Map<String, String> links = new HashMap<>();
 
     @Value("${fint.relations.test-base-url:http://localhost}")
     private String testRelationBase;

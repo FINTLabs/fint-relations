@@ -23,17 +23,13 @@ public class FintLinkMapper {
 
     @Qualifier("linkMapper")
     @Autowired(required = false)
-    private Map<String, String> linkMappers = new HashMap<>();
+    private Map<String, String> links = new HashMap<>();
 
     private StrSubstitutor strSubstitutor;
 
     @PostConstruct
     public void init() {
-        if (linkMappers.size() == 0) {
-            strSubstitutor = new StrSubstitutor(props.getLinks());
-        } else {
-            strSubstitutor = new StrSubstitutor(linkMappers);
-        }
+        strSubstitutor = new StrSubstitutor(links);
     }
 
     public String getLink(String link) {
@@ -61,7 +57,6 @@ public class FintLinkMapper {
         }
     }
 
-
     public Link populateProtocol(Link link) {
         if (Boolean.valueOf(props.getForceHttps())) {
             String href = link.getHref();
@@ -70,6 +65,10 @@ public class FintLinkMapper {
         } else {
             return link;
         }
+    }
+
+    public static String getName(Class<?> clazz) {
+        return clazz.getSimpleName().toLowerCase();
     }
 
 }

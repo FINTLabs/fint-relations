@@ -47,23 +47,20 @@ class FintLinkMapperSpec extends Specification {
         def link = fintLinkMapper.getLink('${testdto}/test')
 
         then:
-        1 * tempProps.getTestRelationBase() >> 'https://api.felleskomponent.no'
+        1 * tempProps.getTestRelationBase() >> 'http://local'
         link == 'http://local/test'
     }
 
     def "Combine configured path with default base url"() {
         given:
-        def tempProps = Mock(FintRelationsProps) {
-            getLinks() >> ['testdto': '/id']
-        }
-        fintLinkMapper = new FintLinkMapper(environment: environment, props: tempProps)
+        fintLinkMapper = new FintLinkMapper(environment: environment, props: props)
         fintLinkMapper.init()
 
         when:
-        def link = fintLinkMapper.getLink('${testdto}')
+        def link = fintLinkMapper.getLink('${testdto}/id')
 
         then:
-        1 * tempProps.getTestRelationBase() >> 'https://api.felleskomponent.no'
+        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/id'
     }
 }
