@@ -13,7 +13,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-relations:1.1.1')
+compile('no.fint:fint-relations:1.1.2')
 ```
 
 ## Usage

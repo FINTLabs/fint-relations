@@ -3,11 +3,14 @@ package no.fint.relations;
 import no.fint.relations.config.FintRelationsProps;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FintLinkMapper {
@@ -18,11 +21,19 @@ public class FintLinkMapper {
     @Autowired
     private FintRelationsProps props;
 
+    @Qualifier("linkMapper")
+    @Autowired(required = false)
+    private Map<String, String> linkMappers = new HashMap<>();
+
     private StrSubstitutor strSubstitutor;
 
     @PostConstruct
     public void init() {
-        strSubstitutor = new StrSubstitutor(props.getLinks());
+        if (linkMappers.size() == 0) {
+            strSubstitutor = new StrSubstitutor(props.getLinks());
+        } else {
+            strSubstitutor = new StrSubstitutor(linkMappers);
+        }
     }
 
     public String getLink(String link) {
