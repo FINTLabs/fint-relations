@@ -1,6 +1,7 @@
 package no.fint.relations
 
 import no.fint.relations.config.FintRelationsProps
+import no.fint.relations.integration.testutils.dto.Person
 import org.springframework.core.env.Environment
 import spock.lang.Specification
 
@@ -62,5 +63,24 @@ class FintLinkMapperSpec extends Specification {
         then:
         1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/id'
+    }
+
+    def "Create links from simple and full class name"() {
+        given:
+        def fullClassName = Person.getName()
+        def simpleClassName = Person.getSimpleName().toLowerCase()
+        def links = [:]
+        links[fullClassName] = 'http://localhost:8080'
+
+        fintLinkMapper = new FintLinkMapper(links: links, environment: environment, props: props)
+        fintLinkMapper.init()
+
+        when:
+        def fullClassNameLink = fintLinkMapper.getLink("\${${fullClassName}}/test1")
+        def simpleClassNameLink = fintLinkMapper.getLink("\${${simpleClassName}}/test2")
+
+        then:
+        fullClassNameLink == 'http://localhost:8080/test1'
+        simpleClassNameLink == 'http://localhost:8080/test2'
     }
 }
