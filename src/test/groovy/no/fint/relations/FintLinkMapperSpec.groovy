@@ -1,5 +1,6 @@
 package no.fint.relations
 
+import no.fint.model.relation.FintResource
 import no.fint.relations.config.FintRelationsProps
 import no.fint.relations.integration.testutils.dto.Person
 import org.springframework.core.env.Environment
@@ -67,8 +68,8 @@ class FintLinkMapperSpec extends Specification {
 
     def "Create links from simple and full class name"() {
         given:
-        def fullClassName = Person.getName()
-        def simpleClassName = Person.getSimpleName().toLowerCase()
+        def fullClassName = 'no.fint.model.testutils.Person'
+        def simpleClassName = 'testutils.person'
         def links = [:]
         links[fullClassName] = 'http://localhost:8080'
 

@@ -1,7 +1,7 @@
 package no.fint.relations;
 
+import no.fint.model.relation.FintResource;
 import no.fint.relations.config.FintRelationsProps;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,10 +31,7 @@ public class FintLinkMapper {
     @PostConstruct
     public void init() {
         Map<String, String> shortnameLinks = links.entrySet().stream().collect(Collectors.toMap(
-                e -> {
-                    String key = e.getKey().toLowerCase();
-                    return ClassUtils.getShortClassName(key);
-                },
+                e -> FintResource.createType(e.getKey()),
                 Map.Entry::getValue
         ));
 
