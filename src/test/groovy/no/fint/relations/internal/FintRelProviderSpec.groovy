@@ -1,4 +1,4 @@
-package no.fint.relations
+package no.fint.relations.internal
 
 import no.fint.relations.integration.testutils.dto.Person
 import spock.lang.Specification

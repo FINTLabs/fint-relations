@@ -13,7 +13,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-relations:1.1.4')
+compile('no.fint:fint-relations:1.1.5')
 ```
 
 ## Usage
@@ -30,46 +30,39 @@ public class Application {
 }
 ```
 
-### 2. In the controller class add the relation mapping.
+
+### 2. Create a resource assembler
+
+The resource assembler is responsible to create the resource classes. Extend the `FintResourceAssembler` class with the type of model, in the example below this is the `Person` model.  
+In the constructor, send in the controller class responsible for the endpoints of this model. Finally, override the `assemble` method, this is where the logic to build the id and optionally the path is.
 
 ```java
-@FintSelf(type = Person.class, property = "name")
-@RestController
-@RequestMapping(method = RequestMethod.GET, produces = {"application/hal+json"})
-public class PersonController {
+@Component
+public class PersonAssembler extends FintResourceAssembler<Person> {
+    public PersonAssembler() {
+        super(PersonController.class);
+    }
 
-    @FintRelations
-    @RequestMapping("/person")
-    public ResponseEntity getPerson() {
-        return ResponseEntity.ok(new Person("test1"));
+    @Override
+    public FintResourceSupport assemble(Person person, FintResource<Person> resource) {
+        return createResourceWithId(person.getName(), resource);
     }
 }
 ```
 
-Make sure the `@RequestMapping` method return `ResponseEntity`. 
-The `@FintSelf` is used to identify the main resource the controller is responsible for and it will automatically generate the `_self` link. 
-For example in PersonController this resource is Person. 
-The id in `@FintSelf` is the property that is used to identify this resource (can be a nested property).
- 
-When generating the `_self` link for a single resource, make sure the first argument in the controller is the id. This will be used to generate the value in the link.
-
+If the id of the resource has additional parts in the, this can be added to the `createResourceWithId`:
 ```java
-@FintRelations
-@GetMapping("/{id}")
-public ResponseEntity getPerson(@PathVariable String id,
-                                @RequestHeader(value = "x-org-id") String orgId,
-                                @RequestHeader(value = "x-client") String client) {
-    ...
+@Override
+public FintResourceSupport assemble(Person person, FintResource<Person> fintResource) {
+    return createResourceWithId(person.getFodselsnummer().getIdentifikatorverdi(), fintResource, "fodselsnummer");
 }
 ```
 
-`@FintRelations` is used to generate the HATEOAS resources. It takes the relations added to the `FintResource`and appends them to a Spring HATEOAS resource object.
 
 ### 3. Add custom link mapper configuration
 
 This will replace the `${}` values with configured values from the map.  
-Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper". The value of the map is the fully qualified class name of the resource.  
-In the example below the value `${no.fint.relations.integration.testutils.dto.Person}/test` is replaced with `http://my-test-url/test`.
+Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper". The value of the map is the class name and parts of the package structure of the resource.  
 
 ```java
 @Qualifier("linkMapper")

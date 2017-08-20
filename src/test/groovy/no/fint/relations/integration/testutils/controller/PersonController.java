@@ -2,7 +2,6 @@ package no.fint.relations.integration.testutils.controller;
 
 import no.fint.model.relation.FintResource;
 import no.fint.model.relation.Relation;
-import no.fint.relations.integration.testutils.assembler.MyResourceAssembler;
 import no.fint.relations.integration.testutils.dto.Address;
 import no.fint.relations.integration.testutils.dto.Person;
 import org.assertj.core.util.Lists;
@@ -16,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/person")
-public class PersonTestController {
+public class PersonController {
 
     @Autowired
-    private MyResourceAssembler assembler;
+    private PersonAssembler assembler;
 
 
     @GetMapping("/resource/without-link-mapper")

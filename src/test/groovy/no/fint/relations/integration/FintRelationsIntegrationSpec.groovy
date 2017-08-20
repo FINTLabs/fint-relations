@@ -1,9 +1,9 @@
 package no.fint.relations.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.fint.relations.FintResources
+import no.fint.relations.internal.FintResources
 import no.fint.relations.integration.testutils.TestApplication
-import no.fint.relations.integration.testutils.dto.PersonResource
+import no.fint.relations.integration.testutils.controller.PersonResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest

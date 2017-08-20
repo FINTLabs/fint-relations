@@ -1,7 +1,7 @@
 package no.fint.relations.integration
 
 import no.fint.relations.integration.testutils.TestApplication
-import no.fint.relations.integration.testutils.dto.PersonResource
+import no.fint.relations.integration.testutils.controller.PersonResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest

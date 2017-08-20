@@ -1,13 +1,11 @@
-package no.fint.relations
+package no.fint.relations.internal
 
-import no.fint.model.relation.FintResource
 import no.fint.relations.config.FintRelationsProps
-import no.fint.relations.integration.testutils.dto.Person
 import org.springframework.core.env.Environment
 import spock.lang.Specification
 
 class FintLinkMapperSpec extends Specification {
-    private FintLinkMapper fintLinkMapper
+    private no.fint.relations.internal.FintLinkMapper fintLinkMapper
     private FintRelationsProps props
     private Environment environment
 

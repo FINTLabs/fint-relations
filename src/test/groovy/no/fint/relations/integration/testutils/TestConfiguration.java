@@ -1,7 +1,7 @@
 package no.fint.relations.integration.testutils;
 
 import com.google.common.collect.ImmutableMap;
-import no.fint.relations.FintLinkMapper;
+import no.fint.relations.internal.FintLinkMapper;
 import no.fint.relations.integration.testutils.dto.Person;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

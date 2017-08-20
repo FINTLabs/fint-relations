@@ -1,6 +1,6 @@
 package no.fint.relations.integration
 
-import no.fint.relations.FintLinkMapper
+import no.fint.relations.internal.FintLinkMapper
 import no.fint.relations.integration.testutils.TestApplication
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

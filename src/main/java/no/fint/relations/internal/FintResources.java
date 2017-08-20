@@ -1,4 +1,4 @@
-package no.fint.relations;
+package no.fint.relations.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

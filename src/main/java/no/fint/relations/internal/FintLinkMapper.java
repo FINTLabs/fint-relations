@@ -1,4 +1,4 @@
-package no.fint.relations;
+package no.fint.relations.internal;
 
 import no.fint.model.relation.FintResource;
 import no.fint.relations.config.FintRelationsProps;
