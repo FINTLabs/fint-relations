@@ -29,7 +29,7 @@ class FintRelationsHttpsIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink(Link.REL_SELF).href == "https://localhost:${port}/person/test1" as String
+        resourceDto.getLink(Link.REL_SELF).href == "https://localhost:${port}/person/name/test1" as String
     }
 
     def "Force https in self link for collection when fint.relations.force-https property is set to true"() {

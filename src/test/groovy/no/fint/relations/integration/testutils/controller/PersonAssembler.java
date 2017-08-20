@@ -14,6 +14,6 @@ public class PersonAssembler extends FintResourceAssembler<Person> {
 
     @Override
     public FintResourceSupport assemble(Person person, FintResource<Person> resource) {
-        return createResourceWithId(person.getName(), resource);
+        return createResourceWithId(person.getName(), resource, "name");
     }
 }
