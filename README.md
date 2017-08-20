@@ -34,7 +34,8 @@ public class Application {
 ### 2. Create a resource assembler
 
 Extend the `FintResourceAssembler` class with the type of model, in the example below this is the `Person` model.
-In the constructor, send in the controller class responsible for the endpoints of this model. Finally, override the `assemble` method, this is where the logic to build the id and optionally the path is.
+In the constructor add the the controller class responsible for the endpoints of this model. Finally, override the `assemble` method.
+This is where the logic to build the id and optionally the path is.
 
 ```java
 @Component
