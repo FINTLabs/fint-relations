@@ -1,10 +1,11 @@
 package no.fint.relations.internal;
 
-import no.fint.model.relation.FintResource;
+import no.fint.model.relation.Relation;
 import no.fint.relations.config.FintRelationsProps;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
 
@@ -26,12 +27,15 @@ public class FintLinkMapper {
     @Autowired(required = false)
     private Map<String, String> links = new HashMap<>();
 
+    @Value("${server.context-path:}")
+    private String contextPath;
+
     private StrSubstitutor strSubstitutor;
 
     @PostConstruct
     public void init() {
         Map<String, String> shortnameLinks = links.entrySet().stream().collect(Collectors.toMap(
-                e -> FintResource.createType(e.getKey()),
+                e -> Relation.createType(e.getKey()),
                 Map.Entry::getValue
         ));
 
