@@ -1,9 +1,10 @@
 package no.fint.relations.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.fint.relations.internal.FintResources
+import com.jayway.jsonpath.JsonPath
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.controller.PersonResource
+import no.fint.relations.internal.FintResources
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
@@ -75,6 +76,16 @@ class FintRelationsIntegrationSpec extends Specification {
         resources.totalItems == 2
         resources.content.size() == 2
         resources.content[0].getLink('address').href == "http://localhost:${port}/address/test" as String
+    }
+
+    def "Add array to single element link"() {
+        when:
+        def response = restTemplate.getForEntity('/person/resources/with-link-mapper', String)
+        def body = response.getBody()
+
+        then:
+        response.statusCode == HttpStatus.OK
+        JsonPath.read(body, '$._links.self[0].href') != null
     }
 
 
