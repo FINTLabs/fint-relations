@@ -5,3 +5,5 @@ classes
 out
 .DS_Store
 *.iml
+version.txt
+.vscode/
