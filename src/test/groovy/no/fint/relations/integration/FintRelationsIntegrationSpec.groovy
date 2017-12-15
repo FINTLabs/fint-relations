@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.jayway.jsonpath.JsonPath
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.controller.PersonResource
+import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.internal.FintResources
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
@@ -11,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.hateoas.Link
+import org.springframework.hateoas.Resource
+import org.springframework.hateoas.Resources
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
@@ -48,6 +51,23 @@ class FintRelationsIntegrationSpec extends Specification {
         then:
         response.statusCode == HttpStatus.OK
         resourceDto.getLink('address').href == "http://localhost:${port}/address/test" as String
+    }
+
+    def "Get spring hateoas resource"() {
+        when:
+        def singleResource = restTemplate.exchange('/person/resource/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<Resource<Person>>() {
+        })
+        def singleResourceBody = singleResource.getBody()
+        def collectionResources = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<Resources<Person>>() {
+        })
+        def collectionResourcesBody = collectionResources.getBody()
+
+        then:
+        singleResourceBody.content != null
+        singleResourceBody.links.size() == 2
+
+        collectionResourcesBody.content.size() == 2
+        collectionResourcesBody.links.size() == 1
     }
 
     def "Add relations to list content without link mapper"() {
