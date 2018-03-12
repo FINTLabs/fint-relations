@@ -1,7 +1,7 @@
 plugins {
-    id 'com.jfrog.bintray' version '1.7.3'
-    id 'com.github.ben-manes.versions' version '0.15.0'
-    id 'com.github.kt3k.coveralls' version '2.8.1'
+    id 'com.jfrog.bintray' version '1.8.0'
+    id 'com.github.ben-manes.versions' version '0.17.0'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 apply plugin: 'java'
@@ -11,7 +11,7 @@ apply plugin: 'jacoco'
 
 jar {
     baseName = 'fint-relations'
-    version = '1.1.8'
+    version = '1.2.0'
 }
 
 sourceCompatibility = 1.8
@@ -26,19 +26,19 @@ repositories {
 }
 
 
-apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.14/dependencies.gradle'
+apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.3.0/dependencies.gradle'
 dependencies {
-    compile('no.fint:fint-relation-model:1.0.7')
+    compile('no.fint:fint-relation-model:1.1.5')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
     compile("org.projectlombok:lombok:${lombokVersion}")
-    compile('org.apache.commons:commons-text:1.1')
+    compile('org.apache.commons:commons-text:1.2')
 
-    compile("org.springframework.boot:spring-boot-starter-hateoas:${springBootVersion}")
+    compile('org.springframework.hateoas:spring-hateoas:0.24.0.RELEASE')
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
 
-    testCompile('cglib:cglib-nodep:3.2.5')
+    testCompile("cglib:cglib-nodep:${cglibVersion}")
     testCompile("org.spockframework:spock-spring:${spockSpringVersion}")
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
 }
@@ -54,5 +54,5 @@ jacocoTestReport {
 }
 
 if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.14/bintray.gradle'
+    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.3.0/bintray.gradle'
 }
