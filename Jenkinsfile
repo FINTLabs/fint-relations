@@ -1,44 +1,37 @@
 pipeline {
     agent none
     stages {
-        stage('Prepare') {
-            agent { label 'master' }
-            steps {
-                sh 'git log --oneline | nl -nln | perl -lne \'if (/^(\\d+).*Version (\\d+\\.\\d+\\.\\d+)/) { print "$2-$1"; exit; }\' > version.txt'
-                stash includes: 'version.txt', name: 'version'
-            }
-        }
         stage('Build') {
             agent {
                 docker {
                     label 'docker'
-                    image 'gradle:4.2.1-jdk8-alpine'
+                    image 'gradle:4.6.0-jdk8-alpine'
                 }
             }
             steps {
-                unstash 'version'
-                sh 'cat version.txt'
                 sh 'gradle --no-daemon clean build'
-                stash includes: 'build/libs/*.jar', name: 'libs'
+                archiveArtifacts 'build/libs/*.jar'
             }
         }
         stage('Deploy') {
             agent {
                 docker {
                     label 'docker'
-                    image 'gradle:4.2.1-jdk8-alpine'
+                    image 'gradle:4.6.0-jdk8-alpine'
                 }
             }
             environment {
                 BINTRAY = credentials('fint-bintray')
             }
             when {
-                branch 'master'
+                expression { env.TAG_NAME != null && env.TAG_NAME ==~ /v\d+\.\d+\.\d+(-\w+-\d+)?/ }
             }
             steps {
-                unstash 'libs'
-                archiveArtifacts 'build/libs/*.jar'
-                sh 'gradle --no-daemon -PbintrayUser=${BINTRAY_USR} -PbintrayKey=${BINTRAY_PSW} bintrayUpload'
+                script {
+                    VERSION = TAG_NAME[1..-1]
+                }
+                sh "echo Version is ${VERSION}"
+                sh 'gradle --no-daemon -Pversion=${VERSION} -PbintrayUser=${BINTRAY_USR} -PbintrayKey=${BINTRAY_PSW} bintrayUpload'
             }
         }
     }
