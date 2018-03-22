@@ -9,13 +9,6 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
 
-def versionFile = new File("version.txt")
-if (versionFile.exists()) {
-    version = versionFile.text.replaceAll("\\s","")
-} else {
-    version = '0.0.0-SNAPSHOT'
-}
-
 jar {
     baseName = 'fint-relations'
 }
