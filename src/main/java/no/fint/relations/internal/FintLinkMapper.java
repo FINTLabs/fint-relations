@@ -2,7 +2,7 @@ package no.fint.relations.internal;
 
 import no.fint.model.relation.Relation;
 import no.fint.relations.config.FintRelationsProps;
-import org.apache.commons.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class FintLinkMapper {
     @Value("${server.context-path:}")
     private String contextPath;
 
-    private StrSubstitutor strSubstitutor;
+    private StringSubstitutor strSubstitutor;
 
     @PostConstruct
     public void init() {
@@ -42,7 +42,7 @@ public class FintLinkMapper {
         Map<String, String> stringMap = new HashMap<>();
         stringMap.putAll(shortnameLinks);
         stringMap.putAll(links);
-        strSubstitutor = new StrSubstitutor(stringMap);
+        strSubstitutor = new StringSubstitutor(stringMap);
     }
 
     public String getLink(String link) {
