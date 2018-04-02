@@ -3,7 +3,7 @@ package no.fint.relations.integration
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jayway.jsonpath.JsonPath
 import no.fint.relations.integration.testutils.TestApplication
-import no.fint.relations.integration.testutils.controller.PersonResource
+import no.fint.relations.integration.testutils.controller.PersonRes
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.internal.FintResources
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,7 +35,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add link to address in person response without link mapper"() {
         when:
-        def response = restTemplate.getForEntity('/person/resource/without-link-mapper', PersonResource)
+        def response = restTemplate.getForEntity('/person/resource/without-link-mapper', PersonRes)
         def resourceDto = response.getBody()
 
         then:
@@ -45,7 +45,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add link to address in person response with link mapper"() {
         when:
-        def response = restTemplate.getForEntity('/person/resource/with-link-mapper', PersonResource)
+        def response = restTemplate.getForEntity('/person/resource/with-link-mapper', PersonRes)
         def resourceDto = response.getBody()
 
         then:
@@ -72,7 +72,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add relations to list content without link mapper"() {
         when:
-        def response = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonResource>>() {
+        def response = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonRes>>() {
         })
         def resources = response.getBody()
 
@@ -86,7 +86,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add relations to list content with link mapper"() {
         when:
-        def response = restTemplate.exchange('/person/resources/with-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonResource>>() {
+        def response = restTemplate.exchange('/person/resources/with-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonRes>>() {
         })
         def resources = response.getBody()
 

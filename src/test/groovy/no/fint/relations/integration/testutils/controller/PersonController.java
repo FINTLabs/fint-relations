@@ -47,6 +47,7 @@ public class PersonController {
         return assembler.resources(personer);
     }
 
+
     private FintResource<Person> createPersonWithoutLinkMapper(String name) {
         Relation relation = new Relation.Builder()
                 .with(Person.Relasjonsnavn.ADDRESS)

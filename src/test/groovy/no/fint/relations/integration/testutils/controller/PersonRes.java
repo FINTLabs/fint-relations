@@ -8,7 +8,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PersonResource extends ResourceSupport {
+public class PersonRes extends ResourceSupport {
     @JsonUnwrapped
     private Person person;
 }
