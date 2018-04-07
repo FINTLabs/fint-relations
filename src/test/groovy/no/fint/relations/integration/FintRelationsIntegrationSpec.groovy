@@ -2,10 +2,10 @@ package no.fint.relations.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jayway.jsonpath.JsonPath
+import no.fint.relations.FintResources
 import no.fint.relations.integration.testutils.TestApplication
-import no.fint.relations.integration.testutils.controller.PersonRes
 import no.fint.relations.integration.testutils.dto.Person
-import no.fint.relations.internal.FintResources
+import no.fint.relations.integration.testutils.dto.PersonResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
@@ -33,24 +33,25 @@ class FintRelationsIntegrationSpec extends Specification {
     @Autowired
     private ObjectMapper objectMapper
 
-    def "Add link to address in person response without link mapper"() {
+    def "Add link to personalressurs in person response without link mapper"() {
         when:
-        def response = restTemplate.getForEntity('/person/resource/without-link-mapper', PersonRes)
+        def response = restTemplate.getForEntity('/person/resource/without-link-mapper', PersonResource)
         def resourceDto = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink('address').href == 'http://localhost/address/test'
+        resourceDto.getSelfLinks()[0].href == "http://localhost:${port}/person/name/test1"
+        resourceDto.links['personalressurs'].href[0] == 'http://localhost/personalressurs/1'
     }
 
-    def "Add link to address in person response with link mapper"() {
+    def "Add link to personalressurs in person response with link mapper"() {
         when:
-        def response = restTemplate.getForEntity('/person/resource/with-link-mapper', PersonRes)
+        def response = restTemplate.getForEntity('/person/resource/with-link-mapper', PersonResource)
         def resourceDto = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getLink('address').href == "http://localhost:${port}/address/test" as String
+        resourceDto.links['personalressurs'].href[0] == 'http://my-test-url/1'
     }
 
     def "Get spring hateoas resource"() {
@@ -72,7 +73,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add relations to list content without link mapper"() {
         when:
-        def response = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonRes>>() {
+        def response = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<PersonResource>() {
         })
         def resources = response.getBody()
 
@@ -86,7 +87,7 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add relations to list content with link mapper"() {
         when:
-        def response = restTemplate.exchange('/person/resources/with-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonRes>>() {
+        def response = restTemplate.exchange('/person/resources/with-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonResource>>() {
         })
         def resources = response.getBody()
 

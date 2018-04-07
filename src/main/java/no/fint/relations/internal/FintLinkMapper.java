@@ -81,7 +81,7 @@ public class FintLinkMapper {
     }
 
     public static String getName(Class<?> clazz) {
-        return clazz.getSimpleName().toLowerCase();
+        return clazz.getSimpleName().replaceFirst("Resource$", "").toLowerCase();
     }
 
 }

@@ -1,4 +1,4 @@
-package no.fint.relations.integration.testutils.hateoas.dto;
+package no.fint.relations.integration.testutils.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +20,8 @@ public class AddressResource implements FintLinks {
 
     private String street;
     private String street2;
+
+    public void addCity(Link link) {
+        addLink("city", link);
+    }
 }

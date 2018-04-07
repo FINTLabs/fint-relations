@@ -1,23 +1,8 @@
 package no.fint.relations;
 
-import no.fint.model.relation.FintResource;
-import no.fint.model.relation.Relation;
-import no.fint.relations.internal.FintLinkMapper;
-import no.fint.relations.internal.FintResources;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-public abstract class FintResourceAssembler<T> extends ResourceAssemblerSupport<FintResource<T>, FintResourceSupport> {
+public abstract class FintResourceAssembler<T> {
     private Class<?> controllerClass;
-
+/*
     @Autowired
     private FintLinkMapper fintLinkMapper;
 
@@ -66,5 +51,5 @@ public abstract class FintResourceAssembler<T> extends ResourceAssemblerSupport<
     }
 
     public abstract FintResourceSupport assemble(T resource, FintResource<T> fintResource);
-
+*/
 }

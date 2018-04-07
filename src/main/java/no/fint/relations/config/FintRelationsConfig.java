@@ -3,7 +3,6 @@ package no.fint.relations.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.fint.relations.internal.FintLinkMapper;
-import no.fint.relations.internal.FintRelProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,10 +28,5 @@ public class FintRelationsConfig {
     @Bean
     public FintLinkMapper fintLinkMapper() {
         return new FintLinkMapper();
-    }
-
-    @Bean
-    public FintRelProvider fintRelProvider() {
-        return new FintRelProvider();
     }
 }
