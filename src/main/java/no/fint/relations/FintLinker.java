@@ -34,7 +34,7 @@ public abstract class FintLinker<T extends FintLinks> {
 
     public T toResource(T resource) {
         mapLinks(resource);
-        if (resource.getSelfLinks() == null) {
+        if (resource.getSelfLinks() == null || resource.getSelfLinks().isEmpty()) {
             String self = getSelfHref(resource);
             resource.addLink("self", Link.with(linkMapper.populateProtocol(self)));
         }

@@ -18,12 +18,10 @@ public class FintResources<T> extends AbstractCollectionResources<T> {
 
     public FintResources(List<T> resources, String selfLink) {
         embedded.entries.addAll(resources);
-
-        if (links.get("self") == null) {
-            List<Link> selfLinks = new ArrayList<>();
-            selfLinks.add(Link.with(selfLink));
-            links.put("self", selfLinks);
-        }
+        
+        List<Link> selfLinks = new ArrayList<>();
+        selfLinks.add(Link.with(selfLink));
+        links.put("self", selfLinks);
     }
 
     @JsonIgnore
