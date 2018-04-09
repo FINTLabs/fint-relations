@@ -1,8 +1,9 @@
 package no.fint.relations.integration.testutils.controller;
 
 import no.fint.model.resource.Link;
-import no.fint.relations.FintResource;
 import no.fint.relations.FintResources;
+import no.fint.relations.integration.testutils.dto.AddressResource;
+import no.fint.relations.integration.testutils.dto.CityResource;
 import no.fint.relations.integration.testutils.dto.PersonResource;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ public class PersonController {
 
 
     @GetMapping("/resource/without-link-mapper")
-    public FintResource getPersonWithoutLinkMapper() {
+    public PersonResource getPersonWithoutLinkMapper() {
         return personLinker.toResource(createPersonWithoutLinkMapper("test1"));
     }
 
     @GetMapping("/resource/with-link-mapper")
-    public FintResource getPersonWithLinkMapper() {
+    public PersonResource getPersonWithLinkMapper() {
         return personLinker.toResource(createPersonWithLinkMapper("test1"));
     }
 
@@ -55,7 +56,10 @@ public class PersonController {
     }
 
     private PersonResource createPersonWithLinkMapper(String name) {
+        AddressResource addressResource = new AddressResource("street", "street2");
+        addressResource.addCity(Link.with(CityResource.class, "testing"));
         PersonResource personResource = new PersonResource();
+        personResource.setAddress(addressResource);
         personResource.setName(name);
         personResource.addPersonalressurs(Link.with(PersonResource.class, "/1"));
         return personResource;

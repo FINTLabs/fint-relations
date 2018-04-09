@@ -13,6 +13,6 @@ public class PersonLinker extends FintLinker<PersonResource> {
 
     @Override
     public String getSelfHref(PersonResource personResource) {
-        return createLinkWithId(personResource.getName(), "name");
+        return createHrefWithId(personResource.getName(), "name");
     }
 }

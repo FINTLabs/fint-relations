@@ -23,16 +23,21 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public FintResources toResources(List<T> resources) {
-        List<FintResource> fintResources = resources.stream().map(this::toResource).collect(Collectors.toList());
-        return new FintResources(fintResources, self());
+        List<T> fintResources = resources.stream().map(this::toNestedResource).collect(Collectors.toList());
+        return new FintResources<>(fintResources, self());
     }
 
-    public FintResource toResource(T resource) {
+    private T toNestedResource(T resource) {
+        mapLinks(resource);
+        return resource;
+    }
+
+    public T toResource(T resource) {
         mapLinks(resource);
 
         String self = getSelfHref(resource);
-        resource.addLink(org.springframework.hateoas.Link.REL_SELF, Link.with(self));
-        return new FintResource(resource);
+        resource.addLink("self", Link.with(linkMapper.populateProtocol(self)));
+        return resource;
     }
 
     private void mapLinks(FintLinks resource) {
@@ -51,7 +56,7 @@ public abstract class FintLinker<T extends FintLinks> {
         }
     }
 
-    public String createLinkWithId(Object id, String path) {
+    public String createHrefWithId(Object id, String path) {
         return linkTo(controllerClass).slash(path).slash(id).withSelfRel().getHref();
     }
 

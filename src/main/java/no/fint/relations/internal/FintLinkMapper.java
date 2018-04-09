@@ -11,7 +11,6 @@ import org.springframework.hateoas.Link;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -55,33 +54,31 @@ public class FintLinkMapper {
             }
         }
 
-        return link;
+        return populateProtocol(link);
     }
 
     private String getConfiguredLink() {
         return environment.acceptsProfiles("test") ? props.getTestRelationBase() : props.getRelationBase();
     }
 
-    public List<Link> populateProtocol(List<Link> links) {
-        if (Boolean.valueOf(props.getForceHttps())) {
-            return links.stream().map(this::populateProtocol).collect(Collectors.toList());
-        } else {
-            return links;
-        }
+    public Link populateProtocol(Link link) {
+        String href = populateProtocol(link.getHref());
+        return new Link(href, link.getRel());
     }
 
-    public Link populateProtocol(Link link) {
+    public String populateProtocol(String href) {
         if (Boolean.valueOf(props.getForceHttps())) {
-            String href = link.getHref();
-            href = href.replace("http://", "https://");
-            return new Link(href, link.getRel());
+            return href.replace("http://", "https://");
         } else {
-            return link;
+            return href;
         }
     }
 
     public static String getName(Class<?> clazz) {
-        return clazz.getSimpleName().replaceFirst("Resource$", "").toLowerCase();
+        return clazz.getName()
+                .replace("no.fint.model.", "")
+                .replaceFirst("Resource$", "")
+                .toLowerCase();
     }
 
 }

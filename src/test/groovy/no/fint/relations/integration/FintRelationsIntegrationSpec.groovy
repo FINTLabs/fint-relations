@@ -2,16 +2,15 @@ package no.fint.relations.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jayway.jsonpath.JsonPath
-import no.fint.relations.FintResources
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.Person
 import no.fint.relations.integration.testutils.dto.PersonResource
+import no.fint.relations.integration.testutils.dto.PersonResources
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.core.ParameterizedTypeReference
-import org.springframework.hateoas.Link
 import org.springframework.hateoas.Resource
 import org.springframework.hateoas.Resources
 import org.springframework.http.HttpMethod
@@ -73,30 +72,27 @@ class FintRelationsIntegrationSpec extends Specification {
 
     def "Add relations to list content without link mapper"() {
         when:
-        def response = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<PersonResource>() {
-        })
+        def response = restTemplate.exchange('/person/resources/without-link-mapper', HttpMethod.GET, null, PersonResources)
         def resources = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
-        resources.getLink(Link.REL_SELF).href == "http://localhost:${port}/person" as String
+        resources.getSelfLinks()[0].href == "http://localhost:${port}/person"
         resources.totalItems == 2
         resources.content.size() == 2
-        resources.content[0].getLink('address').href == 'http://localhost/address/test'
     }
 
     def "Add relations to list content with link mapper"() {
         when:
-        def response = restTemplate.exchange('/person/resources/with-link-mapper', HttpMethod.GET, null, new ParameterizedTypeReference<FintResources<PersonResource>>() {
-        })
+        def response = restTemplate.exchange('/person/resources/with-link-mapper', HttpMethod.GET, null, PersonResources)
         def resources = response.getBody()
 
         then:
         response.statusCode == HttpStatus.OK
-        resources.getLink(Link.REL_SELF).href == "http://localhost:${port}/person" as String
+        resources.getSelfLinks()[0].href == "http://localhost:${port}/person" as String
         resources.totalItems == 2
         resources.content.size() == 2
-        resources.content[0].getLink('address').href == "http://localhost:${port}/address/test" as String
+        resources.content[0].address.links['city'][0].href == 'http://city-test-url/testing'
     }
 
     def "Add array to single element link"() {
