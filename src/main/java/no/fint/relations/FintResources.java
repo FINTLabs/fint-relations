@@ -3,6 +3,7 @@ package no.fint.relations;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.fint.model.resource.AbstractCollectionResources;
 import no.fint.model.resource.Link;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class FintResources<T> extends AbstractCollectionResources<T> {
 

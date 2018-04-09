@@ -75,10 +75,7 @@ public class FintLinkMapper {
     }
 
     public static String getName(Class<?> clazz) {
-        return clazz.getName()
-                .replace("no.fint.model.", "")
-                .replaceFirst("Resource$", "")
-                .toLowerCase();
+        return no.fint.model.resource.Link.getHrefPlaceholder(clazz);
     }
 
 }
