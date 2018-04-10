@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class PersonLinker extends FintLinker<PersonResource> {
 
     public PersonLinker() {
-        super(PersonController.class);
+        super(PersonResource.class);
     }
 
     @Override

@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
 @ContextConfiguration
-@SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "fint.relations.links.person=http://my-test-url")
+@SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "fint.relations.links.person=http://my-test-monkey")
 class FintLinkMapperIntegrationSpec extends Specification {
 
     @Autowired
@@ -21,7 +21,7 @@ class FintLinkMapperIntegrationSpec extends Specification {
         def link = fintLinkMapper.getLink(Link.with(PersonResource, '/test').href)
 
         then:
-        link == 'http://my-test-url/test'
+        link == 'http://my-test-monkey/test'
     }
 
 }

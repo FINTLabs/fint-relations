@@ -4,22 +4,19 @@ import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.relations.internal.FintLinkMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
 public abstract class FintLinker<T extends FintLinks> {
-    private final Class<?> controllerClass;
+    private final Class<T> resourceClass;
 
     @Autowired
     private FintLinkMapper linkMapper;
 
-    public FintLinker(Class<?> controllerClass) {
-        this.controllerClass = controllerClass;
+    protected FintLinker(Class<T> resourceClass) {
+        this.resourceClass = resourceClass;
     }
 
     public FintResources toResources(List<T> resources) {
@@ -59,12 +56,11 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public String createHrefWithId(Object id, String path) {
-        return linkTo(controllerClass).slash(path).slash(id).withSelfRel().getHref();
+        return linkMapper.getLink(Link.with(resourceClass, path + "/" + id).getHref());
     }
 
     private String self() {
-        org.springframework.hateoas.Link self = ControllerLinkBuilder.linkTo(controllerClass).withSelfRel();
-        return linkMapper.populateProtocol(self).getHref();
+        return linkMapper.getLink(Link.with(resourceClass, "").getHref());
     }
 
     public abstract String getSelfHref(T resource);

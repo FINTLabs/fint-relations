@@ -28,7 +28,7 @@ class FintRelationsHttpsIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        resourceDto.getSelfLinks()[0].href == "https://localhost:${port}/person/name/test1"
+        resourceDto.getSelfLinks()[0].href == "https://my-test-url/name/test1"
     }
 
     def "Force https in self link for collection when fint.relations.force-https property is set to true"() {
@@ -38,6 +38,6 @@ class FintRelationsHttpsIntegrationSpec extends Specification {
 
         then:
         response.statusCode == HttpStatus.OK
-        resources.getSelfLinks()[0].href == "https://localhost:${port}/person"
+        resources.getSelfLinks()[0].href == "https://my-test-url/"
     }
 }
