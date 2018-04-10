@@ -41,7 +41,7 @@ public abstract class FintLinker<T extends FintLinks> {
 
     private void mapLinks(FintLinks resource) {
         if (resource != null) {
-            Map<String, List<Link>> links = resource.getLinksIfPresent();
+            Map<String, List<Link>> links = resource.getLinks();
             links.values().forEach(
                     linkValues -> linkValues.forEach(
                             link -> link.setVerdi(linkMapper.getLink(link.getHref()))
@@ -59,7 +59,7 @@ public abstract class FintLinker<T extends FintLinks> {
         return linkMapper.getLink(Link.with(resourceClass, path + "/" + id).getHref());
     }
 
-    private String self() {
+    public String self() {
         return linkMapper.getLink(Link.with(resourceClass, "").getHref());
     }
 
