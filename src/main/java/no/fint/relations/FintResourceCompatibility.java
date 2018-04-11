@@ -34,11 +34,10 @@ public class FintResourceCompatibility {
     public <T extends FintLinks> List<T> convertResourceData(List<?> data, Class<T> cls) {
         JavaType sourceType = objectMapper.getTypeFactory().constructFromCanonical("java.util.List<no.fint.model.relation.FintResource<" + cls.getName() + ">>");
         List<FintResource<T>> original = objectMapper.convertValue(data, sourceType);
-        List<T> replacement = original.stream().map(fintResource -> {
+        return original.stream().map(fintResource -> {
             T resource = fintResource.getResource();
             fintResource.getRelations().forEach(relation -> resource.addLink(relation.getRelationName(), Link.with(relation.getLink())));
             return resource;
         }).collect(Collectors.toList());
-        return replacement;
     }
 }
