@@ -13,6 +13,22 @@ class FintResourceCompatibilitySpec extends Specification {
         compatibility = new FintResourceCompatibility(objectMapper: new ObjectMapper())
     }
 
+    def "Is not FintResource given null list"() {
+        when:
+        def isFintResourceData = compatibility.isFintResourceData(null)
+
+        then:
+        !isFintResourceData
+    }
+
+    def "Is not FintResource given empty list"() {
+        when:
+        def isFintResourceData = compatibility.isFintResourceData([])
+
+        then:
+        !isFintResourceData
+    }
+
     def "Is FintResource"() {
         given:
         def resource = new FintResource<String>(resource: 'test123')

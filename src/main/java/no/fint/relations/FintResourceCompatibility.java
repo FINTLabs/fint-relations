@@ -1,6 +1,5 @@
 package no.fint.relations;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,10 @@ public class FintResourceCompatibility {
     private ObjectMapper objectMapper;
 
     public boolean isFintResourceData(List<?> data) {
-        JsonNode node = objectMapper.valueToTree(data.get(0));
-        return node.hasNonNull("resource");
+        if (data == null || data.isEmpty()) {
+            return false;
+        }
+
+        return objectMapper.valueToTree(data.get(0)).hasNonNull("resource");
     }
 }
