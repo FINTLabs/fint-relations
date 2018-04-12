@@ -56,11 +56,11 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public String createHrefWithId(Object id, String path) {
-        return linkMapper.getLink(Link.with(resourceClass, path + "/" + id).getHref());
+        return linkMapper.getLink(Link.with(resourceClass, path, id.toString()).getHref());
     }
 
     public String self() {
-        return linkMapper.getLink(Link.with(resourceClass, "").getHref());
+        return linkMapper.getLink(Link.with(resourceClass).getHref());
     }
 
     public abstract String getSelfHref(T resource);
