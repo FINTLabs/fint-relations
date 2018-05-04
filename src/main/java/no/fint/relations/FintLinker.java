@@ -39,7 +39,7 @@ public abstract class FintLinker<T extends FintLinks> {
         return resource;
     }
 
-    private void mapLinks(FintLinks resource) {
+    protected void mapLinks(FintLinks resource) {
         if (resource != null) {
             Map<String, List<Link>> links = resource.getLinks();
             links.values().forEach(
