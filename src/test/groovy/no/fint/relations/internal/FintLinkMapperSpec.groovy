@@ -64,6 +64,20 @@ class FintLinkMapperSpec extends Specification {
         link == 'https://api.felleskomponent.no/id'
     }
 
+    def "Empty template is replaced with base url"() {
+        given:
+        fintLinkMapper = new FintLinkMapper(environment: environment, props: props)
+        fintLinkMapper.init()
+
+        when:
+        def link = fintLinkMapper.getLink('${}/id')
+
+        then:
+        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+        link == 'https://api.felleskomponent.no/id'
+
+    }
+
     def "Create links from simple and full class name"() {
         given:
         def fullClassName = 'no.fint.model.testutils.Person'
