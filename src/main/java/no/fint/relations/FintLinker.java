@@ -6,7 +6,7 @@ import no.fint.relations.internal.FintLinkMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class FintLinker<T extends FintLinks> {
@@ -20,7 +20,7 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public FintResources toResources(List<T> resources) {
-        List<T> fintResources = resources.stream().map(this::toNestedResource).collect(Collectors.toList());
+        List<T> fintResources = resources.stream().map(this::toResource).collect(Collectors.toList());
         return new FintResources<>(fintResources, self());
     }
 
@@ -41,17 +41,11 @@ public abstract class FintLinker<T extends FintLinks> {
 
     protected void mapLinks(FintLinks resource) {
         if (resource != null) {
-            Map<String, List<Link>> links = resource.getLinks();
-            links.values().forEach(
-                    linkValues -> linkValues.forEach(
-                            link -> link.setVerdi(linkMapper.getLink(link.getHref()))
-                    )
+            resource.getLinks().values().stream().filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).forEach(
+                    link -> link.setVerdi(linkMapper.getLink(link.getHref()))
             );
 
-            List<FintLinks> nestedResources = resource.getNestedResources();
-            if (nestedResources.size() > 0) {
-                nestedResources.forEach(this::mapLinks);
-            }
+            resource.getNestedResources().forEach(this::mapLinks);
         }
     }
 
