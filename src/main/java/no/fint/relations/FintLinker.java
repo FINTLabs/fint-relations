@@ -4,6 +4,7 @@ import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.relations.internal.FintLinkMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,9 @@ public abstract class FintLinker<T extends FintLinks> {
         mapLinks(resource);
         if (resource.getSelfLinks() == null || resource.getSelfLinks().isEmpty()) {
             String self = getSelfHref(resource);
-            resource.addLink("self", Link.with(linkMapper.populateProtocol(self)));
+            if (!StringUtils.isEmpty(self)) {
+                resource.addLink("self", Link.with(linkMapper.populateProtocol(self)));
+            }
         }
 
         return resource;
