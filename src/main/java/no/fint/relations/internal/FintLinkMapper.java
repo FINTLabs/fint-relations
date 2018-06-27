@@ -45,13 +45,13 @@ public class FintLinkMapper {
     }
 
     public String getLink(String link) {
+        String defaultLink = getConfiguredLink();
         if (link.startsWith("${") && link.contains("}")) {
-            String defaultLink = getConfiguredLink();
             link = link.replace("}", String.format(":-%s}", defaultLink));
             link = strSubstitutor.replace(link);
-            if (link.startsWith("/")) {
-                return defaultLink + link;
-            }
+        }
+        if (link.startsWith("/")) {
+            return defaultLink + link;
         }
 
         return populateProtocol(link);
