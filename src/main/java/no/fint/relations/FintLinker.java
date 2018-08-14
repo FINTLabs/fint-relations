@@ -1,14 +1,15 @@
 package no.fint.relations;
 
+import no.fint.model.resource.AbstractCollectionResources;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.relations.internal.FintLinkMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public abstract class FintLinker<T extends FintLinks> {
     private final Class<T> resourceClass;
@@ -20,10 +21,7 @@ public abstract class FintLinker<T extends FintLinks> {
         this.resourceClass = resourceClass;
     }
 
-    public FintResources toResources(List<T> resources) {
-        List<T> fintResources = resources.stream().map(this::toResource).collect(Collectors.toList());
-        return new FintResources<>(fintResources, self());
-    }
+    public abstract AbstractCollectionResources<T> toResources(Collection<T> resources);
 
     private T toNestedResource(T resource) {
         mapLinks(resource);

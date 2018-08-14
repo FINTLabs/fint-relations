@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@Deprecated
 public class FintResources<T> extends AbstractCollectionResources<T> {
 
     public FintResources(List<T> resources, String selfLink) {

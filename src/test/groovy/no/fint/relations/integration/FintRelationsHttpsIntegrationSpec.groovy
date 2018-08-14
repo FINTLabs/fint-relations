@@ -3,6 +3,7 @@ package no.fint.relations.integration
 import no.fint.relations.FintResources
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.PersonResource
+import no.fint.relations.integration.testutils.dto.PersonResources
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -33,7 +34,7 @@ class FintRelationsHttpsIntegrationSpec extends Specification {
 
     def "Force https in self link for collection when fint.relations.force-https property is set to true"() {
         when:
-        def response = restTemplate.getForEntity('/person/resources/with-link-mapper', FintResources)
+        def response = restTemplate.getForEntity('/person/resources/with-link-mapper', PersonResources)
         def resources = response.getBody()
 
         then:
