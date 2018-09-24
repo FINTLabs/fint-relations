@@ -96,4 +96,18 @@ class FintLinkMapperSpec extends Specification {
         fullClassNameLink == 'http://localhost:8080/test1'
         simpleClassNameLink == 'http://localhost:8080/test2'
     }
+
+    def "Add default base url to relative links"() {
+        given:
+        def links = [:]
+        fintLinkMapper = new FintLinkMapper(links: links, environment: environment, props: props)
+        fintLinkMapper.init()
+
+        when:
+        def relativeLink = fintLinkMapper.getLink('/some/relative/path')
+
+        then:
+        relativeLink == 'http://localhost:8080/some/relative/path'
+        1 * props.getTestRelationBase() >> 'http://localhost:8080'
+    }
 }
