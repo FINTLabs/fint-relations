@@ -1,6 +1,6 @@
 # fint-relations
 
-[![Build Status](https://travis-ci.org/FINTlibs/fint-relations.svg?branch=master)](https://travis-ci.org/FINTlibs/fint-relations) 
+[![Build Status](https://jenkins.fintlabs.no/buildStatus/icon?job=FINTlibs/fint-relations/master)](https://jenkins.fintlabs.no/job/FINTlibs/fint-relations/master)
 [![Coverage Status](https://coveralls.io/repos/github/FINTlibs/fint-relations/badge.svg?branch=master)](https://coveralls.io/github/FINTlibs/fint-relations?branch=master) 
 
 
@@ -31,31 +31,32 @@ public class Application {
 ```
 
 
-### 2. Create a resource assembler
+### 2. Create a resource linker
 
-Extend the `FintResourceAssembler` class with the type of model, in the example below this is the `Person` model.
-In the constructor add the the controller class responsible for the endpoints of this model. Finally, override the `assemble` method.
-This is where the logic to build the id and optionally the path is.
+Extend the `FintLinker` class with the type of model, in the example below this is the `Person` model.
+In the constructor add the the controller class responsible for the endpoints of this model. Finally, override the `toResources` and `getSelfHref` methods.
+This is where the logic to build the collection type, and links with the id is.
 
 ```java
 @Component
-public class PersonAssembler extends FintResourceAssembler<Person> {
-    public PersonAssembler() {
-        super(PersonController.class);
+public class PersonLinker extends FintLinker<PersonResource> {
+
+    public PersonLinker() {
+        super(PersonResource.class);
     }
 
     @Override
-    public FintResourceSupport assemble(Person person, FintResource<Person> resource) {
-        return createResourceWithId(person.getName(), resource);
+    public PersonResources toResources(Collection<PersonResource> resources) {
+        PersonResources personResources = new PersonResources();
+        resources.stream().map(this::toResource).forEach(personResources::addResource);
+        personResources.addSelf(Link.with(self()));
+        return personResources;
     }
-}
-```
 
-If the id of the resource has additional parts in the, this can be added to the `createResourceWithId`:
-```java
-@Override
-public FintResourceSupport assemble(Person person, FintResource<Person> fintResource) {
-    return createResourceWithId(person.getFodselsnummer().getIdentifikatorverdi(), fintResource, "fodselsnummer");
+    @Override
+    public String getSelfHref(PersonResource personResource) {
+        return createHrefWithId(personResource.getName(), "name");
+    }
 }
 ```
 
