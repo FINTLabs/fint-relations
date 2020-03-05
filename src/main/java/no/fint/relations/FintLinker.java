@@ -4,12 +4,13 @@ import no.fint.model.resource.AbstractCollectionResources;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.fint.relations.internal.FintLinkMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public abstract class FintLinker<T extends FintLinks> {
     private final Class<T> resourceClass;
@@ -31,10 +32,11 @@ public abstract class FintLinker<T extends FintLinks> {
     public T toResource(T resource) {
         mapLinks(resource);
         if (resource.getSelfLinks() == null || resource.getSelfLinks().isEmpty()) {
-            String self = getSelfHref(resource);
-            if (!StringUtils.isEmpty(self)) {
-                resource.addLink("self", Link.with(linkMapper.populateProtocol(self)));
-            }
+            getAllSelfHrefs(resource)
+                    .filter(StringUtils::isNotBlank)
+                    .map(linkMapper::populateProtocol)
+                    .map(Link::with)
+                    .forEach(link -> resource.addLink("self", link));
         }
 
         return resource;
@@ -59,5 +61,9 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public abstract String getSelfHref(T resource);
+
+    public Stream<String> getAllSelfHrefs(T resource) {
+        return Stream.of(getSelfHref(resource));
+    }
 
 }
