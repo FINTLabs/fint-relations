@@ -31,13 +31,14 @@ public abstract class FintLinker<T extends FintLinks> {
 
     public T toResource(T resource) {
         mapLinks(resource);
-        if (resource.getSelfLinks() == null || resource.getSelfLinks().isEmpty()) {
-            getAllSelfHrefs(resource)
-                    .filter(StringUtils::isNotBlank)
-                    .map(linkMapper::populateProtocol)
-                    .map(Link::with)
-                    .forEach(link -> resource.addLink("self", link));
+        if (resource.getSelfLinks() != null) {
+            resource.getSelfLinks().clear();
         }
+        getAllSelfHrefs(resource)
+                .filter(StringUtils::isNotBlank)
+                .map(linkMapper::populateProtocol)
+                .map(Link::with)
+                .forEach(resource::addSelf);
 
         return resource;
     }
