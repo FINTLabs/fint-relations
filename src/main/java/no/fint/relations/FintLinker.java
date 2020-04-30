@@ -23,9 +23,9 @@ public abstract class FintLinker<T extends FintLinks> {
         this.resourceClass = resourceClass;
     }
 
-    public AbstractCollectionResources<T> toResources(Collection<T> resources) {
-        return toResources(resources.stream(), 0, 0, resources.size());
-    }
+    public abstract AbstractCollectionResources<T> toResources(Collection<T> resources);
+
+    public abstract AbstractCollectionResources<T> toResources(Stream<T> stream, int offset, int size, int totalItems);
 
     protected void addPagination(AbstractCollectionResources<T> resources, int offset, int size, int totalItems) {
         if (size > 0) {
@@ -61,7 +61,6 @@ public abstract class FintLinker<T extends FintLinks> {
         resources.setTotalItems(totalItems);
     }
 
-    public abstract AbstractCollectionResources<T> toResources(Stream<T> stream, int offset, int size, int totalItems);
 
     private T toNestedResource(T resource) {
         mapLinks(resource);

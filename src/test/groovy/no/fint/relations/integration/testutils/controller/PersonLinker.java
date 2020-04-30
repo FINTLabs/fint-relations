@@ -7,6 +7,7 @@ import no.fint.relations.integration.testutils.dto.PersonResources;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 @Component
 public class PersonLinker extends FintLinker<PersonResource> {
@@ -17,9 +18,14 @@ public class PersonLinker extends FintLinker<PersonResource> {
 
     @Override
     public PersonResources toResources(Collection<PersonResource> resources) {
+        return toResources(resources.stream(), 0, 0, resources.size());
+    }
+
+    @Override
+    public PersonResources toResources(Stream<PersonResource> stream, int offset, int size, int totalItems) {
         PersonResources personResources = new PersonResources();
-        resources.stream().map(this::toResource).forEach(personResources::addResource);
-        personResources.addSelf(Link.with(self()));
+        stream.map(this::toResource).forEach(personResources::addResource);
+        addPagination(personResources, offset, size, totalItems);
         return personResources;
     }
 
