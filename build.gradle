@@ -27,7 +27,7 @@ repositories {
 
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.3.0/dependencies.gradle'
 dependencies {
-    compile('no.fint:fint-model-resource:0.3.2')
+    compile('no.fint:fint-model-resource:0.4.0-alpha-1')
     compile('no.fint:fint-relation-model:1.1.5')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
