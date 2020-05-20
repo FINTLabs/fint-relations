@@ -6,6 +6,7 @@ import no.fint.model.resource.Link;
 import no.fint.relations.internal.FintLinkMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +24,43 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public abstract AbstractCollectionResources<T> toResources(Collection<T> resources);
+
+    public abstract AbstractCollectionResources<T> toResources(Stream<T> stream, int offset, int size, int totalItems);
+
+    protected void addPagination(AbstractCollectionResources<T> resources, int offset, int size, int totalItems) {
+        if (size > 0) {
+            resources.addSelf(
+                    Link.with(
+                            UriComponentsBuilder
+                                    .fromUriString(self())
+                                    .queryParam("offset", offset)
+                                    .queryParam("size", size)
+                                    .toUriString()));
+            if (offset > 0) {
+                resources.addPrev(
+                        Link.with(
+                                UriComponentsBuilder
+                                        .fromUriString(self())
+                                        .queryParam("offset", Math.max(0, offset - size))
+                                        .queryParam("size", size)
+                                        .toUriString()));
+            }
+            if (offset + size < totalItems) {
+                resources.addNext(
+                        Link.with(
+                                UriComponentsBuilder
+                                        .fromUriString(self())
+                                        .queryParam("offset", offset + size)
+                                        .queryParam("size", size)
+                                        .toUriString()));
+            }
+        } else {
+            resources.addSelf(Link.with(self()));
+        }
+        resources.setOffset(offset);
+        resources.setTotalItems(totalItems);
+    }
+
 
     private T toNestedResource(T resource) {
         mapLinks(resource);
