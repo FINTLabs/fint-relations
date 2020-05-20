@@ -1,8 +1,8 @@
 # fint-relations
 
-[![Build Status](https://jenkins.fintlabs.no/buildStatus/icon?job=FINTlibs/fint-relations/master)](https://jenkins.fintlabs.no/job/FINTlibs/job/fint-relations/job/master/)
+[![Build Status](https://jenkins.fintlabs.no/buildStatus/icon?job=FINTLabs/fint-relations/master)](https://jenkins.fintlabs.no/job/FINTLabs/job/fint-relations/job/master/)
 [![Coverage Status](https://coveralls.io/repos/github/FINTlibs/fint-relations/badge.svg?branch=master)](https://coveralls.io/github/FINTlibs/fint-relations?branch=master) 
-
+[ ![Download](https://api.bintray.com/packages/fint/maven/fint-relations/images/download.svg) ](https://bintray.com/fint/maven/fint-relations/_latestVersion)
 
 ## Installation
 
