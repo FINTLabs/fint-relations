@@ -81,7 +81,7 @@ public abstract class FintLinker<T extends FintLinks> {
         return resource;
     }
 
-    protected void mapLinks(FintLinks resource) {
+    public void mapLinks(FintLinks resource) {
         if (resource != null) {
             resource.getLinks().values().stream().filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).forEach(
                     link -> link.setVerdi(linkMapper.getLink(link.getHref()))
