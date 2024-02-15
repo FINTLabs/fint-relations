@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment
 import spock.lang.Specification
 
 class FintLinkMapperSpec extends Specification {
-    private no.fint.relations.internal.FintLinkMapper fintLinkMapper
+    private FintLinkMapper fintLinkMapper
     private FintRelationsProps props
     private Environment environment
 
@@ -14,7 +14,7 @@ class FintLinkMapperSpec extends Specification {
         environment = Mock(Environment) {
             acceptsProfiles(_ as String) >> true
         }
-        fintLinkMapper = new FintLinkMapper(props: props, environment: environment)
+        fintLinkMapper = new FintLinkMapper(environment: environment, props: props)
         fintLinkMapper.init()
     }
 
