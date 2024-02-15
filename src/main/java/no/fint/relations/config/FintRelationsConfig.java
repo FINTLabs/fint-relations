@@ -7,6 +7,7 @@ import no.fint.relations.internal.FintLinkMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
 
@@ -27,10 +28,12 @@ public class FintRelationsConfig {
     }
 
     @Bean
-    public FintLinkMapper fintLinkMapper() {
-        return new FintLinkMapper();
+    public FintLinkMapper fintLinkMapper(Environment environment, FintRelationsProps props) {
+        return new FintLinkMapper(environment, props);
     }
 
     @Bean
-    public FintResourceCompatibility fintResourceCompatibility() { return new FintResourceCompatibility(); }
+    public FintResourceCompatibility fintResourceCompatibility() {
+        return new FintResourceCompatibility();
+    }
 }
