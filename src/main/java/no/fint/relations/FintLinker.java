@@ -68,7 +68,10 @@ public abstract class FintLinker<T extends FintLinks> {
     }
 
     public T toResource(T resource) {
-        mapLinks(resource);
+        return resource;
+    }
+
+    public void resetSelfLinks(T resource) {
         if (resource.getSelfLinks() != null) {
             resource.getSelfLinks().clear();
         }
@@ -77,8 +80,6 @@ public abstract class FintLinker<T extends FintLinks> {
                 .map(linkMapper::populateProtocol)
                 .map(Link::with)
                 .forEach(resource::addSelf);
-
-        return resource;
     }
 
     public void mapLinks(FintLinks resource) {
