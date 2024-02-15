@@ -24,7 +24,7 @@ public class PersonController {
 
     @GetMapping("/resource/without-link-mapper")
     public PersonResource getPersonWithoutLinkMapper() {
-        return personLinker.toResource(createPersonWithLinkMapper("test1"));
+        return personLinker.toResource(createPersonWithoutLinkMapper("test1"));
     }
 
     @GetMapping("/resource/with-link-mapper")
