@@ -16,11 +16,13 @@ import java.util.stream.Collectors;
 
 public class FintLinkMapper {
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
-    @Autowired
-    private FintRelationsProps props;
+    private final FintRelationsProps props;
+
+    private final boolean forceHttps;
+
+    private final String defaultLink;
 
     @Qualifier("linkMapper")
     @Autowired(required = false)
@@ -30,6 +32,13 @@ public class FintLinkMapper {
     private String contextPath;
 
     private StringSubstitutor strSubstitutor;
+
+    public FintLinkMapper(Environment environment, FintRelationsProps props) {
+        this.environment = environment;
+        this.props = props;
+        forceHttps = Boolean.parseBoolean(props.getForceHttps());
+        defaultLink = getConfiguredLink();
+    }
 
     @PostConstruct
     public void init() {
@@ -45,11 +54,12 @@ public class FintLinkMapper {
     }
 
     public String getLink(String link) {
-        String defaultLink = getConfiguredLink();
+
         if (link.startsWith("${") && link.contains("}")) {
             link = link.replace("}", String.format(":-%s}", defaultLink));
             link = strSubstitutor.replace(link);
         }
+
         if (link.startsWith("/")) {
             return defaultLink + link;
         }
@@ -67,7 +77,7 @@ public class FintLinkMapper {
     }
 
     public String populateProtocol(String href) {
-        if (Boolean.valueOf(props.getForceHttps())) {
+        if (forceHttps && href.startsWith("http://")) {
             return href.replace("http://", "https://");
         } else {
             return href;
