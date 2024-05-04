@@ -106,4 +106,9 @@ public abstract class FintLinker<T extends FintLinks> {
         return Stream.of(getSelfHref(resource));
     }
 
+    public T mapAndResetLinks(T resource) {
+        mapLinks(resource);
+        resetSelfLinks(resource);
+        return toResource(resource);
+    }
 }
