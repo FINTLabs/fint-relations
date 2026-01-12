@@ -1,6 +1,5 @@
 package no.fint.relations.integration
 
-import no.fint.relations.FintResources
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.PersonResource
 import no.fint.relations.integration.testutils.dto.PersonResources

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.fint.relations.FintResourceCompatibility;
 import no.fint.relations.internal.FintLinkMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -14,7 +13,6 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class FintRelationsConfig {
 
-    @Autowired
     private ObjectMapper objectMapper;
 
     @PostConstruct

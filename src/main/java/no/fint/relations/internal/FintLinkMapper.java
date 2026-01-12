@@ -85,7 +85,7 @@ public class FintLinkMapper {
     }
 
     public static String getName(Class<?> clazz) {
-        return no.fint.model.resource.Link.getHrefPlaceholder(clazz);
+        return no.novari.fint.model.resource.Link.getHrefPlaceholder(clazz);
     }
 
 }

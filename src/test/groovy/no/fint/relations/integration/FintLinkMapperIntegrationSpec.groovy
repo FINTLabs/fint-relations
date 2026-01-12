@@ -1,6 +1,5 @@
 package no.fint.relations.integration
 
-import no.fint.model.resource.Link
 import no.fint.relations.integration.testutils.TestApplication
 import no.fint.relations.integration.testutils.dto.PersonResource
 import no.fint.relations.internal.FintLinkMapper

@@ -3,7 +3,7 @@ package no.fint.relations.integration.testutils.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.NoArgsConstructor;
-import no.fint.model.resource.AbstractCollectionResources;
+import no.novari.fint.model.resource.AbstractCollectionResources;
 
 import java.util.Collection;
 import java.util.List;
