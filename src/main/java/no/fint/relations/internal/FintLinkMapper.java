@@ -1,7 +1,7 @@
 package no.fint.relations.internal;
 
-import no.fint.model.relation.Relation;
 import no.fint.relations.config.FintRelationsProps;
+import no.novari.fint.model.relation.Relation;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

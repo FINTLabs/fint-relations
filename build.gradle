@@ -26,7 +26,7 @@ repositories {
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.3.0/dependencies.gradle'
 dependencies {
     compile('no.novari:fint-model-resource:1.0.0-rc-3')
-    compile('no.novari:fint-relation-model:2.0.0-rc-5')
+    compile('no.novari:fint-relation-model:2.0.0-rc-6')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
     compile("org.projectlombok:lombok:1.18.42")

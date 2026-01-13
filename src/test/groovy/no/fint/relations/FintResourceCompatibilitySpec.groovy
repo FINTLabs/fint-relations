@@ -1,8 +1,8 @@
 package no.fint.relations
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.fint.model.relation.FintResource
 import no.fint.relations.integration.testutils.dto.PersonResource
+import no.novari.fint.model.relation.FintResource
 import spock.lang.Specification
 
 class FintResourceCompatibilitySpec extends Specification {
