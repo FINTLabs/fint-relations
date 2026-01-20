@@ -17,6 +17,7 @@ public class FintRelationsConfig {
 
     @PostConstruct
     public void init() {
+        this.objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
