@@ -11,14 +11,22 @@ class FintLinkMapperSpec extends Specification {
 
     void setup() {
         props = Mock(FintRelationsProps)
-        environment = Mock(Environment) {
-            acceptsProfiles(_ as String) >> true
-        }
-        fintLinkMapper = new FintLinkMapper(environment: environment, props: props)
-        fintLinkMapper.init()
+        environment = Mock(Environment)
+
+        environment.acceptsProfiles(_ as String) >> true
+        props.getForceHttps() >> "true"
     }
 
     def "Get same link if no template value is provided"() {
+        given:
+        props = Mock(FintRelationsProps)
+
+        props.getForceHttps() >> "false"
+        props.getTestRelationBase() >> 'https://default.url'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
+        fintLinkMapper.init()
+
         when:
         def link = fintLinkMapper.getLink('http://localhost/test')
 
@@ -27,65 +35,80 @@ class FintLinkMapperSpec extends Specification {
     }
 
     def "Get link with base url when string template is provided"() {
+        given:
+        props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
+        fintLinkMapper.init()
+
         when:
         def link = fintLinkMapper.getLink('${no.fint.TestDto}/test')
 
         then:
-        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/test'
     }
 
     def "Get link with configured props when string template is provided"() {
         given:
-        def tempProps = Mock(FintRelationsProps) {
-            getLinks() >> ['testdto': 'http://local']
-        }
-        fintLinkMapper = new FintLinkMapper(environment: environment, props: tempProps)
+        props = Mock(FintRelationsProps)
+
+        props.getForceHttps() >> "false"
+        props.getTestRelationBase() >> 'http://default'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
+
+        fintLinkMapper.links = ['testdto': 'http://local']
         fintLinkMapper.init()
 
         when:
         def link = fintLinkMapper.getLink('${testdto}/test')
 
         then:
-        1 * tempProps.getTestRelationBase() >> 'http://local'
         link == 'http://local/test'
     }
 
     def "Combine configured path with default base url"() {
         given:
-        fintLinkMapper = new FintLinkMapper(environment: environment, props: props)
+        props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
         fintLinkMapper.init()
 
         when:
         def link = fintLinkMapper.getLink('${testdto}/id')
 
         then:
-        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/id'
     }
 
     def "Empty template is replaced with base url"() {
         given:
-        fintLinkMapper = new FintLinkMapper(environment: environment, props: props)
+        props.getTestRelationBase() >> 'https://api.felleskomponent.no'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
         fintLinkMapper.init()
 
         when:
         def link = fintLinkMapper.getLink('${}/id')
 
         then:
-        1 * props.getTestRelationBase() >> 'https://api.felleskomponent.no'
         link == 'https://api.felleskomponent.no/id'
-
     }
 
     def "Create links from simple and full class name"() {
         given:
         def fullClassName = 'no.fint.model.testutils.Person'
         def simpleClassName = 'testutils.person'
-        def links = [:]
-        links[fullClassName] = 'http://localhost:8080'
+        def linksMap = [:]
+        linksMap[fullClassName] = 'http://localhost:8080'
 
-        fintLinkMapper = new FintLinkMapper(links: links, environment: environment, props: props)
+        props = Mock(FintRelationsProps)
+
+        props.getForceHttps() >> "false"
+        props.getTestRelationBase() >> 'http://default'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
+        fintLinkMapper.links = linksMap
         fintLinkMapper.init()
 
         when:
@@ -99,8 +122,9 @@ class FintLinkMapperSpec extends Specification {
 
     def "Add default base url to relative links"() {
         given:
-        def links = [:]
-        fintLinkMapper = new FintLinkMapper(links: links, environment: environment, props: props)
+        props.getTestRelationBase() >> 'http://localhost:8080'
+
+        fintLinkMapper = new FintLinkMapper(environment, props)
         fintLinkMapper.init()
 
         when:
@@ -108,6 +132,5 @@ class FintLinkMapperSpec extends Specification {
 
         then:
         relativeLink == 'http://localhost:8080/some/relative/path'
-        1 * props.getTestRelationBase() >> 'http://localhost:8080'
     }
 }
