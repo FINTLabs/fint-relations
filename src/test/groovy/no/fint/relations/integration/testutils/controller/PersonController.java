@@ -1,6 +1,6 @@
 package no.fint.relations.integration.testutils.controller;
 
-import no.fint.model.resource.Link;
+import no.novari.fint.model.resource.Link;
 import no.fint.relations.FintResources;
 import no.fint.relations.integration.testutils.dto.AddressResource;
 import no.fint.relations.integration.testutils.dto.CityResource;

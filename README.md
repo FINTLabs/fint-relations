@@ -65,7 +65,7 @@ public class PersonLinker extends FintLinker<PersonResource> {
 
 This will replace the `${}` values with configured values from the map.  
 Expose a `Map<String, String>` as a bean with the `@Qualifier` "linkMapper". The value of the map is the class name and parts of the package structure of the resource.  
-For example, for the class `no.fint.model.administrasjon.personal.Arbeidsforhold` the value will be `administrasjon.personal.arbeidsforhold`.
+For example, for the class `no.novari.fint.model.administrasjon.personal.Arbeidsforhold` the value will be `administrasjon.personal.arbeidsforhold`.
 
 ```java
 @Qualifier("linkMapper")

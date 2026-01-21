@@ -1,8 +1,8 @@
 package no.fint.relations;
 
-import no.fint.model.resource.AbstractCollectionResources;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.Link;
+import no.novari.fint.model.resource.AbstractCollectionResources;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.Link;
 import no.fint.relations.internal.FintLinkMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

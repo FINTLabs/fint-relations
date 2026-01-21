@@ -97,7 +97,7 @@ class FintLinkMapperSpec extends Specification {
 
     def "Create links from simple and full class name"() {
         given:
-        def fullClassName = 'no.fint.model.testutils.Person'
+        def fullClassName = 'no.novari.fint.model.testutils.Person'
         def simpleClassName = 'testutils.person'
         def linksMap = [:]
         linksMap[fullClassName] = 'http://localhost:8080'

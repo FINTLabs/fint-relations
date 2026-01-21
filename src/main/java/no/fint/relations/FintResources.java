@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import no.fint.model.resource.AbstractCollectionResources;
-import no.fint.model.resource.Link;
+import no.novari.fint.model.resource.AbstractCollectionResources;
+import no.novari.fint.model.resource.Link;
 
 import java.util.ArrayList;
 import java.util.List;

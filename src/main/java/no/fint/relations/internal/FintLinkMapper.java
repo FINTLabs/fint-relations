@@ -1,6 +1,6 @@
 package no.fint.relations.internal;
 
-import no.fint.model.relation.Relation;
+import no.novari.fint.model.relation.Relation;
 import no.fint.relations.config.FintRelationsProps;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +85,7 @@ public class FintLinkMapper {
     }
 
     public static String getName(Class<?> clazz) {
-        return no.fint.model.resource.Link.getHrefPlaceholder(clazz);
+        return no.novari.fint.model.resource.Link.getHrefPlaceholder(clazz);
     }
 
 }

@@ -25,8 +25,11 @@ repositories {
 
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.3.0/dependencies.gradle'
 dependencies {
-    compile('no.fint:fint-model-resource:0.4.1')
-    compile('no.fint:fint-relation-model:1.1.6')
+    // We exclude jackson core because Core 1 runs on Spring 1.5, which uses Jackson 2.8. This library bumps it up to 2.22, causing breaking changes.
+    compile('no.novari:fint-model-resource:1.0.1') {
+        exclude group: 'com.fasterxml.jackson.core'
+    }
+    compile('no.novari:fint-relation-model:2.0.0')
 
     compile("com.github.springfox.loader:springfox-loader:${springfoxLoaderVersion}")
     compile("org.projectlombok:lombok:${lombokVersion}")
